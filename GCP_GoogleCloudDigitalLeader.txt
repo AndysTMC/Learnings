@@ -272,4 +272,245 @@ asia-south1	Mumbai, India APAC			3	asia-south1-a
   - External Network TCP/UDP
   - Internal TCP/UDP
 
+***Managed Services
+- (Question) Do you want to continue running applications in the cloud, the same way you run them in your data center?
+  - Or, are there other approaches?
+- Some terminology used with cloud services:
+  - IaaS (Infrastructure as a Service)
+  - PaaS (Platform as a Service)
+  - FaaS (Function as a Service)
+  - CaaS (Container as a Service)
+  - Serverless
+  - more..
+***IAAS (Infrastructure as a Service)
+- Use only infrastructure from cloud provider
+- Example: Using VM to deploy your applications or databases
+- You are responsible for:
+  - Application Code and Runtime
+  - Configuring load balancing
+  - Auto scaling
+  - OS upgrades and patches
+  - Availability
+  - etc.. (and a lot of things!)
+```
+Applications (Manually setup by User)
+Application Runtime (Manually installed by User)
+OS (Installed by User)
+Virtualization (Managed by Cloud)
+Physical Hardware (Provided by Cloud)
+Networking (Provided by Cloud)
+```
 
+***PAAS (Platform as a Service)
+-Use a platform provided by cloud
+- Cloud provider is responsible for:
+  - OS (incl. upgrades and patches)
+  - Application Runtime
+  - Auto scaling, Availability & Load balancing, etc.
+- You are responsible for:
+  - Configuration (of Application and Services)
+  - Application code (if needed)
+- Examples:
+  - Google App Engine
+  - Azure App Service
+- Varieties:
+  - CAAS (Container as a Service): Containers instead of Apps
+  - FAAS (Function as a Service): Functions instead of Apps
+  - Databases - Relational & NoSQL (Amazon RDS, Google Cloud SQL, Azure SQL Database etc.), Queues, AI, ML, Operations, etc.
+```
+Applications (Configured by User)
+Application Runtime (Installed by Cloud)
+OS (Installed by Cloud)
+Virtualization (Managed by Cloud)
+Physical Hardware (Provided by Cloud)
+Networking (Provided by Cloud)
+```
+
+***Microservices
+- Enterprises are heading towards microservices architectures
+  - Build small focused microservices
+    - Flexibility to innovate and build applications in different programming languages (Go, Java, Python, JavaScript, etc.)
+- But deployments become complex!
+- (Question) How can we have one way of deploying Go, Java, Python or JavaScript, etc. microservices?
+  - (Solution) Enter containers
+  - One of the popular container related tools is Docker
+    - Create Docker images for each microservice
+    - Docker image has all needs of a microservice:
+      - Application Runtime (JDK or Python or NodeJS)
+      - Application code and Dependencies
+- Some of the services of containers provided by Cloud are ECS (Elastic Container Service) by AWS, Cloud Run by GCP, etc.
+- Runs the same way on any infrastructure:
+  - Your local machine
+  - Corporate data center
+  - Cloud
+- Advantages
+  - Docker containers are light weight
+    - Compared to Virtual Machines as they do not have a Guest OS
+  - Docker provides isolation for containers
+  - Docker is cloud neutral (an image can be run on any cloud provider such as AWS, Azure, Google Cloud, etc.)
+
+***Container Orchestration
+  - (Case Study) Requirement: I want 10 instances of Microservice A container, 15 instances of Microservice B container and ...
+  - One of the popular container orchestration services is Kubernetes, and all the cloud providers provide Kubernetes services such as EKS (Elastic Kubernetes Service) by AWS, AKS (Azure Kubernetes Service) by Azure, GKE (Google Kubernetes Engine) by GCP), etc.
+  - Typical Features
+    - Auto Scaling - Scale containers based on demand
+    - Service Discovery - Help microservices find one another
+      - Do not need to hardcode URL of one microservice from other microservices
+      - Each microservice can ask the container orchestrator for the location of other microservices
+    - Load Balancer - Distribute load among multiple instances of a microservice
+    - Self Healing - Do health checks and replace failing instances
+    - Zero Downtime Deployments - Release new versions without downtime
+
+***Serverless
+- What do we think about when we develop an application?
+  - Where to deploy? What kind of server? What OS?
+  - How do we take care of scaling and availability of the application?
+- What if you don't need to worry about servers and focus on your code?
+  - Enter Serverless
+    - (Note) Serverless does not mean No Servers
+    - It means the servers are not visible to you (on which your code is running)
+  - Features
+    - You don't have worry about infrastructure (ZERO visibility into infrastructure)
+      - Flexible scaling and automated high availability
+    - Most Important: Pay for use
+      - Ideally, zero requests means zero cost
+    - You focus on code and the cloud managed service takes care of all that is needed to scale your code to serve millions of requests!
+    - And you pay for requests and not servers!
+- Some of the examples
+  - All the FAAS (Function as a Service) services
+  - AWS Lambda in AWS
+  - Azure Functions in Azure
+  - Google Functions in GCP
+
+***SAAS (Software as a Service)
+- Centrally hosted software (mostly on the cloud)
+  - Offered on a subscription basis (pay-as-you-go)
+  - Examples:
+    - Email, calendaring & office tools (such as Outlook 365, Microsoft Office 365, Gmail, Google Docs), etc.
+    - Customer relationship management (CRM), enterprise resource planning (ERP) and document management tools, etc.
+  - The users of these services do not need to worry about any of the details behind the software or hardware or the applications that are used to run these applications. They do not need to know how the applications are built.
+- Cloud provider is responsible for:
+  - OS (incl. upgrades and patches)
+  - Application Runtime
+  - Auto scaling, Availability & Load balancing, etc.
+  - Application code and/or
+  - Application Configuration (How much memory? How many instances?..)
+- Customer is responsible for:
+  - Configuring the software!
+
+***Shared Responsibility Model
+- Security in cloud is a Shared Responsibility
+  - Between GCP and the Customer
+- GCP provides features to make security easy:
+  - Encryption at rest by default
+  - IAM
+  - KMS
+  - more..
+- Customer responsibility vary with model:
+```
+Responsibilities		IaaS	PaaS	SaaS
+-----------------------------------------------------
+Content				User	User	User
+Access policies			User	User	User
+Usage				User	User	User
+Deployment			User	User	Cloud
+Web application security	User	User	Cloud
+Identity			User	Cloud	Cloud
+Operations			User	Cloud	Cloud
+Access and authentication	User	Cloud	Cloud
+Network security		User	Cloud	Cloud
+Guest OS, data & content	User	Cloud	Cloud
+Audit logging			Cloud	Cloud	Cloud
+Network				Cloud	Cloud	Cloud
+Storage + encryption		Cloud	Cloud	Cloud
+Hardened Kernel + IPC		Cloud	Cloud	Cloud
+Boot				Cloud	Cloud	Cloud
+Hardware			Cloud	Cloud	Cloud
+```
+- Google Cloud is always responsible for Hardware, Network, Audit Logging, etc.
+
+***Managed Services for Compute
+- Compute Engine
+  - High-performance and general purpose VMs that scale globally
+  - IaaS
+- Google Kubernetes Engine
+  - Orchestrate containerized microservices on Kubernetes
+  - Needs advanced cluster configuration and monitoring
+    - You create a cluster and the cluster contains a number of nodes or number of instances
+    - You deploy your microservices using Kubernetes into the cluster
+  - CaaS
+  - It is recommended for complex microservices architectures.
+- App Engine
+  - Build highly scalable application on a fully managed platform using open and familiar languages and tools
+  - PaaS (CaaS, Serverless)
+  - Serverless is possible when mode is App Engine standard
+- Cloud Functions
+  - Build event driven application using simple, single-purpose functions
+  - This is a true serverless service from GCP
+  - FaaS (Serverless)
+  - Use Cases
+    - if you want to do something immediately as soon as there is a message on the queue, you can create a cloud function to listen on the queue and react to it.
+    - if you want to do something as soon as an object is uploaded into cloud storage, you can do that using a cloud function.
+- Cloud Run
+  - Develop and deploy highly scalable containerized applications.
+    - Does NOT need a cluster unlike Kubernetes Engine
+  - CaaS (Serverless)
+  - It is recommended for simpler architectures.
+
+***App Engine
+- Simplest way to deploy and scale applications in GCP
+  - Provides end-to-end application management
+- Supports:
+  - Go, Java, .NET, Node.js, PHP, Python, Ruby using pre-configured runtimes
+  - Use custom run-time and write code in any language as it supports running containers
+  - Connect to variety of Google Cloud storage product (Cloud SQL, Object Storage (or Cloud Storage) etc.)
+    - You can also talk to a queue 
+  - No usage charges for App Engine itself - But pay for resources provisioned
+    - if you have provision compute instances through app engine, then you'd pay for those
+  - Features
+    - Automatic load balancing & Auto scaling
+    - Managed platform updates & Application health monitoring
+    - Application versioning
+    - Traffic splitting
+      - You can have any number of versions of application and can split the traffic between them
+      - Say you may want to send 30% of traffic to the latest version and 70% to v3 or some other versions.
+
+***Compute Engine vs App Engine
+- Compute Engine
+  - IaaS
+  - More Flexibility
+  - More Responsibility
+    - Choosing Image
+    - Installing Software
+    - Choosing Hardware
+    - Fine grained Access/Permissions (Certificates/Firewalls)
+    - Availability, etc.
+- App Engine
+  - PaaS
+  - Serverless
+  - Lesser Responsibility
+  - Lower Flexibility
+    - If you'd want to add a GPU, you cannot do that with an App Engine
+- Use Case
+  - If you have a simple Java application or Python application or a containerized application already present, and want to easily deploy that to cloud, then App Engine might be the right option. 
+
+***App Engine Environments
+- There are two different types of environments which are offered by App Engine
+  - Standard
+  - Flexible
+- Standard
+  - Applications run in language specific sandboxes
+    - V1: Java, Python, PHP, Go (Old versions)
+    - V2: Java, Python, PHP, Ruby, Go (Newer versions)
+  - Complete isolation from OS/Disk
+  - There is no need to worry about creating instances, instance groups, or managing load balancing or scaling, etc.
+  - Only code and app engine configuration needs to be provided, and all other important features are provided by app engine
+  - Supports scale down to zero instances.
+    - To reduce the cost
+- Flexible - Application instances run within Docker containers
+  - Makes use of Compute Engine virtual machines
+  - Anything for which you can create a Docker container image, you can provide that image as an input to flexible and flexible can run it for you.
+  - Support ANY runtime (with built-in support for Python, Java, Node.js, Go, Ruby, PHP, or .NET)
+    - If you provide the code for any of these applications, flexible can build the container image and then deploy it to App Engine Flexible
+  - Cannot scale down to Zero instances.
+    - If you have an App Engine Flexible application running, it would have at least one instance running all the time
