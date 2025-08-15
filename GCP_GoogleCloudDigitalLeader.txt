@@ -1,0 +1,275 @@
+***What is Cloud and Why do we need Cloud?
+- Online shopping applications typically have peak usage during holidays and weekends.
+  - They would have a lot of load on the application and rest of the time, there are low loads.
+- The solution before the cloud was to do peak load provisioning.
+  - Peak load provisioning refers to buy/procure infrastructure to support that kind of load.
+  - (Question) What would that infrastructure be doing during periods of low loads?
+    - It would just be sitting idle.
+  - Disadvantages:
+    - High cost of procuring infrastructure.
+    - Needs ahead of time planning ((Question) Can you guess the future?).
+    - Low infrastructure utilization (PEAK LOAD provisioning).
+    - Dedicated infrastructure maintenance team ((Question) Can a startup afford it?).
+- Silver Lining in the Cloud
+  - (Question) How about provisioning (renting) resources when you want them and releasing them back when you do not need them?
+    - On-demand resource provisioning.
+    - Also called Elasticity
+- Cloud Advantages
+  - Trading 'capital expence' for 'variable expense'.
+  - Benefiting from massive economies of scale.
+  - No need to guess capacity any more.
+  - No need to spend money running and maintaining data centers.
+  - Can go Global in minutes.
+
+***Google Cloud Platform
+- One of the Top 3 cloud service providers
+- Provides a number of services (200+)
+- Reliable, secure and highly-performant:
+  - Infrastructure that powers 8 services with over 1 Billion Users:
+    - Gmail, Google Search, Youtube, etc.
+- Cleanest Cloud
+  - Net carbon-neutral cloud (electricity used matched 100% with renewable energy)
+- Cloud applications make use of multiple GCP services
+
+***Regions and Zones
+- (Question) What if an application is deployed in a data center in London?
+  - What would be the challenges?
+    - Slow access for users from other parts of the world (high latency).
+    - What if the data center crashes?
+      - The application goes down (low availability).
+      - A solution would be adding one more data center in London.
+      - Challenges would be
+        - Slow access for users from other parts of the world.
+        - (Question) What if one data center crashes? (Solved)
+        - What if entire region of London is unavailable?
+          - The application goes down.
+  - Another solution would be deploying in a new region (Say Mumbai)
+    - What would be the challenges?
+      - Comparably faster than before but still slow access for users from other parts of the world.
+        - This can be solved completely by adding deployments for the application in other regions.
+      - Even if one data center crashes, the others are available from other regions.
+- Setting up data centers in different regions around the world is not easy.
+  - (Solution) Google provides 20+ regions around the world (expanding every year).
+- Region refers to specific geographical location to host the resources.
+- Advantages
+  - High Availability.
+  - Low latency (Servers can be served from the nearest available region)
+  - Global Footprint (A startup in a specific region might be able to easily deploy applications to multiple parts of the world. Therefore, it can create global applications.)
+  - Adhere to government regulations
+    - Different countries have different regulations.
+    - Say US wants the data related to all their citizens, to reside within US only.
+      - In those kind of situations, a region can be created in US and store data related to US customers only in that specific region.
+- (Question) How to achieve high availability in the same region (or geographic location)?
+  - (Solution) Each region has three or more zones.
+  - Advantages are increased availability and fault tolerance within same region.
+  - (Note) Each zone has one or more discrete clusters
+    - Cluster is a distinct physical infrastructure that is housed in a data center.
+  - (Note) Zones in a region are connected through low-latency links.
+  - New regions and zones are constantly added.
+  - An example is as below
+```
+Region Code	Region					Zones	Zones List
+us-west1	The Dalles, Oregon, North America	3	us-west1-a
+								us-west1-b
+								us-west1-c
+europe-north1	Hamina, Finland, Europe			3 	europe-north1-a
+								europe-north1-b
+								europe-north1-c
+asia-south1	Mumbai, India APAC			3	asia-south1-a
+								asia-south1-b
+								asia-south1-c
+```
+
+***Google Compute Engine (GCE)
+- In corporate data centers, applications are deployed to physical servers.
+- (Question) Where do you deploy applications in cloud?
+  - Rent virtual servers.
+  - Virtual Machines - Virtual servers in GCP.
+  - Google Compute Engine (GCE) - Provision & Manage Virtual Machines.
+- Features
+  - Create and manage(start, stop, restart, or terminate) lifecycle of Virtual Machine (VM) instances.
+  - Load balancing and auto scaling of multiple VM instances.
+  - Attach storage (&network storage) to VM instances.
+  - Manage network connectivity and configuration for VM instances.
+- Goal (Optional)
+  - Setup VM instances as HTTP (Web) Server.
+  - Distribute load with Load Balancers.
+
+***Hands-on for Computer Engine
+- To create a few VM instances and play with them.
+- To checkout the lifecycle of VM instances.
+- To use SSH to connect to VM instances.
+
+***IP Addresses - Virtual Machines
+- An IP Address (short for Internet Protocal address) is a unique string of numbers separated by periods or colons that identifies each device connected to a computer network that uses the Internet Protocol for communication.
+- Internal IP Address is a permanent internal ip address that does not change during the lifetime of an instance
+  - It can only be used inside the specific network.
+- External or Ephemeral IP Address changes when an instance is stopped
+- Static IP Address is a permanent external ip address that can be attached to a VM.
+- Static IP Addresses when built and not used needs to be released (otherwise, it will be billed).
+
+***Simplifying VM HTTP server setup
+- (Question) How do we reduce the number of steps in creating a VM instance and setting up a HTTP Server?
+- Some of the options are:
+  - Startup script
+  - Instance Template
+  - Custom Image
+- (Question) How to use a startup script?
+  - The process of installing any software or patches when a VM instance is launched is called Bootstrapping.
+  - In VM, startup script can be configured to bootstrap.
+- (Question) Why do you need to specify all the VM instance details (Image, instance type, etc.) every time you launch an instance?
+  - How about creating an Instance template?
+  - Define machine type, image, labels, startup script and other properties.
+- Instance templates are used to create VM instances and managed instance groups
+  - It provides a convenient way to create similar instances.
+  - An instance template cannot be updated. To make a change, it needs to be copied and modified.
+- Reducing launch time with custom image
+  - Installing OS patches and software at luanch of VM instances increases boot up time.
+  - (Question) How about creating a custom image with OS patches and software pre-installed?
+    - Can be created from an instance, a persistent disk, a snapshot (copy of a persistent disk), another image, or a file in Cloud Storage.
+    - Can be shared across projects
+    - (Recommendation) Deprecate old images (& specify replacement image)
+    - (Recommendation) Hardening an image - Customize images to (adhere to) the corporate security standards.
+  - Custom Images preferred over startup scripts.
+  - Disks are hard disks that are associated with the VMs.
+
+***Minimizing Costs
+- Sustained use discounts
+  - Automatic discounts for running VM instances for significant portion of the billing month.
+    - Example: If you use N1, N2 machine types for more than 25% of a month, you get a 20% to 50% discount on every incremental minute.
+    - Discount increases with usage (graph).
+    - No action required on our part! (Automatically appied by the Platform).
+  - Applicable for instances created by Google Kubernetes Engine and Compute Engine.
+  - Does NOT apply on certain machine types (example: E2 and A2).
+  - Does NOT apply to VMs created by App Engine flexible and Dataflow.
+- Committed use discounts (needs a commitment from user)
+  - For workloads with predictable resource needs
+  - Commit for 1 year or 3 years
+  - Up to 70% discount based on machine type and GPUs
+  - Applicable for instances created by Google Kubernetes Engine and Compute Engine
+  - (Note) You CANNOT cancel commitments
+    - Reach out to Cloud Billing Support if you made mistake while purchasing commitments.
+- Preemptible VM
+  - Short-lived cheaper (upto 80%) compute instances
+    - Can be stopped by GCP any time (preempted) within 24 hours.
+  - Instances get 30 second warning (to save anything they want to save)
+  - Cases when Preemptible VM's are used:
+    - When applications are fault tolerant
+    - When cost is the primary factor
+    - When workload is NOT immediate
+    - Example: Non immediate batch processing jobs
+  - Restrictions
+    - Not always available.
+    - No SLA (Service Level Agreement) and Cannot be migrated to regular VMs.
+    - No Automatic Restarts.
+    - Free Tier credits not applicable.
+- Spot VMs (Latest version of Preemptible VMs)
+  - Key difference is that Spot VMs does not have a maximum runtime.
+    - Compared to traditional preemptible VMs which have a maximum runtime of 24 hours.
+  - Other features similar to traditional preemptible VMs
+    - May be reclaimed at any time 30-second notice.
+    - NOT always available.
+    - Dynamic Pricing: 60-91% discount compared to on-demand VMs.
+    - Free Tier credits not applicable.
+
+***Sole Tenant Nodes
+- Shared Tenancy (Default)
+  - Single host machine can have instances from multiple customers.
+- Sole Tenant Nodes are virtualized instances on hardware dedicated to one customer.
+- Use cases:
+  - Security and compliance requirements: You want your VMs to be physically separated from those in other projects.
+  - High performance requirements: Group your VMs together.
+  - Licensing requirements: Using per-core or per-processor "Bring your own licenses"
+
+***Custom Machine Types
+- (Question) What do you do when predefined VM options are NOT appropriate for your workload?
+  - Create a machine type customized to your needs (a Custom Machine Type).
+- vCPUs, memory and GPUs can be adjusted with custom machine types.
+  - Choose between E2, N2, or N1 machine types
+  - Supports a wide variety of Operating Systems: CentOS, CoreOS, Debian, Red Hat, Ubuntu, Windows, etc.
+  - Billed per vCPUs, memory provisioned to each instance
+    - Example: Hourly Price: $0.033174 / vCPU + $0.004446 / GB
+
+***GCE - VM Costs
+- 2 primary costs in running VMs using GCE:
+  - 1: Infrastructure cost to run our VMs
+  - 2: Licensing cost for your OS (ONLY for Premium Images)
+    - Premium Image Examples: Red Hat Enterprise Linux (RHEL), SUSE Linux Enterprise Server (SLES), Ubuntu Pro, Windows Server, ..
+  - Options For Licensing:
+    - 1: You can use Pay-as-you-go model (PAYG) OR
+    - 2: (WITHIN A LOT OF CONSTRAINTS) You can use your existing license/subscription (Bring your own subscription/license - BYOS/BYOL)
+- (RECOMMENDED) if you have existing license for a premium image, use it while your license is valid
+  - After that you can shift to Pay-as-you-go model (PAYG)
+
+***Quick Review
+- Image
+  - What operating system and what software do you want on the VM instance?
+  - Reduce boot time and improve security by creating custom hardened images.
+  - You can share an image with other projects.
+- Machine Types
+  - Optimized combination of compute (CPU, GPU) memory, disk (storage) and networking for specific workloads.
+  - You can create your own Custom Machine Types when existing ones you don't fit to your needs.
+- Static IP Addresses: Get a constant IP addresses for VM instances.
+- Instance Templates: Pre-configured templates simplifying the creation of VM instances.
+- Sustained use discounts: Automatic discounts for running VM instances for significant portion of the billing month.
+- Committed use discounts: 1 year or 3 year reservations for workloads with predictable resource needs.
+- Preemptible VM: Short-lived cheaper (upto 80%) compute instances for non-time-critical fault-tolerant workloads.
+
+***GCE - Scenarios
+- I want to ensure my VM runs a specific operating system and software stack for mu application - Custom Image
+- I need to optimize my VM for a specialized workload required a unique mix of CPU, memory, and storage - Custom Machine Types
+- My application requires a fixed IP address that doesn't change between reboots or reassignments - Static IP Addresses
+- I have predictable resource needs and want to commit to a 1 or 3-year plan to enjoy deeper discounts - Committed Use Discounts
+- I need to run short-lived, fault-tolerant workloads that can tolerate interruptions in exchange for lower costs - Committed Use Discounts
+- I need to run short-lived, fault-tolerant workloads that can tolerate interruptions in exchange for lower costs - Preemptible VMs
+
+***Instance Groups
+- (Question) How do you create a group of VM instances?
+  - Instance Group - Group of VM instances managed as a single entity.
+- Two types of instance groups:
+  - Managed: Identical VMs created using a instance template.
+    - Features: Auto scaling (based on the number of users using the instance group you can scale the number of number of computing instances up and down), auto healing (you can configure a health check and if the health check fails, that specific instance would be automatically replaced with a new instance), and managed releases (you can go from one version to another without any down time.)
+  - Unmanaged: Different configuration for VMs in same group.
+    - Does NOT offer auto scaling, auto healing & other services.
+    - Not Recommended unless you need different kinds of VMs.
+- Location can be Zonal or Regional
+  - Regional gives you higher availability (RECOMMENDED).
+- Managed Instance Groups (MIG)
+  - Identical VMs created using an instance template.
+  - Important features:
+    - Maintain certain number of instances 
+      - If an instance crashes, MIG launches another instance.
+    - Detect application failures using health checks (self healing)
+    - Increase and decrease instances based on load (auto scaling)
+    - Able to add load balancer to distribute load
+    - Create instances in multiple zones (regional MIGs)
+      - Regional MIGs provide higher availability compared to zonal MIGs.
+    - Release new application versions without downtime.
+      - Rolling updates: Release new version step by step (gradually). Update a percentage of instances to the new version at a time.
+      - Canary Deployment: Test new version with a group of instances before releasing it across all instances.
+- Creating Managed Instance Group
+  - Instance template is mandatory
+  - Configure auto-scaling to automatically adjust number of instances based on load:
+    - Minimum number of instances
+    - Maximum number of instances
+    - Autoscaling metrics: CPU Utilization target or Load Balancer Utilization target or Any other metric from Stack Driver
+      - Cool-down period: How long to wait before looking at auto scaling metrics again.
+      - Scale In Controls: Prevent a sudden drop in no of VM instances
+        - Example: Don't scale in by more than 10% or 3 instances in 5 minutes.
+      - Autohealing: Configure a Health check with initial delay (how long should you wait for your app to initialize before running a health check?)
+
+***GCP - Cloud Load Balancing
+- Helps distribute traffic across VM instances in one or more regions.
+- Managed service:
+  - Google Cloud ensures that it is highly available
+  - Auto scales to handle huge loads
+  - Load Balancers can be public or private
+- Types:
+  - External HTTP(S)
+  - Internal HTTP(S)
+  - SSL Proxy
+  - TCP Proxy
+  - External Network TCP/UDP
+  - Internal TCP/UDP
+
+

@@ -1,0 +1,2046 @@
+// api (application programming interface)
+-- an api is a set of rules and protocols that allows different software applications to communicate with each other
+-- It defines the methods and data formats that programs can use to request and exchange information.
+
+// web api
+-- an api (application programming interface) over the web which can be accessed using http protocol
+
+// http (hypertext transfer protocol)
+-- a set of rules for transferring data in World Wide Web
+
+// WWW (World Wide Web)
+-- An interconnected system of hypertext documents and resources which can be accessible over the internet
+
+// internet
+-- a global network of interconnected computers and networks that enables communication and data transfer
+
+// .net 
+-- a free, open-source, cross-platform development framework created by Microsoft
+-- .net framework 1.0 released in 2002 - the beginning - (has web forms, legacy)
+-- .net framework 2.0 released in 2005 - introduced generics
+-- .net framework 3.0 released in 2006 - added wpf, wcf, wf, cardspace
+-- .net framework 3.5 released in 2007 - added linq, asp.net ajax
+-- asp.net mvc introduced in 2009 for bettr separation of concerns
+-- .net framework 4.0 released in 2010 - major update
+-- asp.net web api released for building restful services
+-- .net framework 4.5 - 4.8 in 2012-2019 - the platform is only intended for windows specific applications until this version
+-- .net core 1.0 released in 2016 -- cross-platform and modern, asp.net core
+-- .net core 2.0 - 3.1 released in 2017-2019 - improved apis, lts support
+-- .net 5 - unified platform (core + framework)
+-- .net 6, 7, 8,... - actively developed
+
+// ajax (asynchronous javascript and xml)
+-- a web development technique that allows web pages to be updated asynchronously by exchanging data with a web server behind the scenes.
+
+// web api architecture
+-- serves as a communicator between the client and the data storage
+-- client sends a http request to the api, the api communicate with the data storage.
+-- to communicate with the data storage, it uses a transaltor which understands both languages, a translator, which can translate csharp code to sql and vice versa
+-- entity framework core uses entity data model language, which is csharp classes as models (basically, all the sql tables are converted to csharp understandable code using csharp class which we also call models)
+-- In the models, we can define the releationships between models and much more
+-- once, the web api sends or retreives data to/from the data stroage using a model, it will send a response back to the client using the http response
+
+// development environment
+-- needed to install dotnet sdk and runtime
+
+// sdk (software development kit)
+-- url - (dotnet.microsoft.com/download/dotnet-core)
+-- includes everything a developer need to build and run .net core apps using command-line tools and any editor (visual studio)
+-- includes (.net core cli, .net core libraries and runtme, dotnet driver)
+
+// .net core cli (command line interface)
+-- a cross-platform toolchain for developing, building, running and publishing .net applications
+
+// .net core libraries
+-- Provides primitive data types and fundamental utilities
+
+// .net core runtime
+-- provides a type system, assembly loading, garbage collector, native interop and other basic services
+
+// dotnet driver
+-- a cli command that runs framework-dependant apps
+
+// misc
+-- dotnet --list-sdks // lists the sdks installed in the system
+-- dotnet --list-runtimes // lists all the dotnet runtimes installed in the system
+
+// Solution Explorer
+-- Inside solution, we can have multiple projects
+-- Connected Services inside a project, is a menu item used to configure asp.net core web api project to external services (service dependencies, service references, other services)
+-- Dependencies section inside a project, there are analyzers, frameworks, packages
+-- In analyzers, we have some preconfigured rules for the dotnet core application like the code styles, the view styles and other analytical definitions
+-- In frameworks, we have microsoft.netcore.app and microsoft.aspnetcore.app as default for building a dot net core web api
+-- In packages, we have all the NuGet packages which can be installed throught he NuGet package manager
+-- The difference between the framework sectiona nd the packages section is that the libraries that we find inside the frameworks come by default from microsoft but the ones that we find inside the packages are custom libraries that we can install through NuGet package manager.
+-- Next, we have the properties section, inside it, we have launchSettings.json file, we can define different profile that visual studio will use to run our project
+-- Next, we have controllers folder, we have controllers in which we define http endpoints
+-- Next, we have appsettings.json file, an application configuraiton file used to store configuration settings such as database connectioons, api keys, etc.
+-- Next, we have the Program.cs file, which is the entry point for the .net core applications and also the dotnet standard.
+-- and more(optional)..
+
+// Testing Web API with Postman and Swagger
+-- To build robost web apis, testing is more important
+-- Tools like swagger and postman are used to carry this out
+-- By enabling openapi support, swagger will be configured in the project as a part of creating the project. (Swashbuckle.AspNetCore package is installed, )
+
+// entity
+-- distinct and has an independent existance
+
+// EF, EDM, Models
+-- entity framework uses edm (entity data model) for all database-related operations
+-- edm is a model that describes the entities and the relationships between them
+-- models are just c# classes
+public class Book {
+	public int Id { get; set; }
+	public string Title { get; set; }
+	public DateTime DateAdded { get; set; }
+}
+-- Inside the project folder, there should be a folder called Data, and there should be a folder called Models in it.
+-- Inside the models folder, all the models or csharp classes are defined (each as a separate .cs file)
+-- such as Data/Models/Book.cs
+namespace my_books.Data.Models
+{
+	public class Book
+	{
+		public int Id { get;s et; }
+		public string Title { get; set; }
+		public string Description { get; set; }
+		public bool IsRead { get; set; }
+		public DateTime? DateRead { get; set; } // the question mark makes the variable optional (.i.e, could be null)
+		public int? Rate { get; set; }
+		public string Genre { get; set; }
+		public string Author { get; set; }
+		public string CoverUrl { get; set; }
+		public DateTime DateAdded { get; set; }
+	}
+}
+
+// misc
+-- to install a package, search for 'Nuget Package Manager' and select Manage NuGet Packages for solution to search for packages and install them, or by opening package manager console and using the command belo
+Install-Package Microsoft.EntityFrameworkCore
+-- the package can be viewed inside the dependencies/packages folder
+
+// Entity Framework Database Context
+-- the most important ef class, which serves as a bridge between entity classes (c# classes) and the database tables (sql)
+-- To add the database context file in a asp.net core web api project, microsoft.entityframeworkcore package needs to be installed
+
+// Creating a Db Context File and making it ready for use
+-- Inside the Data folder, we create a file called AppDbContext.cs
+-- Inside it, there is
+using Microsoft.EntityFrameworkCore;
+using my_books.Data.Models;
+namespace my_books.Data
+{
+	public class AppDbContext: DbContext // needs to inherit the base class named DbContext from Microsoft.EntityFrameworkCore package
+	{
+		public AppDbContext(DbContextOptions<AppDbContext> options): base(options)  // passing options to the base class constructor
+		{
+		
+		}
+		// defining the tables below
+		public DbSet<Book> Books { get; set; }
+	}
+}
+-- then, inside appsettings.json, we need to add a database connection string like as below
+{
+	"Logging" {
+		"LogLevel": {
+			"Default": "Information",
+			"Microsoft": "Warning",
+			"Microsoft.Hosting.Lifetime": "Information"
+		}
+	},
+	"AllowedHosts": "*",
+	"ConnectionStrings": {// there can be any number of connections strings here
+		"DefaultConnectionString": "fake-db-connection"
+	}
+}
+-- to use the conneciton string, we need to do as below
+```
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<AuthDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AuthConnectionString")); // builder has the Configuration object
+});
+```
+-- all the data from appsetttings can be retreived from the IConfiguration object which we get form builder
+-- Microsoft.EntityFrameWorkCore provides apis, features, and infrastructure for object-relational-mapping, it doesn't include any logic or optimizations for any specific data engine
+-- Microsoft.EntityFrameworkCore.SqlServer provider-specific package for Sql Server. It extends EF Core to translate LINQ queries to SQL Server compatible sql, handle SQL Server data types, and interact with sql server features
+
+// ORM (Object Relational Mapping)
+-- Objects,i.e, instances of classes, which have properties and methods
+-- Relational,i.e, data is stored as tables, rows and columns in the databae
+-- Mapping,i.e, connecting the classes and objects of code to the tables and records in the database
+-- It lets to interact with the3 database usign programming language objects, instead of writing raw swl queries
+-- It automatically translates operations on objects (create, read, update, delete) into sql queries and vice versa
+-- It handles the conversion between database data types and programming language types
+-- ORM bridges the gap between the way the data is represented in code (objects) and in the database (tables), making database operations more intuitive for developers
+
+// Adding EF Core Migration
+-- To create or modify tables, properties or relations in asp.net core web api projects, ef core migrations are used
+-- EF Core Migrations provides a way to incrementally update the database schema to keep in sync with the application's data model while preserving existing data in the database
+-- To work with the EF Core Migrations, Microsoft.EntitiyFrameworkCore.Tools package is necessary.
+```
+Install-Package Microsoft.EntityFrameworkCore.Tools
+```
+-- To create a database, click on to server explorer/Data Connections and select Create New Sql Server Database option, and then give name the server name and database name
+-- By right clicking on the database and going to properties, connection string to the datbase can be obtained. (Later to put the string in the appsettings.json file)
+-- To create a new migration, 
+```
+Add-Migration InitialDatabaseMigration
+```
+-- By default, when there is a member variable called Id or something with Id as suffix, the migrations will make it a primary key or an sql server identity
+-- After creating migrations, there will be a new folder in the project root directory named 'Migrations' where all the migrations will be created
+-- For every incremental migraiton, there will be a new migration file, but there is one file which will be updated for every migration with a suffix ModelSnapshot (like, AppDbContextModelSnapshot.cs)
+-- Model Snapshot enables entity framework core to calcualte the changes that are required to bring the database up to date with the model
+-- To push the migrations or changes to the data models,
+```
+Update-Database
+```
+-- Then, the tables will be created in the database
+
+// Seeding database with data (adding some test data to database)
+-- Inside the Data folder in the project root directory, a file called AppDbInitializer.cs should be added to add test data to the database if it is empty
+-- Inside AppDbInitializer.cs,
+```
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace my_books.Data
+{
+	public class AppDbIntializer
+	{
+		public static void Seed(IApplicationBuilder applicationBuilder)
+		{
+			using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+			{
+				var context = serviceScope.ServiceProvider.GetService<AppDbContext>();
+				if (!context.Books.Any())
+				{
+					context.Books.AddRange(new Book()
+					{
+						Title = "1st Book Title",
+						Description = "1st Book Description",
+						IsRead = true,
+						DataRead = DateTime.NowAddDays(-10),
+						Genre = "Biography",
+						Author = "First Author",
+						CoverUrl = "https....",
+						DateAdded = DateTime.Now
+					},
+					{
+						Title = "2st Book Title",
+						Description = "2st Book Description",
+						IsRead = false,
+						Genre = "Biography",
+						Author = "First Author",
+						CoverUrl = "https....",
+						DateAdded = DateTime.Now
+					});
+					context.SaveChanges();
+				}
+			}
+		}
+	}
+}
+```
+-- And then, the below code needs to be put in Startup.cs or Program.cs before app.Run()
+
+// Controllers
+-- used to handle the http request and send back a http response
+-- All the controllers are defined inside the Controllers folder in the project's root directory
+-- To create a controller, right click on controllers, click on add/controller, click on api, click on API Controller - Empty (to create it from scratch)
+-- the default code is given like as below
+```
+using Microsoft.AspNetCore.Mvc;
+
+namespace my_books.Controllers
+{
+	[Route("api/[controller]")] // each controller has a separater route where [controller] 
+	[ApiController]
+	public class BooksController: ControllerBase // imported from Microsoft.AspNetCore.Mvc package
+	{
+	}
+}
+```
+-- by default, a controller doesn't have any api endpoints
+
+// HttpPost
+-- first, a service needs to be added
+-- second, service needs to be configured
+-- third, an api endpoint is added
+-- fourth, the endpoint is tested
+-- To add services, a folder named Services needs to be created in the Data folder in the project's root directory
+-- A Class file with a name with suffix Service is used to create a Service file
+-- The BookService.cs will have the below,
+```
+using my_books.Data.ViewModels
+namespace my_books.Data.Services
+{
+	public class BooksService
+	{
+		private AppDbContext _context; // we need AppDbContext object to interact with the database
+		public BooksService(AppDbContext context)
+		{
+			_context = context;
+		}
+		public void AddBook(BookVM book) // Book View Model or in short BookVM is used instead of using the model class directly because in the model class, we have bookId, the dateadded, which are properties that the user doesn't need to fill in
+		{
+			var _book = new Book()
+			{
+				Title = book.Title,
+				Description = book.Description,
+				IsRead = book.IsRead,
+				DateRead = book.IsRead ? book.DateRead.Value : null,
+				Rate = book.IsRead ? book.Rate.Value : null,
+				Genre = book.Genre,
+				Author = book.Author,
+				CoverUrl = book.CoverUrl,
+				DateAdded = DateTime.Now
+			);
+			_context.Books.Add(_book);
+			_context.SaveChanges();
+		}
+	}
+}
+-- A new folder named ViewModels is necessary to be created to contain the view models to be used in controller endpoints.
+-- To create a view model, simple class file with the name with suffix VM needs to be created in ViewModels folder
+-- The BookVM view model looks as below,
+```
+namespace my_books.Data.ViewModels
+{
+	public class BookVM
+	{
+		public string Title { get; set; }
+		public string Description { get; set; }
+		public bool IsRead { get; set; }
+		pubic DateTime? DateRead { get; set; }
+		public int? Rate { get; set; }
+		public string Genre { get; set; }
+		public string Author { get; set; }
+		public string CoverUrl { get; set; }
+	}
+}
+-- For BookService to work, it needs to be added to services in the Program.cs or Starup.cs, like as below
+services.AddTransient<BookService>();
+-- The books controller now will look as below,
+``` 
+using Microsoft.AspNetCore.Mvc;
+using my_books.Data.Services;
+namespace my_books.Controllers
+{
+	[Route("api/[controller]")]
+	[ApiController]
+	public class BooksController: ControllerBase
+	{
+		public BooksService _booksService;
+		public BooksController(BooksService booksService)
+		{
+			_booksService = booksService;
+		}
+		[HttpPost("add-book")] // custom name is not necessary if not given, takes the name of the endpoint, which in this case is AddBook
+		public IActionResult AddBook([FromBody] BookVM book)
+		{
+			_booksService.AddBook(book);
+			return Ok();
+		}
+	}
+}
+-- Now, to test the endpoint, swagger or postman can be used
+
+// HttpGet
+-- new book service function to get all the books is given below,
+```
+	public List<Book> GetAllBooks()
+	{
+		return _context.Books.ToList();
+	}
+	or
+	public List<Book> GetAllBooks => _context.Books.ToList();
+```
+-- a new book service function to get a single book by id will look as below,
+```
+	public Book GetBookById(int bookId) => _context.Books.FirstOrDefault(n => n.Id == bookId);
+```
+-- the endpoint to get all books will look like below,
+```
+	[HttpGet("get-all-books")]
+	public IActionResult GetAllBooks() {
+		var allBooks = _booksService.GetAllBooks();
+		return Ok(allBooks);
+	}
+```
+-- the endpoint to get a single book by id will look as below,
+```
+	[HttpGet("get-book-by-id/{id}")]
+	public IActionReult GetBookById(int id)
+	{
+		var book = _bookService.GetBooksById(id);
+		return Ok(book);
+	}
+```
+-- the endpoints can be tested in swagger and postman
+
+// HttpPut
+-- a service function to update a book by id will look as below,
+```
+	public Book UpdateBookById(int bookId, BookVM book)
+	{
+		var _book = _context.Books.FirstOrDefault(n => n.Id == bookId);
+		if (_book != null)
+		{
+			_book.Title = book.Title,
+			_book.Description = book.Description,
+			_book.IsRead = book.IsRead,
+			_book.DateRead = book.IsRead ? book.DateRead.Value : null,
+			_book.Rate = book.IsRead ? book.Rate.Value : null,
+			_book.Genre = book.Genre,
+			_book.Author = book.Author,
+			_book.CoverUrl = book.CoverUrl
+		}
+	}
+```
+-- the endpoint for updating a book by id will look as below,
+```
+	[HttpPut("update-book-by-id/{id}")]
+	public IActionResult UpdateBookById(int id, [FromBody] BookVM book)
+	{
+		var updatedBook = _bookService.UpdateBookById(id, book);
+		return Ok(updatedBook);
+	}
+```
+
+// [HttpDelete]
+-- a book service function to delete a book will look like,
+	public void DeleteBookById(int bookId)
+	{ 
+		var _book = _context.books.FirstOrDefault(n => n.Id == bookId);
+		if (_book != null)
+		{
+			_context.Books.Remove(_book);
+			_context.SaveChanges();
+		}
+	}
+
+```
+-- the endpoint to delete a book will look as below,
+```
+	[HttpDelete("delete-book-by-id/{id}")]
+	public IActionResult DeleteBookById(int id)
+	{
+		_bookService.DeleteBookById(id);
+		return Ok();
+	}
+```
+
+// Types of Relationships between entities
+-- There are three types of relationships between entities (one to one, one to many, many to many)
+-- One to one,.i.e, a person can only have a single passport, and a unique passport can be assigned to a single person
+-- One to Many,.i.e, a book can be published by a single publisher but a publisher can publish any number of books
+-- Many to Many,.i.e, a book can be written by multiple authors, and an author can write multiple books
+
+// One to Many Relationships
+-- first, to add a publisher model
+-- then, to add a migration
+-- a Publisher model is created in Data/Models folder, and in it the content is as below,
+```
+namespace my_books.Data.Models
+{
+	public class Publisher
+	{
+		public int Id { get; set; }
+		public string Name { get; set; }
+		// Navigation Properities
+		public List<Book> Books { get; set; }
+	}
+}
+```
+-- the book model will now look as below,
+```
+// previous code
+		public DateTime DateAdded { get; set; }
+		// Navigation Properties
+		public int PublisherId { get; set; }
+		public Publisher Publisher { get; set; }
+	}
+}
+```
+-- Adding migration by below command,
+```
+Add-Migration PublisherAdded
+```
+
+// Many to Many Relationship
+-- First, to add author model
+-- secondly, to add Book_Author Model (Join Entity)
+-- thirdly, Navigation Properities
+-- fourth, add migration
+-- then, to update database
+-- the Author model will look as below,
+```
+namespace my_books.Data.Models
+{
+	public class Author
+	{
+		public int Id { get; set; }
+		public string FullName { get; set; }
+		
+		// Navigation Properties
+		public List<Book_Author> Book_Authors { get; set; }
+	}
+}
+```
+-- The book author model will look as below,
+```
+namespace my_books.Data.Models
+{
+	public class Book_Author
+	{
+		public int Id { get; set; }
+		public BookId { get; set; }
+		public Book Book { get; set; }
+		public int AuthorId { get; set; }
+		public Author Author { get; set; }
+	}
+}
+```
+-- a navigation property indicates the relationship to another entity or a collection of entities.
+-- the book model now will look as below,
+```
+// previous code
+		public Publisher Publisher { get; set; }
+		public List<Book_Author> Book_Authors { get; set; }
+	}
+}
+```
+-- the AppDbContext.cs will now look as below,
+```
+namespace my_books.Data
+{
+	public class AppDbContext: DbContext
+	{
+		public AppDbContext(DbContextOptions<AppDbContext> options): base(options)
+		{
+		
+		}
+
+		protected override void onModelCreating(ModelBuilder modelBuilder)
+		{
+			modelBuilder.Entity<Book_Author>()
+					.HasOne(b => b.Book)
+					.WithMany(ba => ba.Book_Authors)
+					.HasForeignKey(bi => bi.BookId);
+			modelBuilder.Entity<Book_Author>()
+					.HasOne(b => b.Author)
+					.WithMany(ba => ba.Book_Authors)
+					.HasForeignKey(bi => bi.AuthorId);
+		}
+		public DbSet<Book> Books { get; set; }
+		public DbSet<Author> Authors { get; set; }
+		public DbSet<Book_Author> Books_Authors { get; set; }
+	}
+}
+```
+
+// http status codes
+-- The status codes are divided into 5 categories (1xx, 2xx, 3xx, 4xx, 5xx)
+-- 1xx represents informational status codes (to communicate the transfer protocol level information)
+-- 2xx represents success status codes (to indicate that the clients request was accepted successfully)
+-- 3xx represents redirection status codes (to indicate that the client must take some additional action in order to complete the request)
+-- 4xx represents client error status codes (to indicate that the error was caused by the user)
+-- 5xx represents server error status codes (to indicate that the error was caused in the server)
+
+// 2xx success 
+-- 200 - ok - represents that the request has succeeded
+-- 201 - created - represents that a new resource has been created as a result
+-- 204 - no content - represents that there is no need to return a response body
+
+// 4xx client error
+-- 400 - bad request - represents that the request could not be understood by the server due to incorrect syntax
+-- 401 - unauthorized - represents that the request requires user authentication information
+-- 403 - forbidden - represents that the client does not have access rights to the content (identity here is known to the server)
+-- 404 - not found - represents that the server can't find the requested resource
+-- 409 - conflict - represents that the request could not be completed due to a conflict with the current state or the resource
+
+// 5xx server error
+-- 500 - internal server error - represents that the server countered an exception condition which prevented it from fulfilling the request
+
+// using http status codes in the api
+
+```
+return Created(nameof(AddBook), newPublisher);
+return Ok(response);
+return NotFound();
+
+// try, catch, finally
+-- an exception is a probelm that arises during the execution of a program
+-- the csharp exception handling is built upon four keywords (try, catch, finally, throw)
+-- try, statements causing exception are written in it
+-- catch, there can be more than one catch blocks, and each catch block handles the relevant exception occured and continues the execution of the programs
+-- finally, statements that should run regardless of whether there is an exception of not are writting in it
+-- an example code looks as below,
+```
+try {
+	// statements causing exceptions
+} catch (ExceptionName e1) {
+	// error handling code
+} catch (ExceptionName e2) {
+	// error handling code
+} catch (ExceptionName eN) {
+	// error handling code
+} finally {
+	// statements to be executed
+}
+-- in .net, we have two types of exceptions (system exceptions, applications exceptions)
+
+// system exceptions
+-- derive from System.SystemException
+-- Occur when non-recoverable or fatal erros are encountered (db crash, bound errors etc.)
+-- there is no way to handle or prevent these type of exceptions
+
+// application exceptions
+-- derive from System.ApplicationException
+-- Occur when recoverable errors are encountered ( wrong input type, arithmetic errors, etc.)
+-- these can be handled at the code level using try catch blocks
+
+// common .net exceptions
+
+-- nullreferenceexception
+-- indexoutofrangeexception
+-- ioexception
+-- stackoverflowexception
+-- outofmemoryexception
+-- invalidcastexception
+
+// A Simple demonstrations of using try, catch blocks in controllers and services
+```
+[HttpDelete("delete-publisher-by-id/{id}")]
+public IActionResult DeletePublisherById(int id)
+{
+	try 
+	{
+		int x1 = 1;
+		int x2 = 0;
+		int resut = x1 / x2;
+		_publishersService.DeletePublisherById(id);
+		return Ok();
+	}
+	catch (Exception ex)
+	{
+		return BadRequest(ex.Message);
+	}
+}
+
+[HttpPost("add-publisher")]
+public IActionResult AddBook([FromBody] PublisherVM publisher)
+{
+	try
+	{
+		var newPublisher = _publisherService.AddPublisher(publisher);
+		return Created(nameof(AddBook), newPublisher);
+	}
+	catch (Exception ex)
+	{
+		return BadRequest(ex.Message);
+	}
+}
+
+public void DeletePublisherById(int id)
+{
+	var _publisher = _context.Publishers.FirstOrDefault(n => n.Id == id);
+	if(_publisher != null)
+	{
+		_context.Publishers.Remove(_publisher);
+		_context.SaveChanges();
+	} else
+	{
+		throw new Exception($"The publisher with id {id} does not exist");
+	}
+}
+
+// Exceptions
+-- a custom exception looks as below,
+```
+using System;
+namespace my_books.Exceptions
+{
+	[Serializable]
+	public class PublisherNameException: Exception
+	{
+		public string PublisherName { get; set; }
+		public PublisherNameException()
+		{
+		
+		}
+		public PublisherNameException(string message): base(message)
+		{
+		}
+		public PublisherNameException(string message, Exception inner): base(message, inner)
+		{
+		}
+		public PUblisherNameException(string messge, string publisherName)
+		{
+			Publishername = publisherName;
+		}
+	}
+}
+```
+
+// Handling exceptions with .net built-in middleware
+-- The ErrorVM (view model) looks as below,
+```
+namespace my_books.Data.ViewModels
+{
+	public class ErrorVM
+	{
+		public int StatusCode { get; set; }
+		public string Message { get; set; }
+		public string Path { get; set; }
+		public override string ToString()
+		{
+			return JsonConvert.SerializeObject(this);
+		}
+	}
+}
+```
+-- exception middleware extensions exception will look like below,
+```
+namespace my_books.Exceptions
+{
+	public class ExceptionMiddlewareExtensions
+	{
+		public static void ConfigureBuiltInExceptionHandler(this IApplicationBuilder app)
+		{
+			app.useExceptionHandler(appError => {
+			{
+				appError.Run(async context => 
+				{
+					context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+					context.Response.ContentType = "application/json";
+					var contextFeature = context.Features.Get<IExceptionHandler>();
+					var contextRequest = context.Features.Get<IHttpRequestFeature>();
+					if (contextFeature != null)
+					{
+						await context.Response.WriteAsync(new ErrorVM()
+						{
+							StatusCode = context.Response.StatusCode,
+							Message = contextFeature.Error.Message,
+							Path = contextREquest.Path
+						}.ToString());
+					}
+				})
+			});
+		}
+	}
+}
+
+// custom global error handling
+-- a custom exception middleware will look like below,
+```
+namespace my_books.Exceptions
+{
+	public class CustomExceptionMiddleware
+	{
+		private readonly RequestDelegate _next;
+		public CustomExceptionMiddleware(RequestDelegate next)
+		{
+			_next = next;
+		}
+		public async Task InvokeAsync(HttpContext httpContext)
+		{
+			try
+			{
+				await _next(httpContext);
+			}
+			catch (Exception ex)
+			{
+				await HandleExceptionAsync(httpContext, ex);
+			}
+		}
+		private Task HandleExceptionAsync(HttpContext httpContext, Exception ex)
+		{
+			httpContext.Response.StatusCode = (int) HttpStatusCode.InternalSeverError;
+			httpContext.Response.ContentType = "application/json";
+			var response = new ErrorVM()
+			{
+				StatusCode = httpContext.Response.StatusCode,
+				Message = "Internal Server Error from the custom middleware",
+				Path = "path-goes-here"
+			};
+			return httpContext.Response.WriteAsync(response.ToString());
+		}
+	}
+}
+
+// controller action return types
+-- specific type - returns the data with no httpstatus code
+-- IActionResult - returns the data with HttpStatusCode
+-- ActionResult<T> - Implements IActionResult and extends the return type
+-- a controller endpoint with a specific reuturn type looks as below,
+```
+[HttpGet("get-publisher-by-id/{id}")]
+public Publisher GetPublisherById(int id)
+{
+	var _response = _publishersService.GetPublisherById(id);
+	if(_response != null)
+	{
+		return _response;
+	} else
+	{
+		return null;
+	}
+}
+```
+-- a controller endpoint with IActionResult looks as below,
+```
+[HttpGet("get-publisher-by-id/{id}")]
+public IActionResult GetPublisherById(int id)
+{
+	var _response = _publishersService.GetPublisherById(id);
+	if(_response != null)
+	{
+		return Ok(_response);
+	} else
+	{
+		return NotFound();
+	}
+}
+```
+-- a controller endpoint with IActionResult<T> looks as below,
+```
+[HttpGet("get-publisher-by-id/{id}")]
+public ActionResult<Publisher> GetPublisherById(int id)
+{
+	var _response = _publishersService.GetPublisherById(id);
+	if (_response != null)
+	{
+		return _response;
+	} else 
+	{
+		return NotFound();
+	}
+}
+-- a customer action result view model (for custom return type) looks like below,
+```
+using System;
+namespace my_books.Data.ViewModels
+{
+	public class CustomActionResultVM
+	{
+ 		public Exception Exception { get; set; }
+		public Publisher Publisher { get; set; }
+	}
+}
+```
+-- the custom return type of IActionResult looks like below,
+```
+using Microsoft.AspNetCore.Mvc;
+using my_books.Data.ViewModels;
+using System;
+using System.Threading.Tasks;
+namespace my_books.ActionResults
+{
+	public class CustomActionResult: IActionResult
+	{
+		private readonly CustomActionREsultVM _result;
+		public CustomActionResult(CustomActionResultVM result)
+		{
+			_result = result;
+		}
+		public Task ExcecuteResultAsync(ActionContext context)
+		{
+			var objectResult = new ObjectResult(_result.Exception ?? result.Publisher)
+			{
+				StatusCode = _result.Exception != null ? StatusCodes.Status500InternalServerError: StatusCodes.Status200OK
+			});
+			await objectResult.ExecuteResultAsync(context);
+		}
+	}
+}
+```
+
+// Sorting, Filtering, and Paging
+-- A service function with sorting looks as below,
+```
+public List<Publisher> GetAllPublishers(string sortBy)
+{
+	var allPublishers = _context.Publishers.OrderBy(n => n.Name).ToList();
+	if (!string.IsNullOrEmpty(sortBy))
+	{
+		switch(sortBy)
+		{
+			case "name_desc":
+				allPublishers = allPublishers.OrderByDescending(n => n.Name).ToList();
+				break;
+			default;
+				break;
+		}
+	}
+}
+```
+-- A service function with filtering looks as below,
+```
+public List<Publisher> GetAllPublishers(string srotBy, string searchString)
+{
+	var allPublishers = _context.Publishers.OrderBy(n => n.Name).ToList();
+	if (!string.IsNullOrEmpty(sortBy))
+	{
+		switch(sortBy)
+		{
+			case "name_desc":
+				allPublishers = allPublishers.OrderByDescending(n => n.Name).ToList();
+				breakk;
+			default:
+				break;
+		}
+	}
+	if (!string.IsNullOrEmpty(searchString))
+	{
+		allPublishers = allPublishers.Where(n => n.Name.Contains(searchString, StringComparision.CurrentCultureIgnoreCase)).ToList();
+	}
+	return allPublishers;
+}
+```
+-- a Paginated list generic class will look like below,
+```
+namespace my_books.Data.Paging
+{
+	public class PaginatedList<T>: List<T>
+	{
+		public int PageIndex { get; private set; }
+		public int TotalPages [ get; private set; }
+		public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
+		{
+			PageIndex = pageIndex;
+			TotalPages = (int) Math.Ceiling(count / (double) pageSize);
+			this.AddRange(items);
+		}
+		public bool HasPreviousPage
+		{
+			get
+			{
+				return PageIndex > 1
+			}
+		}
+		public bool HasNextPage
+		{
+			get
+			{
+				return PageIndex < TotalPages;
+			}
+		}
+		public static PaginatedList<T> Create(IQueryable<T> source, int pageIndex, int pageSize)
+		{
+			var count = source.Count();
+			var items = source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+			return new PaginatedList<T>(items, count, pageIndex, pageSize);
+	}
+}
+```
+
+-- a service function with paging looks as below,
+```
+public List<Publisher> GetAllPublishers(string srotBy, string searchString)
+{
+	var allPublishers = _context.Publishers.OrderBy(n => n.Name).ToList();
+	if (!string.IsNullOrEmpty(sortBy))
+	{
+		switch(sortBy)
+		{
+			case "name_desc":
+				allPublishers = allPublishers.OrderByDescending(n => n.Name).ToList();
+				breakk;
+			default:
+				break;
+		}
+	}
+	if (!string.IsNullOrEmpty(searchString))
+	{
+		allPublishers = allPublishers.Where(n => n.Name.Contains(searchString, StringComparision.CurrentCultureIgnoreCase)).ToList();
+	}
+	int pageSize = 5;
+	allPublishers = PaginatedList<Publisher>.Create(allPublishers.AsQueryable(), pageNumber ?? 1, pageSize);
+	return allPublishers;
+}
+```
+
+// web api versioning
+-- there are four types of web api versioning (query string, url path, http header, content/meadia type)
+-- When dealing with versioning, Controllers of different versions can be seperated using different folders for different versions in the Controllers folder
+-- There are some versioning libraries called Microsoft.AspNetCore.Mvc.Versioning
+-- The setup code for versioning in program.cs is as follows,
+```
+services.AddApiVersioning();
+```
+-- Query string based versioning in web API is when you define the version number using the api version keyword in the http request url like as below,
+```
+/api/test?api-version=1.0
+/api/test?api-version=2.0
+```
+-- Query string versioning in webapi can be done as follows,
+```
+namespace my_books.Controllers.v1
+{
+	[ApiVersion("1.0")]
+	[Route("api/controller]")]
+// further code
+}
+/api/test/get-test-data doesn't work as api-version is not provided
+/api/test/get-test-data?api-version=1.0 works fine
+```
+// the setup in program.cs for query string versioning is as below,
+```
+services.AddApiVersioning(config => 
+{
+	config.DefaultApiVersion = new ApiVersion(1, 0);
+	config.AssumeDefaultVersionWhenUnspecified = true;
+});
+// Now, by default, the new version is used for each http request when no version is specified
+```
+-- url path based versioning is when the version number is part of the url such as below,
+```
+/api/v1/test
+/api/v2/test
+```
+-- the url path vased versioning in controllers is as follows,
+namespace my_books.Controllers.v2
+{
+	[ApiVersion("2.0")]
+	[Route("api/v{version:apiVersion}/[controller]")]
+	[ApiController]
+	public class TestController: ControllerBase
+	// further code
+}
+// Now, /api/test/get-test-data doesn't work as version is not specified in the url
+// But /api/v1/test/get-test-data works fine
+```
+-- http header based versioning is when a custom parameter is specified in the http header while sending a request
+-- the config for http header based versioning in the program.cs is as follows,
+```
+services.AddApiVersioning(config => 
+{
+	config.DefaultApiVersion = new ApiVersion(1, 0);
+	config.AssumeDefaultVersionWhenUnspecified = true;
+	config.ApiVersionReader = new HeaderApiVersionReader("custom-version-header");
+});
+-- the setup for http header based versioning in the controllers is as follows,
+```
+namespace my_books.Controllers.v1
+{
+	[ApiVersion("1.0")]
+	[ApiVersion("1.2")]
+	[ApiVersion("1.9")]
+	[Route("api/[controller]")]
+	[ApiController]
+	public class TestController: ControllerBase
+	{
+		[HttpGet("get-test-data"), MapToApiVersion("1")]
+		public IActionResult GetV1()
+		{
+			return Ok("This is TestController V1");
+		}
+		[HttpGet("get-test-data"), MapToApiVersion("1.2")]
+		public IActionResult GetV12()
+		{
+			return Ok("This is TestController V12");
+		}
+		[HttpGet("get-test-data"), MapToApiVersion("1.9")]
+		public IActionResult GetV19()
+		{
+			return Ok("This is TestController V19");
+		}
+	}
+}
+```
+-- the config for http media type-based versioning in program.cs is as follows,
+```
+services.AddApiVersioning(config =>
+{
+	config.DefaultApiVersion = new ApiVersion(1, 0);
+	config.AssumeDefaultVersionWhenUnspecified = true;
+	config.ApiVersionReader = new MediaTypeApiVersionReader();
+});
+// while sending a http request, in the accept header, in the content-type, the version number should be specified by v=xxx
+```
+
+// web api logging with serilog
+-- a log is just a record of information
+-- logging is the process of storing logs
+-- to add logging in asp.net web api, Microsoft.Extensions.Logging package is used widely. It has Logging API.
+-- The Logging API does not work as a standalone. There are some logging providers
+-- In .net core, there are two types of loggin providers (built-in logging providers, third-party logging providers)
+-- Some of the Built-in logging providers are Console, Debug, EventSource, EventLog, ApplicationInsights, AzureAppServicesFile, AzureAppServicesBlob
+-- Some of the Thrid-party logging providers are Serilog, Log4Net, Nlog, Stackdriver, etc
+-- To use a a third party framework or a logging provider is similar to using one of the built-in providers
+-- The process is to add a nuget package to the project and call on ILoggerFactory or ILoggin builder extension method provided by the logging framework
+
+// Serilog Concepts
+-- LogLevel - indicates the importance or the severity of a log message
+-- Sinks - a destination where logs are stored
+-- The available log levels in serilog are the trace(0), the debug(1), the information(2), the warning(3), the error(4), the critical(5) and the none(6)
+-- Some of the sinks are Console, File, MSSqlServer, MongoDB, AmazonS3, AzureBlobStorage
+-- To setup Serilog in .net web api project, the packaged Serilog.AspNetCore package needs to be installed
+-- Serilog.Sinks.File package needs to be installed if the logs need to be stored in file
+-- Serilog.Sinks.MSSqlServer package needs to be installed if the logs need to be stored in an sql server
+-- Setting up the logging in program.cs is as below,
+```
+namespace my_books
+{
+	public class Program
+	{
+		public static void Main(string[] args)
+		{
+			try
+			{
+				Log.Loger = new LoggerConfiguration().CreateLogger();
+				CreateHostBuilder(args).Build().Run();
+			}
+			finally
+			{
+				Log.CloseAndFlush();
+			}
+		}
+		public static IHostBuilder CreateHostBuilder(string[] args) => 
+			Host.CreateDefaultBuilder(args).UserSerilog().ConfigureWebHostDefaults(webBuilder => 
+			{
+				webBuilder.UseStartup<Startup>();
+			});
+	}
+}
+```
+-- To write to a file the changes are as follows,
+```
+// previous code
+Log.Logger = new LoggerConfiguration().WriteTo.File("Logs/log.txt").CreateLogger();
+// further code
+```
+-- Using the logger in the controllers is as below,
+```
+[HttpGet("get-all-publishers")]
+public IActionResult GetAllPublishers(string sortBy, string searchString, int pageNumber)
+{
+	try
+	{
+		_logger.LogInformation("This is just a log in");
+		var _result = _publishersService.GetAllPublishers(sortBy, searchString, pageNumber);
+		return Ok(_result);
+	}
+	catch (Exception)
+	{
+		return BadRequest("Sorry, we could not load the publishers");
+	}
+}
+// Now there will be a logs.txt file in the logs folder located in the project's root directory
+```
+-- To create a separate log file for each time interval, the config changes are as follows,
+```
+public static void Main(string[] args)
+{
+	try
+	{
+		Log.Logger = new LoggerConfiguration().WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day).CreateLogger();
+		CreateHostBuilder(args).Build().Run();
+	}
+	finally
+	{
+		Log.CloseAndFlush();
+	}
+// further code
+```
+-- the same can be acheived by modifying the appsettings.json as follows,
+```
+{
+	"Serilog": {
+		"MinimumLevel" {
+			"Default": "Information",
+			"Override": {
+				"System": "Error",
+				"Microsoft": "Error"
+			}
+		},
+		"WriteTo": [
+			{
+				"Name": "File",
+				"Args": {
+					"path": "Logs/log.txt",
+					"rollingInterval": "Day",
+					"outputTemplate": "{Timestamp} [{level}] - Message: {Message}{NewLine}{Exception}"
+				}
+			}
+		]
+	},
+	"AllowedHost": "*",
+	// further code
+}
+```
+-- After modifying the appsettings, the program.cs code will look like below,
+```
+	try {
+		var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+		Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger();
+	// further code
+```
+-- The table log for putting logs in sql server is as below,
+```
+using System;
+namespace my_books.Data.Models
+{
+	public class Log
+	{
+		public int Id { get; set; }
+		public string Message { get; set; }
+		public string MessageTemplate { get; set; }
+		public string Level { get; set; }
+		public DateTime TimeStamp { get; set; }
+		public string Exception { get; set; }
+		public string Properties { get; set; }
+		public string LogEvent { get; set; }
+	}
+}
+```
+-- the AppDbContext now will look as below,
+```
+// previous code
+		public DbSet<Log> { get; set; }
+	}
+}
+// previous code
+		modelBuilder.Entity<Log>().HasKey(n => n.Id);
+// further code
+```
+-- To put logs into sqlserver, the appsettings.json now will be as,
+```
+		"WriteTo": [
+		// previous code
+			{
+				"Name": "MSSQLServer",
+				"Args": {
+					"connectionString": "Data Source=ETR\\sqlserver;Initial Catalog=my-books-db;Integrated Security=True;Pooling=False",
+					"tableName": "Logs"
+				}
+			}
+// further code
+```
+-- the code now in Startup.cs will now be,
+```
+public void Configure(IApplicatoinBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+{
+	if (env.IsDevelopment())
+	{
+		app.UseDeveloperExceptionPage();
+		app.UseSwagger();
+		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "my_books v1"));
+		
+		app.UseHttpsRedirection();
+		app.UseRouting();
+		app.UseAuthorization();
+		app.ConfigureBuildInExceptionHandler(loggerFactory);
+		app.UseEndpoints(endpoints =>
+		{
+			endpoints.MapControllers();
+		});
+// further code
+```
+-- The code in ExceptionMiddlewareExtension.cs will now be as below,
+```
+public static class ExceptionMiddlewareExtensions
+{
+	public static void ConfigureBuildInExceptionHandler(this IApplicationBuilder app, ILoggerFactory loggerFactory)
+	{
+		app.UseExceptionHandler(appError =>
+		{
+			appError.Run(async context =>
+			{	
+				var logger = loggerFactory.CreateLogger("ConfigureBuildInExceptionHandler");
+				context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+				context.Response.ContentType = "application/json";
+				var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+				var contextRequest = context.Features.Get<IHttpRequestFeature>();
+				if (contextFeature != null)
+				{
+					var errorVMString = new ErrorV()
+					{
+						StatusCode = context.Response.StatusCode,
+						Message = context.Response.Error.Message,
+						Path = contextRequest.Path
+					}.ToString();
+					logger.LogError(errorVMString);
+					await context.Response.WriteAsync(errorVMString);
+				}
+// further code
+// the errors will now be logged
+```
+-- The logs service will be like below,
+```
+using my_books.Data.Models;
+usign System.Collections.Generic;
+using System.Linq;
+namespace my_books.Data.Services
+{
+	public class LogsService
+	{
+		private AppDbContext _context;
+		public LogsService(AppDbContext context)
+		{
+			_context = context;
+		}
+		public List<Log> GetAllLogsFromDB() => _context.Logs.ToList();
+	}
+}
+-- Adding logsservice as a transient scope service as below,
+```
+services.AddTransient<LogsService>()l
+```
+-- The logs controller will look like below,
+```
+namespace my_books.Controllers
+{
+	[Route("api/[controller]")]
+	[ApiController]
+	public class LogsController: ControllerBase
+	{
+		private LogsService _logsService;
+		public LogsController(LogsService logsService)
+		{
+			_logsService = logsService;
+		}
+		[HttpGet("get-all-logs-from-db")]
+		public IActionResult GetAllLogsFromDB()
+		{
+
+			try
+			{
+				var allLogs = _logsService.GetAllLogsFromDB();
+				return Ok(allLogs);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+```
+
+
+// Unit Testing Web APIs using NUnit
+-- A testing technique used to determine if a code unit works as expected.
+-- A code unit can be a function, method or a property, etc. Basically, it is a smallest piece of code that can be logically isolated in the system.
+-- Different types of testing levels are unit testing, integration testing, system testing)
+-- Unit testing - tests a single unit of code
+-- Integration testing - tests multiple units together
+-- System testing - tests all components together as a whole
+-- Acceptance testing - testing the app complies with the end user
+-- Some of the top unit testing frameworks are NUnit, XUnit.Net, MSTest
+-- NUnit - An open source unit testing framework and it was ported from the J unit (nunit.org)
+-- XUnit.Net - an open-source and .net based framework, and X stands for programming language (xunit.com)
+-- MSTest ( Microsoft Test Framework) - this is the default test framework which is shipped with Visual Studio (docs.microsoft.com)
+-- To use NUnit, in the solution explorer add a new NUnit Test Project (.Net Core) and give it a name such as project-name-tests
+-- To do testing, an inmemory database is needed, so the packaged Microsoft.EntityFrameworkCore.InMemory is necessary (can be installed usign NuGet package manager)
+-- A unit testing file for testing publisher service would looks like below (PublishersServiceTest.cs),
+```
+using NUnit.Framework;
+using System.Collections.Generic; // for using Lists
+using System; // for DateTime
+namespace my_books_tests
+{
+	public class PublishersServiceTest
+	{
+		private static DbContextOptions<AppDbContext> = new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(databaseName: "BookDbTest").Options;
+		AppDbCotnext context;
+		
+		[Setup] // setups everytime the test is run
+		[OneTimeSetup] // setups one time and uses the same for all the tests
+		public void Setup()
+		{
+			context = new AppDbContext(dbContextOptions);
+			context.Database.EnsureCreated();
+			SeedDatabase();
+		}
+		
+		[OneTimeTearDown]
+		public void CleanUp()
+		{
+			context.Database.EnsureDeleted();
+		}
+		
+		private void SeedDatabase()
+		{
+			var book_authors = new List<Book_Author>()
+			{
+				new Book_Author()
+				{
+					Id = 1,
+					BookId = 1,
+					AuthorId = 1
+				},
+				new Book_Author()
+				{
+					Id = 2,
+					BookId = 1,
+					AuthorId = 2
+				},
+				new Book_Author()
+				{
+					Id = 3,
+					BookId = 2,
+					AuthorId = 2
+				},
+			};
+			context.Books_Authors.AddRange(books_authors);
+			context.SaveChanges();
+		}
+	}
+}
+```
+-- Now, the add a test to the publisherservicetest for getallpublishers looks as below,
+```
+namespace my-books-tests
+{
+	public class PublishersServiceTest
+	{
+		// previous code
+		PublishersService publishersService;
+
+		[OneTimeSetup]
+		public void Setup()
+		{
+			context = new AppDbContext(dbContextOptions);
+			context.DAtabase.EnsureCreated();
+			SeedDatabase();
+			publishersService = new PublishersService(context);
+		}
+
+		
+		[Test]
+		public void GetAllPublishers_WithNoSortBy_WithNoSearchString_WithNoPageNumber()
+		{
+			var result = publishersService.GetAllPublishers("", "", null);
+			Assert.That(result.Count, Is.EqualTo(3)); (// http://dotnethow.net/nunit-testing-framework/)
+			Assert.AreEqual(result.Count, 3)
+		}
+		
+		// previous code
+}
+```
+-- Adding another new test for publishersServiceTest as below,
+```
+namespace my_books_tests
+{
+	public class PublishersServiceTest 
+	{
+		// previous code
+		
+		[Test, Order(1)]
+		public void GetAllPublishers_WithNoSortyBy_WithNoSearchString_WithNoPageNumber()
+		{
+			var result = publishersService.GetAllPublishers("", "", null);
+			Assert.That(result.Count, Is.EqualTo(5));
+		}
+
+		[Test, Order(2)]
+		public void GetAllPublishers_WithNoSortBy_WithNoSearchString_WithPageNumber()
+		{
+			var result = publisherService.GetAllPublishers("", "", 2);
+			Assert.That(result.Count, Is.EqualTo(1));
+			Assert.That(result.FirstOrDefault().Name, Is.EqualTo("Publisher 3"));
+		}
+
+		[Test, Order(3)]
+		public void GetAllPublishers_WithNoSortBy_WithSearchString_WithNoPageNumber()
+		{
+			var result = publisherService.GetAllPublishers("", "3", null);
+			Assert.That(result.Count, Is.EqualTo(1));
+			Assert.That(result.FirstOrDefault().Name, Is.EqualTo("Publisher 3"));
+		}
+		
+		[Test, Order(4)]
+		public void GetAllPublishers_WithSortBy_WithNoSearchString_WithNoPageNumber()
+		{
+			var result = publisherService.GetAllPublishers("name_desc", "", null);
+			Assert.That(result.Count, Is.EqualTo(5));
+			Assert.That(result.FirstOrDefault().Name, Is.EqualTo("Publisher 6"));
+		}
+		
+		[Test, Order(5)]
+		public void GetPublisherById_WithResponse_Test()
+		{
+			var result = publishersService.GetPublisherById(1);
+			Assert.Tat(result.Id, Is.EqualTo(1));
+			Assert.That(result.Name, Is.EqualTo("Publisher 1");
+		}
+		
+		[Test, Order(6)]
+		public void GetPublisherById_WithoutResponse_Test()
+		{
+			var result = publishersService.GetPublisherById(9);
+			Assert.That(result.Name, Is.Null);
+		}
+
+		private void SeedDatabase()
+		{
+			var publishers = new List<Publisher>
+			{
+				new Publisher() {
+					Id = 1, 
+					Name = "Publisher 1"
+				},
+				new Publisher() {
+					Id = 2, 
+					Name = "Publisher 2"
+				},
+				new Publisher() {
+					Id = 3, 
+					Name = "Publisher 3"
+				},
+				new Publisher() {
+					Id = 4, 
+					Name = "Publisher 4"
+				},
+				new Publisher() {
+					Id = 5, 
+					Name = "Publisher 5"
+				},
+				new Publisher() {
+					Id = 6, 
+					Name = "Publisher 6"
+				}
+			};
+	}
+}
+```
+-- Testing Addpublisher service function is as below,
+```
+namespace my_books_tests
+{
+	public class PublishersServiceTests
+	{
+		// previous code
+		
+		[Test, Order(7)]
+		public void AddPublisher_WithException_Test()
+		{
+			var newPublisher = new PublisherVM()
+			{
+				Name = "123 With Exception"
+			};
+			Assert.That(() => publishersService.AddPublisher(newPublisher), 
+				Throws.Exception.TypeOf<PublisherNameException>().With.Message.EqualTo("Name starts with number"));
+		}
+
+		[Test, Order(8)]
+		public void AddPublisher_WithoutException_Test()
+		{
+			var newPublisher = new PublisherVM()
+			{
+				Name = "Without Exception"
+			};
+			var result = publishersService.AddPublisher(newPublisher);
+			Assert.That(result, Is.Not.Null);
+			Assert.That(result.Name, Does.StartWith("Without"));
+			Assert.That(result.Id, Is.Not.Null);
+		}
+		
+		[OneTimeTearDown]
+		public void CleanUp()
+		{
+			context.Database.EnsureDeleted();
+		}	
+	}
+}
+-- A Test Class for Publisher Controller will look as below (PublishersControllerTests.cs),
+```
+usign Microsoft.EntityFrameworkCore;
+using my_books.Data;
+
+namespace my_books_tests
+{
+	public class PublishersControllerTests
+	{
+		private static DbContextOptions<AppDbContext> dbContextOptions = new DbContextOptionsBuilder<AppDbContext>()
+				.UseInMemoryDatabase(databaseName: "bookDbControllerTest")
+				.Options;
+		AppDbContext context;
+		PublishersService publishersService;
+		PublishersController publishersController;
+	
+		[OneTimeSetup]	
+		public void Setup()
+		{
+			context = new AppDbContext(dbContextOptions);
+			context.Database.EnsureCreated();
+			SeedDatabase();
+			publishersService = new PublishersService(context);
+			publishersController = new PublishersController(publishersService, new NullLogger<PublishersController>());
+		}
+		
+		[OneTimeTearDown]
+		public void CleanUp()
+		{
+			context.Database.EnsureDeleted();
+		}
+		
+		private void SeedDatabase() {
+			// Seeding the database goes here
+		}
+		
+		[Test, Order(1)]
+		public void HTTPGET_GetAllPublishers_WithSortBy_WithNoSearchString_WithNoPagenumber__ReturnOk_Test
+		{
+			IActionResult actionResult = publishersController.GetAllPublishers("name_desc", "Publisher", 1);
+			Assert.That(actionResult, Is.TypeOf<OkObjectResult>());
+			var actionResultData = (actionResult as OkObjectResult).Value as List<Publisher>;
+
+			Assert.That(actionResultData.First().Name, Is.EqualTo("Publisher 6"));
+			Assert.That(actionResultData.First().Id, Is.EqualTo(6));
+			Assert.That(actionResultData.Count, Is.EqualTo(5));
+
+			IActionResult actionResultSecondPage = publishersController.GetAllPublishers("name_desc", "Publisher", 2);
+
+			Assert.That(actionResult, Is.TypeOf<OkObjectResult>());
+			
+			var actionResultDataSecondPage = (actionResult as OkObjectResult).Value as List<Publisher>;
+		
+			Assert.That(actionResultDataSecondPage.First().Name, Is.EqualTo("Publisher 1"));
+			Assert.That(actionResultDataSecondPage.First().Id, Is.EqualTo(1));
+			Assert.That(actionResultDataSecondPage.Count, Is.EqualTo(1));
+		}
+		
+		public void HTTPPOST_AddPublisher_ReturnsCreated_Test()
+		{
+			var newPublisherVM = new PublisherVM();
+			IActionResult actionResult = publisherController.AddPublisher(newPublisherVM);
+			Assert.That(actionResult, Is.TypeOf<CreatedResult>());
+		}
+
+		[Test, Order(5)]
+		public void HTTPPOST_AddPublisher_ReturnsBadRequest_Test()
+		{
+			var newPublisherVM = new PublisherVM()
+			{
+				Name = "123 New Publisher"
+			};
+			IActionResult actionResult = publishersController.AddPublisher(newPublisherVM);
+			Assert.That(actionResult, Is.TypeOf<BadRequest>());
+		}
+	
+	}
+}
+```
+
+// Securing Web APIs
+-- Authentication, process of validating the identity of a registered user
+-- Authorization, process of validating if the authenticated user has permission to access a service or application.
+-- There are two types of authentication (traditional and token)
+-- Traditional Authentication, is also known as cookie based authentication or even a server based authentication because a session is securely created by the server and stored in the server's memory
+-- In traditional authentication, the user sends username and password, the server check if these credentials exist in the database, and if they exist, a session is securely created by the server and stored in the server's memory. Then the server will send back a session which gets stored in the user's browser. If the users wants to get some data, along with the request, the cookie with the session id is placed in the request, which then gets verified by the server and the data is returned and the data is returned in a http 200 response.
+-- In token based authentication, the user sendss username and password, the server check if these credentials exist in the database, and if they exist, it sends the user a token and a referesh token which are two random and encoding strings which store user related information. Token is generated using a secret key on the server, and that is the only data that we store in the server. So, the token and the refresh token do not get stored in cookie, but in the browser's memory. if the user wants to get some data from the endpoint, in the request the Authorization header is added, where the bearer and the token value is put. Then, the server check if the token is valid, and if the token is valid, it returns the data.
+-- In comparision to the cookie based authentication, the expiry time of the cookie based authentication is higher than in the token based authentication.
+-- The expiration time in the tokens is typically 5-10 minutes. So, after the token has expired, the refresh token is needed to generate a new token which is used to request the data.
+
+// Token-Based Authentication is better than traditional authentication (cookie-based)
+-- In the session based authentication because these sessions are stored in the server's memory, scaling becomes an issue when there is a huge number of users using this system
+-- In token based authentication, the previous issue doesn't not exist as the tokens are stored in the client's side.
+-- In the token based authentication, it supports multiple devices. In the cookie based authentication, the cookies normally work on a single domain or subdomains, and they are normally disabled by browser if their work cross domain
+-- The drawback in the token based authentication,.i.e, the token is much bigger compared with the session id stored in a cookie because the tokens contain more user information
+
+// JSon Web Token (JWT)
+-- An open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object.
+-- JWT Structure is as belows,
+```
+{HEADER                               } {PAYLOAD                   } {SIGNATURE               }
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.yyyyyyyyyyyyyyyyyyyyyyyyyyyy.zzzzzzzzzzzzzzzzzzzzzzzzzz
+```
+-- The header has generall two parts, the type of the token, which is JWT and the signing algorithm such as below,
+```
+{
+	"alg": "HS256",
+	"typ": "JWT"
+}
+```
+-- This json object is base64 url encoded to form the first part of the JWT.
+-- The second part of the token is the payload, which contains the claims and claims are just statements about an entity which typically is a user and additional data.
+-- There are three types of claims (registered, public, private), an example is shown as below,
+```
+{
+	"sub": "1234567890",
+	"name": "John Doe",
+	"admin": true
+}
+```
+-- This json object is base64 url encoded to form the second part of the JWT
+-- To create the signature part, the encoded header, encoded payload, the secret, and the algorithm to sign are used, as below,
+```
+HMACSHA256(
+	base64UrlEncode(header) + "." + base64UrlEncode(payload), 
+	secret
+)
+```
+-- For more info, (https://jwt.io/)
+-- To first step to add authentication is to add identity tables or using identity framework
+-- the identity model (ApplicationUser) will look as below,
+```
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity
+
+namespace my_books.Data.Models 
+{
+	public class ApplicationUser: IdentityUser
+	{
+		public string Custom { get; set; }
+	}
+}
+-- To work with Identity, Microsoft.AspNetCore.Identity.EntityFrameworkCore package is needed 
+-- AppDbContext after usign Identity looks as below,
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using my_books.Data.Models;
+
+namespace my_books.Data
+{
+	public class AppDbContext: IdentityDbContext<ApplicationUser>
+	{
+		public AppDbContext(DbContextOptions<AppDbContext> options): base(options)
+		{
+		}
+		protected override void onModelCreating(ModelBuilder modelBuilder)
+		{
+			modelBuilder.Entity<Book_Author>()
+				.HasOne(b => b.Book)
+				.WithMany(ba => ba.Book_Authors)
+				.HasForeignKey(bi => bi.BookId);
+			modelBuilder.Entity<Book_Author>()
+				.HasOne(b => b.Author)
+				.WithMany(ba => ba.Book_Authors)
+				.HasForeignKey(bi => bi.AuthorId);
+			modelBuilder.Entity<Log>().HasKey(n => n.Id);
+			
+			base.OnModelCreating(modelBuilder);
+
+		//previous code
+```
+-- Configuring JWT in appsettings looks as below,
+```
+	"JWT": {
+		"ValidAudience": "User",
+		"ValidIssuer": "https://localhost:44382/",
+		"Secret": "this-is-just-a-secret-key-here"
+	}
+```
+-- Configuring Identity in Program.cs
+```
+services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+	options.SaveToken = true;
+	options.RequireHttpsMetadata = false;
+	options.TokenValidationParameters = new TokenValidationParameters()
+	{
+		ValidateIssuerSigningKey = true,
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JWT:Secret"])),
+		ValidateIssuer = true,
+		ValidIssuer = Configuration["JWT:Issuer"],
+		ValidateAudience = true,
+		ValidAudience = Configuration["JWT:Audience"]
+	{
+});
+```
+-- The RegisterVM will look as below,
+```
+namespace my_books.Data.ViewModels.Authentication
+{
+	public class RegisterVM
+	{
+		[Required(ErrorMessage = "Username is required")]
+		public string UserName { get; set; }
+		[Required(ErrorMessage = "Email is required")]
+		public string Email { get; set; }
+		[Required(ErrorMessage = "Password is required")]
+		public string Password { get; set; }
+	}
+}
+
+-- Setting up an authentication Controller is as follows,
+```
+using Microsoft.AspNetCore.Identityt;
+usign Microsoft.AspNetCore.Mvc;
+using my_books.Data.Models;
+
+namespace my_books.Controllers
+{
+	[Route("api/[controller]")]
+	[ApiController]
+	public class AUthenticationController: ControllerBase
+	{
+		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly RoleManager<IdentityRole> _roleManager;
+		private readonly AppDbContext _context;
+		private readonly IConfiguration _configuration;
+		public AuthenticationController(UserManager<ApplicationUser> userManager,
+				RoleManager<IdentityRole> roleManager, AppDbContext context, Iconfiguration configuration)
+		{
+			_userManager = userManager; _roleManager = roleManager; _context = context; _configuration = configuration;
+		}
+		
+		[HttpPost("register-user")]
+		public async Task<IActionResult> Register([FromBody] RegisterVM payload)
+		{
+			var userExists = await _userManager.FindByEmailAsync(payload.Email);
+			if (userExists != null)
+			{
+				return BadRequest($"User {payload.Email} already exists");
+			}
+			ApplicationUser newUser = new ApplicationUser()
+			{
+				Email = payload.Email,
+				UserName = payload.UserName,
+				SecurityStamp = Guid.NewGuid().ToString()
+			};
+			var result = await _userManager.CreateAsync(newUser, payload.Password);
+			if (!result.Succeeded)
+			{
+				return BadRequest("User could not be created");
+			}
+			return Created(nameof(Register), $"User {payload.Email} successfully created");
+		}
+	}
+}
+```
+-- The refresh token class looks like below,
+```
+namespace my_books.Data.Models
+{
+	public class RefereshToken
+	{
+		public int Id { get; set; }
+		public string UserId { get; set; }
+		public string Token { get; set; }
+		public string JwtId { get; set; }
+		public bool IsRevoked { get; set; }
+		public DateTime DateAdded { get; set; }
+		public DateTime DateExpre { get; set; }
+		[ForeignKey(nameof(UserId))]
+		public ApplicationUser User { get; set; }
+	}
+}
+```
+-- Now, the AppDbContext.cs will look like,
+```
+// previous code
+		public DbSet<RefreshToken> RefreshTokens { get; set; }
+// further code
+```
+-- The AuthResultVM (view mode) is as follows,
+```
+using System;
+namespace my_books.Data.ViewModels.Authentication
+{
+	public class AuthResultVM
+	{
+		public string Token { get; set; }
+		public string RefreshToken { get; set; }
+		public DateTime ExpiresAt { get; set; }
+	}
+}
+```
+-- the login view model will look as below,
+```
+usign System.ComponentModel.DataAnnotations;
+
+namespace my_books.Data.ViewModels.Authentication
+{
+	public class LoginVM
+	{
+		[Required(ErrorMessage = "Email is required")]
+		public string Email { get; set; }
+		[Required(ErrorMessage = "Password is required")]
+		public string Password { get; set; }
+	}
+}
+```
+-- Now, the AuthenticationController will look like,
+```
+// previous code
+		[HttpPost("login-user")]
+		public async Task<IActionResult> Login([FromBody] LoginVM payload)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest("Please, provide all required fields");
+			}
+			var user = await _userManager.FindByNameAsync(payload.Email);
+			if (user != null && await _userManager.CheckPasswordAsync(user, payload.Password))
+			{
+				var tokenValue = await GenerateJwtToken(user, "");
+				return Ok(tokenValue);
+			}
+		}
+		
+		private async Task<AuthResultVM> GenerateJwtToken(ApplicationUser user)
+		{
+			var authClaims = new List<Claim>()
+			{
+				new Claim(ClaimTypes.Name, user.UserName),
+				new Claim(ClaimTypes.NameIdentifier, user.Id),
+				new Claim(ClaimTypes.JwtRegisteredClaims.Email, user.Email),
+				new Claim(JwtRegisteredClaims.Sub, user.Email),
+				new Claim(JwtRegisteredClaims.Jti, Guid.NewGuid().ToString())
+			};
+
+			var authSigninKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JWT:Secret"]))
+			var token = new JwtSecurityToken(
+				issuer: _configuration["JWT:Issuer"],
+				audience: _configuration["JWt:Audience"],
+				expires: DateTime.UtcNow.AddMinutes(1),
+				claims: authClaims,
+				signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256);
+			var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+			var refreshToken = new RefreshToken()
+			{
+				JwtId = token.id,
+				IsRevoked = false,
+				UserId = user.Id,
+				DateAdded = DateTime.UtcNow,
+				DateExpire = DateTime.UtcNow.AddMonths(6),
+				Token = Guid.NewGuid().ToString() + "-" + Guid.NewGuid().ToStrign()
+			};
+			await _context.RefreshTokens.AddAsync(refreshToken);
+			await _context.SaveChangesAsync();
+			var response = new AuthResultVM()
+			{
+				Token = jwtToken,
+				RefreshToken = refreshToken.Token,
+				ExpiresAt = token.ValidTo
+			};
+			return response;
+		}
+	}
+}
+```
+-- The endpoints can be protected by authorization as follows,
+```
+namespace my_books.Controllers
+{
+	[Route("api/[controller]")]
+	[ApiController]
+	[Authorize]
+	// previous code
+}
+```
+-- A small change in configuration in program.cs for authorization and authentication to work is as follows,
+```
+app.UseAuthentication();
+app.UseAuthorization();
+```
+-- the token request view model will look as below,
+```
+namespace my_books.Data.ViewModels.Authentication
+{
+	public class TokenRequestVM
+	{
+		public string Token { get; set; }
+		public string RefreshToken { get; set; }
+	}
+}
+```
+-- refresh token endpoinit in authentication controller looks like below,
+```
+		private readoly TokenValidationParameters _tokenValidationParameters;
+		// constructor 
+		{
+			// previous assignments
+			_tokenValidationParameters = tokenValidationParameters;
+		}
+// previous code
+		[HttpPost("refres-token")]
+		public async Task<IActionResult> RefreshToken([FromBody] TokenRequestVM payload)
+		{
+			try {
+				var result = await VerifyAndGenerateTokenAsync(payload);
+				if (result == null) return BadRequest("Invalid tokens");
+				return Ok(result);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
+		private async Task<AuthResultVM> VerifyAndGenerateTokenAsync(TokenRequestVM payload)
+		{
+			var jwtTokenHandler = new JwtSecurityTokenHandler();
+			var tokenInVerification = jwtTokenHandler.ValidateToken(payload.Token, _tokenValidationParameters, out var validatedToken);
+			if (validatedToken is JwtSecurityToken jwtSecurityToken)
+			{
+				var result = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.Hmac256, StringComparision.InvariantCultureIgnoreCase);
+				if (result == false) return null;
+			}
+			var utcExpiryDate = long.Parse(tokenInVerification.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
+			var expiryDate = UnixTimeStampToDateTimeInUTC(utcExpiryDate);
+			if (expiryDate > DateTime.UtcNow) throw new Exception("Token has not expired yet!");
+			var dbRefreshToken = await _context.RefreshTokens.FirstOrDefaultAsync(n => n.Token == payload.RefreshToken);
+			if (dbRefreshToken == null) throw new Exception("Refresh token does not exists in our DB");
+			else {
+				var jti = tokenVerification.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
+				if (dbRefreshToken.JwtId != jti) throw new Exception("Token does not match");	
+				if (dbRefreshToken.DateExpire <= DateTime.UtcNow) throw new Exception("Your refresh token has expired, please re-authenticate!");
+				if (dbRefreshToken.IsRevoked) throw new Exception("Refresh token is revoked");
+				var dbUserData = await _usermanager.FindByIdAsync(dbRefreshToken.UserId);
+				var newTokenResponse = GenerateJwtTokenAsync(dbUserData, payload.RefreshToken);
+				return await newTokenResponse;
+			}
+
+		}
+		private DateTime UnixTimeStampToDateTimeInUTC(long unixTimeStamp)
+		{
+			var dateTimeVal = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+			dateTimeVal = dateTimeVal.AddSeconds(unixTimeStamp);
+			return dateTimeVal;
+		}
+		private async Task<AuthResultVM> GenerateJwtToken(ApplicationUser user, string existingRefreshToken)
+		{
+			var authClaims = new List<Claim>()
+			{
+				new Claim(ClaimTypes.Name, user.UserName),
+				new Claim(ClaimTypes.NameIdentifier, user.Id),
+				new Claim(ClaimTypes.JwtRegisteredClaims.Email, user.Email),
+				new Claim(JwtRegisteredClaims.Sub, user.Email),
+				new Claim(JwtRegisteredClaims.Jti, Guid.NewGuid().ToString())
+			};
+
+			var authSigninKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JWT:Secret"]))
+			var token = new JwtSecurityToken(
+				issuer: _configuration["JWT:Issuer"],
+				audience: _configuration["JWt:Audience"],
+				expires: DateTime.UtcNow.AddMinutes(1),
+				claims: authClaims,
+				signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256);
+			var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+			var refreshToken = new RefreshToken();
+			if (string.IsNullOrEmpty(existingRefreshToken))
+			{
+				refreshToken = new RefreshToken()
+				{
+					JwtId = token.id,
+					IsRevoked = false,
+					UserId = user.Id,
+					DateAdded = DateTime.UtcNow,
+					DateExpire = DateTime.UtcNow.AddMonths(6),
+					Token = Guid.NewGuid().ToString() + "-" + Guid.NewGuid().ToStrign()
+				};
+				await _context.RefreshTokens.AddAsync(refreshToken);
+				await _context.SaveChangesAsync();
+			}
+
+			var response = new AuthResultVM()
+			{
+				Token = jwtToken,
+				RefreshToken =(string.IsNullOrEmpty(existingRefreshToken)) ? refreshToken.Token ,
+				ExpiresAt = token.ValidTo
+			};
+			return response;
+		}

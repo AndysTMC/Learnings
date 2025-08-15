@@ -1,0 +1,842 @@
+*****Angular
+-- Angular is a typescript-based, single page web application framework developed and maintained by google
+-- TypeScript is used to develop Angular applications
+-- Both Uni-directional and Two-way data binding are possible (unidirectional by default and two-way explicitly)
+-- Has lazy loading, Ahead-of-Time compilation (executes code even before execution, unlike compiling while execution in the case of Just-In-Time Compilation) and optimized change detection
+-- Core Concepts include Components, Modules, Directives, Pipes, Services, Dependecy Injection, Routing, Lifecycle Hooks
+
+*****Components, Modules & Directives
+-- Components are the fundamental building blocks of Angular applications, controlling a specific part of the User Interface (UI) and managing its data and logic.
+-- Each component has three parts (TypeScript class, HTML template, CSS styles)
+-- The @Component decorator designates a class as an Angular component and provides essential metadata, such as its HTML template (templateUrl), associated CSS styles (styleUrls), and a unique selector (selector) for use in other templates.
+-- An angular module (NgModule) is a logical unit that groups related components, directives, pipes, and services, organizing and managing application functionality into cohesive blocks. It improves modularity and maintainability.
+-- Components define the view, directives modify the dom elements within those views, and modules act as a containser that group and expose these building blocks.
+-- NgModule acts as a crucial boundary for encapsulation and dependency resolution, enabling features like lazy loading.
+-- Directives are special markers on a dom element that instruct Angular to perform actions on that element or its children, extending HTML functionality by adding behaviour. They are classified into two (structural and attribute)
+-- Structural Directives change the DOM layout by adding, removing, manipulating elements. Examples include *ngIf, *ngFor, and *ngSwitch. The asterisk * indicates that the directive modifies the dom structure
+-- Attribute Directives change the appearance or behavior of an element, component, or another directive. Examples include ngClass, ngStyle, and ngModel. Custom directives are created using the @Directive decorator. The class then implements logic to manipulate the dom or respond to events, often using ElementRef to access the host element and Renderer@ for safe dom manipulation.
+-- Decorators, such as @Component, @Directive, @NgModule, and @Injectable, are fundamental to Angular's declarative nature. They provide metadata that tells Angular how to process a class. This metadata allows Angular's compiler to understand the application's structure and dependencies before execution.
+-- There are four types of decorators (class decorators, property decorators, method decorators, parameter decorators) 
+
+*****Services and Dependency Injection
+-- Services are classes that encapsulate reusable logic and functinoality, typically used for data fetching, business logic, or shared operations across different components. They are designed to be singleton by default when provided at the root level. 
+-- Services are created as regular TypeScript classes and marked with the @Injectable() decorators, which allows them to be injected into other components or services.
+-- Dependency Injection is a design pattern where a class receives its dependencies from external sources rather than creating them itself.
+-- Angular has a built-in hierarchical DI system that automatically provides instances of required services to components, services, and other constructs. DI enhances modularity, testability(by allowing mocking of dependencies), and code reusability by decoupling components form their dependencies
+-- By injecting dependencies rather than hard-coding them, components and services become loosely coupled. This loose coupling directly enables easier unit testing because dependencies can be easily mocked or replaced during tests.
+-- The distinction between providedIn: 'root' and providing a service in a specific module or component is important for understanding Angular's DI hierarchy and its performance implications
+-- providedIn: 'root' makes the service a singleton instance available application-wide. This is the recommended approach for most services as it allows for tree-shaking if the service is not used.
+-- Providing in a specific module restricts the service's availability to that module and its components. If the module is lazy-loaded, the service will also be lazy-loaded.
+-- Providing in a component creates a new instance of the service for each instance of that component. This is rarely needed for shared services.
+
+
+*****Data Binding (Types and Usage)
+-- Data binding is the mechanism that facilitates communication and synchronization between the component's logic component's logic (model) and the view (html template). It simplifies the process of defining interactive applications by automatically pushing and pulling data.
+-- Angular deploys four main types of data binding (Interpolation, Property Binding, Event Binding, Two-Way Binding)
+-- Interpolation( {{ data }} ) - One-way binding from component to view, displaying component property values in the template
+-- Property Binding( [property]="expression" ) - One-way binding from component to view, setting the value of a dom element property or component @Input()
+-- Event Binding( (event)="handler()" ) - One-way binding form view to component, responding to dom events (e.g., clicks, key presses) by executing component methods.
+-- Two-way Binding( [(ngModel)]="property" ) - A combination of property and event binding, allowing data to flow in both directions (component <--> view). This is commonly used in forms.
+-- While Angular supports two-way data binding with ngModel, the framework promotes unidirectional data flow by default. (Not a limitatio, but a deliberate design choice)
+-- Custom two-way data binding is achieved by using an @Input() decorator for the incoming property and an @Output() decorator with an EventEmitter
+-- The best practices for implementing two-way data binding include limiting its use to simple forms and user inputs.
+
+*****Angular CLI and Project Structure
+-- The Angular CLI (Command Line Interface) is a powerful tool that automates and streamlines Angular application developments.
+-- It provides commands for creating, managing, building, testing, and deploying Angular projects.
+-- Common commands include ng new <app-name> (creates new app), ng serve (runs the app locally), ng generate <schematic> <name> (generates components, services, etc.), ng build (builds for production), and ng test (runs unit tests)
+-- By providing standardized commands for generaitng boilerplate code (ng generate component, ng generate service), it ensures that new fiels adhere to Angular's conventiosn.
+-- It implicitly guides developers towards a "correct" way of structuring applications, whic in turn facilitates easier onboarding and code reviews.
+-- Commands like ng build are not just abou tcompiling code, they encapsulate complex optimization steps like Ahead-of-Time compilation, tree-shaking, minification, and uglification. (Leading to more efficient bundles)
+
+*****TypeScript's Role in Angular
+-- TypeScript is statically-typed superset of JavaScript that compiles to plain Javascript.
+-- It add features like static typing, interfaces, classes, and enums.
+-- Angular is built with TypeScript because it significantly enhances the development experience with the following,
+```
+- Improved Code Quality: Static typing helps catch erros durind devleopment rather than at runtime, leading to fewer bugs.
+- Enhanced Maintainability: Provides clearer code structure and type definitions, making large codebases easier to understand and manage.
+- Readability: Explicit types improve code readability and collaboration.
+```
+-- Due to the early error detection, it significantly reduces debugging time and improves code reliability.
+
+*****Angular Lifecycle Hooks
+-- Methods that allow developers to tap into key moments in a component's or directive's lifecycle, from its creation to its destruction.
+-- They provide opportunities to perform specific actions at predefined stages.
+-- Key hooks include,
+```
+ngOnChanges(): Called when Angular sets or resets data-bound input properties
+ngOnInt(): Called once, after the first ngOnChanges() and after Angular has initialized all data-bound properties. This is idea for initialization logic.
+ngDoCheck(): Detects and acts upon changes that Angular cannot or will not detect on its own.
+ngAfterContentInit(): Called after Angular projects external content into the component's view.
+ngAfterContentCheck(): Called after ngAfterContentInit() and every subsequent ngDoCheck()
+ngAfterViewInit(): Called after Angular initializes the component's views and child views.
+ngAfterViewCheck(): Called after ngAfterViewInit() and every subsequent ngDoCheck()
+ngOnDestroy(): Called just before Angular destroys the component or directive, allowing for cleanup, such as unsubscribing from observables.
+```
+-- ngOnDestroy should be used to ensure that there are no memory leaks (to unsubscribe from observables, detach event listeners, and clean up any resources allocated during the components lifetime)
+-- A constructor is solely for dependency injection and ngOnInit() for initializaiton logic that depends on @Input() properties or external data fetching. Placing heavy initialization logic or HTTP calls directly in the constructor can lead to issues if dependencies are not fully resolved or inputs are not available.
+
+*****Forms:Template-Driven vs.Reactive Forms & Validation
+-- Angular provides two distinct approaches for building forms (Template-Driven Forms, Reactive Forms)
+-- Template-Driven Forms: These are simpler, asynchronous, and heavily reliant on directives (ngModel, ngForm) within the HTML template. They are suitable for basic forms
+-- Reactive Forms: These are defined programmatically in the component class using FormControl, FormGroup, and FormArray. They are asynchronous, immutable, and provide greater control, scalability and testability, making them ideal for complex and dynamic forms.
+-- Template-Driven forms uses directives (e.g., required, pattern) in template, and Reactive Forms uses Validators to validate the inputs
+-- Template-Driven forms are asynchronous by nature and Reactive Forms are synchronous by nature (except for async validators)
+-- In Template-Driven forms, changes directly update the model (Mutable data model), and in Reactive Forms, changes result in a new model (Immutable data model)
+-- Some of the common Form validators in both Reactive and Template-Driven Forms are requied, minLength, maxLength, pattern
+-- In Reactive Forms, validators are functions set programmatically on FormControl instances. Custom validators can be created by implementing the ValidaotrFn interface.
+-- Validations in forms are necessary as it prevents unnecessary server calls and improving overall responsiveness.
+
+*****Routing, Route Gaurds, and Lazy Loading
+-- Angular's powerful routing module enables navigation between different components and views within a single-page application (SPA) without full-page reloads.
+-- The Angular Router works by matching the URL path to a defined route and activating the corresponding component. The RouterModule provides the necessary services and directives for routing, such as <router-outlet. and routerLink.
+-- Routes is an array of objects that defines the mapping of URL paths to components.
+-- Lazy loading is a performance optimization technique that loads feature modules only when they are needed, for example, when a specified route is activated, rathen than at application startup. This significantly reduces the initial bundle size and improves the application's initial load time and startup performance.
+-- Lazy loading is implemented using the loadChildren or loadComponent property in route configuration. It is a countermeasure to the potential for large bundle sizes in complex SPAs.
+-- Route gaurds are services that control navigation to and from routes based on certain conditions, protecting routes form unauthorized access or preventing unwanted navigation. They are crucial for implementing security and workflow logic. 
+-- Types of route guards include:
+```
+CanActivate: Determines if a route can be activated.
+CanActivateChild: Determines if child routes can be activated.
+CanDeactivate: Determines if a user can navigate away from a route, for example, to prevent losing unsaved changes.
+Resolve: Pre-fetches data before a route is activated, ensuring data is available when the component loads
+CanLoad: Determines if a lazy-loaded module can be loaded. Route guards are essential for implementing scenarios such as authentication checks, authorizant, preventing navigation with unsave changes, and pre-loading data.
+-- They are integral to building secure and user-friendly application workflows.
+
+*****Pipes: Built-in and Custom
+-- Pipes are a way to transform data in the template before it is displayed to the user, without altering the original data. They are used for formatting, filtering, and sorting.
+-- Angular provides many built-in pipes, such as DataPipe, UpperCasePipe, CurrencyPipe, JsonPipe, and SlicePipe
+-- Custom Pipe can be created by implementing PipeTransform interface and using the @Pipe decorator
+-- By offloading data presentation logic from components to reusable pipes, components remain focused on business logic. The distinction between pure and impure pipes highlights a critical performance consideration
+-- Pure Pipes - These re-evaluate only when their input data changes (for primitive types) or the object reference changes (for objects). They are more efficient and are the default type.
+-- Impure Pipes - These re-evaluate every time change detection runs, regardless of whether the input data has changed. This can lead to performance issues if not used carefully, as they are called frequently.
+
+*****Change Detection Mechanism
+-- Angular uses a tree of change detectors to track changes in component properties. So, whenever the application's data model changes, ensuring the UI stays in sync with the data.
+-- Two main change detection strategies are Default Strategy and OnPush Strategy
+-- Default Strategy: This strategy checks every component in the component tree from top to bottom whenever any synchronous event (e.g., HTTP request, use event, timer) occurs.
+-- On Push Strategy (ChangeDetectionStrategy.OnPush): This is a performance optimization where a component only checks for changes if its input properties change (by reference), an event originates from the component or its children, or change detection is explicitly triggered.
+-- The default strategy could become a performance bottleneck in large applications with many components, as it checks the entire component tree.
+-- OnPush allows develpers to explicitly tell Angular to only re-check a component and its subtree when its input change or an event originates iwhtin it.
+-- For OnPush to work efficiently, input properties passed to components should be immutable. If an object is mutated directly instead of creating a new array, OnPush components will not detect the change, leading to desynchronized views.
+
+*****RxJS: Observables, Promises, and Subjects
+-- A library for reactive programming using Observables, designed to make it easier to compose asynchronous or callback-based code sequences.
+-- Angular uses RxJS etensively for handling asynchronous operations like HTTP requests, user events, and real-time data streams, providing a powerful and flexible way to manage complex asynchronous workflows.
+-- The pervasive use of RxJS throughout Angular signifies that reactive programming is not an optional add-on but a core paradigm for handling asynchronous operations. 
+-- An Observable is an object in RxJS that represents a stream of value sor events over time. It can emit multiple values, can be lazy (execution starts only when subscribed to), and is cancelled using unsubscribe().
+-- Observables are idea for continous streams of data, such as user inputs or real-time updates. In contrast, a Promise is a built-in JavaScript object that represents a single value that will be available in the future. It emits only one value or an error, is eager (executes immediately upon creation), and is not cancellable.
+-- Errors in observables can be handled for each emission, and the stream can continue or be retired.
+-- Use Cases of observables are user inputs, real-time data, http requests that can be retried or cancelled
+-- The Subject in RxJS is a special type of Observable that can multicast values to many observables. It acts as both an Observable (it can be subscribed to) and an Observer(it has next(), error(), and complete() methods to emit values). Subjects are useful for broadasting values to multiple subscribers or for manually emitting values.
+-- If subscriptions to Observables are not properly managed, they can persist even after the component is destroyed, leading to memory leaks and performance degradation over time.
+-- The key RxJS Operators are as follows,
+```
+// Higher-order RxJS operators are used to flatten Observables, meaning they handle Observables emitteed by other Observables. Their differences lie in how they manage concurrency and order of execution.
+switchMap: Cancels the previous inner Observable and subscribes tot he new one when the source Observable emits a new value. This is ideal for "type-ahead' search where only the latest request matters, as it discards outdated results
+mergeMap(or flatMap): Subscribes to each inner Observable concurrently, merging all their emissions into a single output Observable. This is usefull when all inner Observables should be handlesd in parallel
+concatMap: Subscribes to each inner Observable sequentially, waiting for the previous one to complete before subscribing to the next. This ensurs the order of execution. It is useful for operations that must complete in sequence.
+exhaustMap: Ignores new values from the source Observable while a pervious inner Observable is still active. This is ueful for preventing multiple submissions, such as button clicks, while an operation is in progress.
+
+*****Http Interceptors and API Communication
+-- Angular interceptors are services that intercept and modify HTTP requests and responses globally, before they are sent to the server or processed by the client.
+-- They provide a centralized way to perform actions like adding authentication headers (e.b., JWT tokens), loggin requests/responses, handling errors, showing loading spinners, or modifying request/response data.
+-- They are registered as providers in an Angular Module. 
+-- Instead of repeating logic, such as adding authentication headers or error handling, in every service call, interceptors allow this logic to be applied globally and transparently.
+-- HTTP requests are made using Angular's HttpClient module, which simplifies communication with backend services. It provides methods for various HTTP verbs (e.g., GET, POST, PUT, DELETE) and returns RxJS Observables, making it easy to handle asynchronous responses and errors using RxJS Operators.
+-- The HttpClient module automatically handles tasks like request headers, response parsing, and error handling.
+
+*****State Management Strategies (e.g., NgRx, Services)
+-- State management in Angular can be handled using various strategies, they are as follows,
+```
+Component State: Simple state managed within individual components.
+Shared Services: Using services with RxJS Subjects or BehaviorSubjects to share state between components, especially for parent-child or sibling communication.
+Centralized State Management Libraries: For complex applications, libraries ike NgRx (Redux pattern) or Akita provide a structured, predictable, and scalable way to manage global applicaiton state. They typically involve concepts like actions, reducers, effects, and selectors.
+```
+-- For smaller applications, simple @Input/@Output or shared services suffice. However as applications grow, the need for a predictable, debuggable, and scalable state is needed (NgRx)
+-- Effective strategies for sharing data between deeply nested Angular components include:
+```
+@Input and @Output(): For direct parent-child communcation.
+Shared Services with RxJS Subjects/Observables: For communication between sibling, unrelated, or deeply nested components.
+Centralized State Management: For complex, application-wide state
+Router State: For passing data via URL parameters or query parameters during navigation
+```
+
+*****AOT vs. JIT Compilation
+-- Angular provides two types of compilation, JIT (Just-in-Time) and AOT (Ahead-of-Time).
+-- JIT (Just-in-Time) Compilation - This process compiles Angular templates and TypeScript code into Javascript in the browser at runtime. While faster for development builds, it results in slower initial load times for users because the compiltion happens on the client side.
+-- AOT (Ahead-of-Time) Compilation - This process compiles Angular HTML and TypeScript into efficient JavaScript during the build process, before the browser downloads and runs the code.
+-- AOT compilation is important for serveral reasons 
+Faster Startups - Pre-compiled code loads and renders faster.
+Smaller Bundle Sizes - The compiler can tree-shake unused code more effectively
+Earlier Error Detection - Template errors are caught during build time, not runtime.
+```
+
+*****Optimizing Change Detection (OnPush, trackBy)
+-- ChangeDetectionStrategy.OnPush: This strategy reduces the number of times Angular checks for changes by only triggering checks when input properties change (by reference), an event originates form the component, or change deteciton is explicitly triggered.
+-- trackBy function with NgFor: This function is used with the *ngFor directive to optimize rendering performance when dealing with lists. It provides a unique identifier for each item, allowing Angular to re-use existing DOM nodes instead of re-rendering the entire list when items are added, removed or reordered.
+-- Minimizing Wathers/Bindings: Reducing complex expressions in templates can improve performance.
+-- Pure Pipes: Ensuring pipes are pure helps avoid unnecessary re-evaluations, contributing to the efficiency.
+
+*****Bundle Size Reduction & Tree Shaking
+-- Angular handles tree shaking as a build optimization process that eliminates unused modulles and code form the final Javascript bundle.
+-- Angular especially with AOT compilation and Ivy, is highly effective at tree shaking, resulting in smaller application sizes. 
+-- Other ways to minize bundle sizes include lazy loading modules, minimizing external library dependencies, using specific imports (e.g., import { ButtonModule } from '@angular/material/button'; instead of whole library), and optimizing assets like images and fonts.
+
+*****Security Considerations
+-- Angular's built-in Sanitization: Angular automatically sanitizes untrusted values (e.g., HTML, styles, URLs) when they are inserted into the DOM, protecting against Cross-Site Scripting (XSS) attacks. For trusted content, DomSanitizer can be used
+-- HTTPS: Always use HTTPS for all communication to encrypt data in transit
+-- Secure Backend API: Authentication (e.g., JWT tokens), authorization, input validation, and proper error handling on the server-side are critical.
+-- CSRF Protection: Angular has built-in support for Cross-Site Request Forgery (CSRF) protection.
+-- Content Security Policy (CSP): Implementing CSP can mitigate XSS and other injection attacks.
+
+*****Dynamic Components & Content Projection
+-- Content projection, also known as transclusion, is a way to import html content from outside a component and project it into the component's template.
+-- Dynamic components are created and inserted into the application at runtime, rather than being statically declared in the template.
+-- This feature uses <ng-content> tag as a placeholder in the component's template.
+
+*****Angular Misc
+-- Angular Universal enables server-side rendering (SSR) for Angular applications. This means the application is rendered on the server first and then sent to the client as static HTML.
+-- Angular Elements allows Angular components to be packaged as custom elements (web components) that can be used in any HTML page or framewokr, even non-Angular applications.
+
+*****Coding Misc
+-- An example of interpolation is as follows,
+```
+import { Component } from '@angular/core';
+
+@Component({
+	selector: 'app-root',
+	template: `
+		Hello {{ city }}, {{ 1 + 1}}
+	`,
+})
+export class App {
+	city = 'San Francisco';
+}
+```
+-- The selector property fo the component configuraiton gives the component a name to use when referencing the component in another template. (The tag can be used like a HTML tag, for example app-user would be <app-user /> in the template)
+-- The @if can be used as below,
+```
+import { Component } from '@angular/core';
+
+@Component({
+	selector: 'app-root',
+	template: `
+		@if (isServerRunning) {
+			<span>Yes, the server is running</span>
+		} @else {
+			<span>No, the server is not running</span>
+		}
+	`,
+})
+export class App {
+	isServerRunning = true;
+}
+```
+-- usage of @for is as below,
+import { Component } from '@angular/core';
+
+@Component({
+	selector: 'app-root',
+	template: `
+		@for(user of users; track user.id) {
+			<p>{{ user.name }}</p>
+		}
+	`,
+})
+export class App {
+	users = [
+		{ id: 0, name: 'Sarah' },
+		{ id: 1, name: 'Amy' },
+		{ id: 2, name: 'Rachel' },
+		{ id: 3, name: 'Jessica' },
+		{ id: 4, name: 'Poornima' },
+	];
+}
+```
+-- Property binding example in angular is as follows,
+```
+import { Component } from '@angular/core';
+
+@Component({
+	selector: 'app-root',
+	styleUrls: ['app.css'],
+	template: `
+		<div [contentEditable]="isEditable"></div>
+	`,
+})
+export class App {
+	isEditable = true;
+}
+```
+-- Event handling in Angular is implemented as follows,
+```
+import { Component } from '@angular/core';
+
+@Component({
+	selector: 'app-root',
+	template: `
+		<section (mouseover)="onMouseOver()">
+			There's a secret messge for you, hover to reveal
+			{{ message }}
+		</section>
+	`,
+})
+export class App {
+	message = '';
+	onMouseOver() {
+		this.message = 'Way to go!';
+	}
+}
+```
+-- an example of angular input concept is as follows,
+```
+import { Component, input } from '@angular/core';
+
+@Component({
+	selector: 'app-user',
+	template: `
+		<p>The user's name is {{ name() }}</p>
+	`,
+})
+export class User {
+	name = input<string>();
+}
+```
+-- An example of Angular's output concept is as follows,
+```
+child.ts
+import { Component, output } from '@angular/core';
+
+@Component({
+	selector: 'app-child',
+	styles: '.btn { padding: 5px; }',
+	template: `
+		<button class="btn" (click)="addItem()">Add Item</button>
+	`,
+})
+export class Child {
+	addItemEvent = output<string>();
+	addItemm() {
+		this.addItemEvent.emit('^');
+	}
+}
+
+app.ts
+import { Component } from '@angular/core';
+import { Child } from './child';
+
+@Component({
+	selector: 'app-root',
+	template: `
+		<app-child (addItemEvent)="addItem($event)" />
+		<p>^ all the way down {{ items.length }}</p>
+	`,
+	imports, [Child],
+})
+export class App {
+	items = new Array();
+	addItem(item: string) {
+		this.items.push(item);
+	}
+}
+```
+-- Deferrable Views are used to help load a section of the component template later. An example is as follows,
+```
+import {Component} from '@angular/core';
+import {Comments} from './comments';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <div>
+      <h1>How I feel about Angular</h1>
+      <article>
+        <p>
+          Angular is my favorite framework, and this is why. Angular has the coolest deferrable view
+          feature that makes defer loading content the easiest and most ergonomic it could possibly
+          be. The Angular community is also filled with amazing contributors and experts that create
+          excellent content. The community is welcoming and friendly, and it really is the best
+          community out there.
+        </p>
+        
+      </article>
+
+      @defer (on viewport) {
+      <comments />
+      } @placeholder { // This block is where we put html that will show before the deferred loading starts.
+      <p>Future comments</p>
+      } @loading (minimum 2s) { // this block is where the html that shows while the deferred content is actively being fetched, but hasn't finished yet.
+      <p>Loading comments...</p>
+      }
+    </div>
+  `,
+  imports: [Comments],
+})
+export class App {}
+```
+-- To effectively load images, NgOptimizedImage directive is used, the demostration is as follows,
+```
+import {Component} from '@angular/core';
+import {NgOptimizedImage} from '@angular/common';
+
+@Component({
+  selector: 'app-user',
+  template: `
+    <p>Username: {{ username }}</p>
+    <p>Preferred Framework:</p>
+    <ul>
+      <li>
+        Static Image:
+        <img ngSrc="/assets/logo.svg" alt="Angular logo" width="32" height="32" />
+      </li>
+      <li>
+        Dynamic Image:
+        <img [ngSrc]="logoUrl" [alt]="logoAlt" width="32" height="32" />
+      </li>
+    </ul>
+  `,
+  imports: [NgOptimizedImage],
+})
+export class User {
+  logoUrl = '/assets/logo.svg';
+  logoAlt = 'Angular logo';
+  username = 'youngTech';
+}
+// There must be a width and height specified when using the directive (i.e., when ngSrc is used)
+```
+-- Demonstration of using Image loader is as follows,
+```
+// in a component.ts
+providers: [
+  provideImgixLoader('https://my.base.url/'),
+]
+// in a component.html
+<img ngSrc="image.png" height="600" width="800" />
+```
+-- An example of defining routes in Angular is as follows,
+```
+import {Routes} from '@angular/router';
+
+import {Home} from './home/home';
+import {User} from './user/user';
+
+export const routes: Routes = [
+  {
+    path: '',
+    title: 'App Home Page',
+    component: Home,
+  },
+  {
+    path: 'user',
+    title: 'App User Page',
+    component: User,
+  },
+];
+```
+-- A demonstration of forms in angular is as follows
+import {Component} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+
+@Component({
+  selector: 'app-user',
+  template: `
+    <p>Username: {{ username }}</p>
+    <p>{{ username }}'s favorite framework: {{ favoriteFramework }}</p>
+    <label for="framework">
+      Favorite Framework:
+      <input id="framework" type="text" [(ngModel)]="favoriteFramework" />
+    </label>
+  `,
+  imports: [FormsModule],
+})
+export class User {
+  favoriteFramework = '';
+  username = 'youngTech';
+}
+```
+-- Using reactive forms in angular is as follows,
+```
+import {Component} from '@angular/core';
+import {FormGroup, FormControl} from '@angular/forms';
+import {ReactiveFormsModule, Validators} from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <form [formGroup]="profileForm">
+      <input type="text" formControlName="name" name="name" />
+      <input type="email" formControlName="email" name="email" />
+      <button type="submit" [disabled]="!profileForm.valid">Submit</button>
+    </form>
+  `,
+  imports: [ReactiveFormsModule],
+})
+export class App {
+  profileForm = new FormGroup({
+    name: new FormControl('', Validators.required),
+    email: new FormControl('', [Validators.required, Validators.email]),
+  });
+}
+```
+-- Demonstration of creating an injectable service is as follows,
+car.service.ts
+import {Injectable} from '@angular/core';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class CarService {
+  cars = ['Sunflower GT', 'Flexus Sport', 'Sprout Mach One'];
+
+  getCars(): string[] {
+    return this.cars;
+  }
+
+  getCar(id: number) {
+    return this.cars[id];
+  }
+}
+app.ts
+import {Component, inject} from '@angular/core';
+import {CarService} from './car.service';
+
+@Component({
+  selector: 'app-root',
+  template: '<p> {{ carService.getCars() }} </p>',
+})
+export class App {
+  carService = inject(CarService);
+}
+```
+-- Demostration of another way of injective services is as follows,
+```
+car.service.ts
+import {Injectable} from '@angular/core';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class CarService {
+  cars = ['Sunflower GT', 'Flexus Sport', 'Sprout Mach One'];
+
+  getCars(): string[] {
+    return this.cars;
+  }
+
+  getCar(id: number) {
+    return this.cars[id];
+  }
+}
+
+app.ts
+import {Component, inject} from '@angular/core';
+import {CarService} from './car.service';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <p>Car Listing: {{ display }}</p>
+  `,
+})
+export class App {
+  carService = inject(CarService);
+
+  display = this.carService.getCars().join(' ⭐️ ');
+}
+```
+-- A demonstration of using built-in pipes is as follows,
+import {Component} from '@angular/core';
+import {LowerCasePipe} from '@angular/common';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    {{ username | lowercase }}
+  `,
+  imports: [LowerCasePipe],
+})
+export class App {
+  username = 'yOunGTECh';
+}
+```
+-- A custom pipe can be created as follows,
+```
+import {Pipe, PipeTransform} from '@angular/core';
+
+@Pipe({
+  name: 'reverse',
+})
+export class ReversePipe implements PipeTransform {
+  transform(value: string): string {
+    let reverse = '';
+
+    for (let i = value.length - 1; i >= 0; i--) {
+      reverse += value[i];
+    }
+
+    return reverse;
+  }
+}
+```
+
+*****Signals
+-- A signal is a wrapper around a value that notifies interested consumers when that value changes. They can contain any value, from primitives to complex data structures.
+-- A signal's value can be read by calling its getter function which alows Angular to track where the signal is used.
+-- Writable signals provide an API for updating their value directly. They can be created by calling the signal function with the signal's initial value.
+-- To change the value of a writable signal, either .set() or .update() is used as follows,
+```
+count.set(3));
+count.update(value => value + 1);
+// Writable signals have the type WritableSignal
+```
+-- Computed signal are read-only signals that derive their value from other signals. Computed Signals are created using computed function and specifying a derivaltion as below,
+```
+const count: WritableSignal<number> = signal(0);
+const doubleCount: Signal<number> = computed(() => count() * 2);
+// doubleCount signal depends on the count signal. Whenever count updates, Angular knows that doubleCount needs to update as well.
+```
+-- Computed signals are both lazily evaluated and memoized
+
+*****Effects
+-- Signals are useful because they notify interested consumers when they change. An effect is an operation that runs whenever one or more signal values change. An effect can be created using the effect function as follows,
+```
+effect(() => {
+	console.log(`The current count is: ${count()}`);
+});
+```
+-- Effects always run at least once. Similar to computed signals, effects keep track of their dependencies dynamically, and only track signals which were read in the most recent execution.
+-- Effects always execute asynchronously, during the change detection process. An effect can only be created in an injection context (where there is an access to inject function)
+-- The easiest way to satisfy this requirement is to call effect within a component, directive, or service constructor like as below,
+```
+@Component({...})
+export class EffectiveCounterComponent {
+	readonly count = signal(0);
+	constructor() {
+		effect(() => {
+			console.log(`The count is ${this.count()}`);
+		});
+	}
+}
+```
+-- An effect can bed assigned to a field (which also gives it a descriptive name) as below,
+```
+@Component({...})
+export class EffectiveCounterComponent {
+	readonly count = signal(0);
+	
+	private loggingEffect = effect(() => {
+		console.log(`The count is: ${this.count()}`);
+	});
+}
+```
+-- To create an effect outside the constructor, you can pass Injector to effect via its options as follows,
+```
+@Component({...})
+export class EffectiveCounterComponent {
+	readonly count = signal(0);
+	private injector = inject(Injector);
+	
+	initializeLogging(): void {
+		effect() => {
+			console.log(`The count is: ${this.count()}`);
+		}, { injector: this.injector });
+	}
+}
+-- When an effect is created, it is automatically destroyed when its enclosing context is destroyed, i.e., the effects created within components are destroyed when the component is destroyed. (The same goes for effects within directives, service,s etc.)
+-- Effects return an EffectRef that can be used to destroy manually by using .destroy() method.
+-- The things created in the effect can be destroyed with effect onCleanup function as follows,
+```
+effect((onCleanup) => {
+  const user = currentUser();
+  const timer = setTimeout(() => {
+    console.log(`1 second ago, the user became ${user}`);
+  }, 1000);
+  onCleanup(() => {
+    clearTimeout(timer);
+  });
+});
+```
+
+*****Misc
+-- Bindings on elements inside the component's template, but instead defined with the host property in the @Component
+```
+@Component({
+  ...,
+  host: {
+    'role': 'slider',
+    '[attr.aria-valuenow]': 'value',
+    '[class.active]': 'isActive()',
+    '[tabIndex]': 'disabled ? -1 : 0',
+    '(keydown)': 'updateValue($event)',
+  },
+})
+export class CustomSlider {
+  value: number = 0;
+  disabled: boolean = false;
+  isActive = signal(false);
+  updateValue(event: KeyboardEvent) { /* ... */ }
+  /* ... */
+}
+```
+-- When <ng-content> is used withina component, any children of the component host element are rendered, or projected, at the location of that <ng-content> as belows,
+```
+// Component source
+@Component({
+  selector: 'custom-card',
+  template: `
+    <div class="card-shadow">
+      <ng-content />
+    </div>
+  `,
+})
+export class CustomCard {/* ... */}
+```
+-- Angular creates an instance of a component for every HTML element that matches the component's selector. The DOM element that matches a component's selector is that component's host element. The contents of a component's templalte are rendered inside its host element.
+-- A component can bind properties, attributes, and events to its host element. This behaves identically to bindingson elements inside the component's template, but instead defined with the host property in the @Component decorator as follows,
+```
+@Component({
+  ...,
+  host: {
+    'role': 'slider',
+    '[attr.aria-valuenow]': 'value',
+    '[class.active]': 'isActive()',
+    '[tabIndex]': 'disabled ? -1 : 0',
+    '(keydown)': 'updateValue($event)',
+  },
+})
+export class CustomSlider {
+  value: number = 0;
+  disabled: boolean = false;
+  isActive = signal(false);
+  updateValue(event: KeyboardEvent) { /* ... */ }
+  /* ... */
+}
+```
+-- Alternatively, @HostBinding and @HostListener decorator can be applied to class members to bind to the host element, such as below,
+```
+@Component({
+  /* ... */
+})
+export class CustomSlider {
+  @HostBinding('attr.aria-valuenow')
+  value: number = 0;
+  @HostBinding('tabIndex')
+  getTabIndex() {
+    return this.disabled ? -1 : 0;
+  }
+  /* ... */
+}
+export class CustomSlider {
+  @HostListener('keydown', ['$event'])
+  updateValue(event: KeyboardEvent) {
+    /* ... */
+  }
+}
+-- Using host property is recommended over @HostBinding and @HostListener as these decorators exist exclusively for backwards compatibility.
+-- A component's lifecycle is the sequence of steps that happen between the component's creation and its destruction as below,
+```
+Creation 		- constructor 		- Runs when Angular instantiates the component
+Change Detection 	- ngOnInit			- Runs once after Angular has initialized all the component's inputs.
+			- ngOnChanges 		- Runs every time the component's inputs have changed.
+			- ngDoCheck			- Runs every timie this component is checked for changes
+			- ngAfterContentInit 	- Runs every time the component's content has been initialized.
+			- ngAfterContentChecked - Runs every time this component content has been checked for changes
+			- ngAfterViewInit 	- Runs once after the component's view has been initialized
+			- ngAfterViewChecked 	- Runs every time the component's view has been checked for changes.
+Rendering		- afterNextRender 	- Runs once the next time that all components have been rendered to the DOM.
+			- afterEveryRender 	- Runs every time all components have been rendered to the DOM.
+Destruction		- ngOnDestroy		- Runs once before the component is destroyed
+-- <ng-container> is a special elementin Angular that groups multiple elements together or marks a location in a template without rendering a real element in the DOM.
+
+*****Dependency Injection
+-- There are two main roles exist in the DI system (dependency consumer and dependecy provider)
+-- Angular facilitates interaction between dependency consumers and dependency providers using an abstraction called Injector.
+-- When a dependency is requested, the injector checks its regsitry to see if there is an instance already available there. If not, a new instance is created and stored in the registry.
+-- Anglar creates an application-wide injector (also known as the "root" injector) during the application bootstrap process
+-- A dependency can be provided in multiple places as below,
+```
+// Preferred: At the application root level using providedIn
+@Injectable({
+  providedIn: 'root'
+})
+class HeroService {}
+
+// At the Component level
+@Component({
+  selector: 'hero-list',
+  template: '...',
+  providers: [HeroService]
+})
+class HeroListComponent {}
+
+// At the application root level using ApplicationConfig
+export const appConfig: ApplicationConfig = {
+    providers: [
+      { provide: HeroService },
+    ]
+};
+
+// NgModule based applications (uses the providers field of the @NgModule decorator to provide a service or other Injectable available at the application level)
+```
+-- Different types of providers are as below,
+```
+// Specifying a provider token
+providers: [Logger] // or providers: [ { provide: Logger, useClass: Logger } ]
+
+// Class Providers: useClass
+[{ provide: Logger, useClass: BetterLogger }] // BetterLogger extends Logger class 
+[ UserService, { provide: Logger, useClass: EvenBetterLogger }, // UserService is used by EvenBetterLogger Class, and so is provided here
+
+// Alias providers: useExisting
+[NewLogger, { provide: OldLogger, useExisting: NewLogger }]
+
+// Factory providers: useFactory
+[{ provide: HeroService, useFactory: heroServiceFactory, deps: [Logger, UserService] }]
+const heroServiceFactory = (logger: Logger, userService: UserService) => new HeroService(logger, userService.user.isAuthorized);
+
+// Value providers: useValue (lets to provide runtime configuration constants such as website base addresses and feature flags, etc.
+- An InjectionToken object can be used as a provider token for non-class dependencies
+import { InjectionToken } from '@angular/core';
+
+export interface AppConfig {
+	title: string;
+}
+
+export const APP_CONFIG = new InejctionToken<AppConfig>('app.config description'); // the value specifies the token's purpose
+
+cosnt MY_APP_CONFIG_VARIABLE: AppConfig = {
+	title: 'Hello',
+};
+
+providers: [ { provide: APP_CONFIG, useValue: MY_APP_CONFIG_VARIABLE }]
+```
+-- Creating a signal from an RxJs Observalbe with toSignal
+```
+import { Component } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { interval } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
+@Component({
+  template: `{{ counter() }}`,
+})
+export class Ticker {
+  counterObservable = interval(1000);
+  // Get a `Signal` representing the `counterObservable`'s value.
+  counter = toSignal(this.counterObservable, {initialValue: 0});
+}
+```
+-- Creating an RxJs Observable from a signal with toObservable is as follows,
+```
+import { Component, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+@Component(...)
+export class SearchResults {
+  query: Signal<string> = inject(QueryService).query;
+  query$ = toObservable(this.query);
+  results$ = this.query$.pipe(
+    switchMap(query => this.http.get('/search?q=' + query ))
+  );
+}
+```

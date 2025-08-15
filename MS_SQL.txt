@@ -1,0 +1,1959 @@
+time (HH:mm:ss[.nnnnnnn]) (100 nanoseconds accuracy)
+date (yyyy-MM-dd) (1 day accuracy)
+datetime (yyyy-MM-dd HH:mm:ss[.nnn]) (0.00333 second accuracy)
+datetime2 (yyyy-MM-dd HH:mm:ss[.nnnnnnn]) (100 nano seconds accuracy)
+datetimeoffset (yyyy-MM-dd HH:mm:ss[.nnnnnnn] [+|-]HH:mm) (100 nanoseconds accuracy)
+
+CURRENT_TIMESTAMP -> standard way of getting time
+getdate -> new function by microsoft to get date time (datetime)
+SYSDATETIME -> more accurate version of getdate (datetime2)
+dateadd(YEAR, 1, '2015-01-02 03:04:05')
+datepart(hour, '2015-01-02 03:04:05')
+datename(WEEKDAY, getdate())
+datediff(SECOND, '2015-01-02 03:04:05', getdate())
+
+todatetimeoffset(date, '+05:30')
+datetimeoffsetfromparts(2015, 06, 25, 1, 2, 3, 456, 5, 30, 3)
+sysdatetimeoffset()
+sysutcdatetime()
+switchoffset(date, '-05:00')
+
+convert(nvarchar(20), date)
+cast(date as nvarchar(20))
+parse('Thursday, 25 June 2015' as date)
+parse('Jueves, 25 de junio de 2015' as data using 'es-ES')
+format(cast('2015-06-25 01:02:03.456' as datetime), 'D')
+
+create table tblEmployee (
+EmployeeNumber int not null,
+EmployeeFirstName varchar(50) not null,
+EmployeeMiddleName varchar(50) null,
+EmployeeLastName varchar(50) not null,
+EmployeeGovermentId char(10) null,
+DateOfBirth date not null
+)
+
+drop table tblEmployee
+go;
+alter table tblEmployee
+add Department varchar(10);
+alter table tblEmployee
+drop column Department;
+alter table tblEmployee
+alter column Department varchar(20);
+
+column_name like '%W%'
+% -> 0 to infinity characters
+_ -> 1 character
+[%ab] -> any character expect 'a' and 'b'
+
+EmployeeNumber between 100 and 200
+EmployeeNumber != 200
+EmployeeNumber < 200 or EmployeeNumber > 400
+
+DateOfBirth between '19760101' and '19861231'
+
+left(EmployeeLastName, 1)
+datename(month, dateofbirth)
+
+join
+inner join
+left join
+right join
+outer join
+left outer join
+right outer join
+
+select distinct column from table
+begin transaction
+rollback transaction
+begin tran
+rollback tran
+
+update tblTransaction
+set EmployeeNumber = 194
+output inserted.*, deleted.EmployeeNumber
+fromtblTransaction
+where EmployeeNumber in (3, 5, 7, 9)
+
+delete tblTransaction
+from tblTransaction
+where EmployeeNumber = 9
+
+begin tran
+update tblEmployee
+set DateOfBirth = '2101-01-01'
+where EmployeeNumber = 537
+select * from tblEmployee order by DateOfBirth desc
+rollback tran
+
+alter table tblEmployee
+add constraint unqGovernmentId UNIQUE (EmployeeGovernmentID)
+
+begin tran
+delete top(2) from tblEmployee
+where EmployeeNumber < 3
+commit tran
+
+begin tran
+alter table tblTransaction
+drop constraint unqTransaction
+commit tran
+
+drop table tblTransaction
+
+alter table tblTransaction
+add DateOfEntry datetime
+alter table tblTransaction
+add constraint defDateOfEntry default getdate() for DateOfEntry;
+
+create table tblTransaction2
+(Amount smallmoney not null,
+DateOfTransaction smalldatetime not null,
+EmployeeNumber int not null,
+DateOfEntry datetime null constraint tblTransaction2_defDateOfEntry default getdate())
+drop table tblTransaction2
+
+alter table tblTransaction
+drop column DateOfEntry
+
+alter table tblTransaction
+add constraint chkAmount check (Amount>-1000 and Amount < 1000)
+alter table tblEmployee with nocheck
+add constraint chkDateOfBirth check (DateOfBirth between '1900-01-01' and getdate())
+
+alter table tblEmployee with nocheck
+add constraint chkDateOfBirth check (DateOfBirth between '1900-01-01' and getdate())
+
+REPLACE(EmployeeMiddleName, '.', '')
+
+alter table tblEmployee
+drop chkDateOfBirth
+
+create table tblEmployee2
+(EmployeeNumber int constraint PK_tblEmployee2 primary key identity(1,1 1),
+EmployeeName nvarchar(20))
+
+IDENTITY(start_number, increment) // only applies to new columns
+
+truncate table tblEmployee2
+
+set identity_insert tblEmployee2 ON // allows identity to be passed while inserting rows
+
+
+IDENT_CURRENT('dbo.tblEmployee2') // returns the latest id of the table
+
+ADD constraint FK_tblTransaction_EmployeeNumber Foriegn key (EmployeeNumber)
+references tblEmployee(EmployeeNumber)
+on update cascade
+on delete set default // or casecade or set null
+alter table tblTransaction add constraint df_tbltransaction default 124 for employeenumber
+
+
+create view ViewByDepartment as
+select top(100) D.Department, T.EmloyeeNumber, T.DateOfBirth, T.Amount as TotalAmount
+from tblDepartment as D
+left join tblEmployee as E
+on D.Department = E.Department
+left join tblTransaction as T
+on E.EmployeeNumber = T.EmployeeNumber
+where T.EmployeeNumber between 120 and 139
+order by D.Department, T.EmployeeNumber
+go
+
+altr view [dbo].[ViewByDepartment] as 
+select top(100) D.Department, T.EmployeeNumber, T.DateOfBirth, T.Amount as TotalAmount
+from tblDepartment as D
+left join tblEmployee as E
+on D.Department = E.Department
+left join tblTransaction as T
+on E.EmployeeNumber = T.EmployeeNumber
+where T.EmployeeNumber between 120 and 139
+order by D.Department, T.EmployeeNumber
+go
+
+drop view dbo.ViewByDepartment
+
+
+if exists(select * from sys.views where name = 'ViewByDepartment')
+ drop view dbo.ViewByDepartment
+go
+
+select * from INFORMATION_SCHEMA.VIEWS
+where TABLE_NAME = 'ViewByDepartment' and table_schema = 'dbo'
+
+select * from sys.syscomments as 
+inner join sys.views as V
+on s.id = V.object_id 
+
+create view ViewByDepartment with encryption as 
+select top(100) D.Department, T.EmployeeNumber, T.DateOfBirth, T.Amount as TotalAmount
+from tblDepartment as D
+left join tblEmployee as E
+on D.Department = E.Department
+left join tblTransaction as T
+on E.EmployeeNumber = T.EmployeeNumber
+where T.EmployeeNumber between 120 and 139
+order by D.Department, T.EmployeeNumber // order only when top is used
+with check option
+go
+
+create unique clustered index inx_ViewByDepartment on dbo.tableName(column_x, column_y,..) // faster access of data when used in select queries including only the mentioned columns
+
+// creating an after trigger
+create trigger tr_tbltransaction
+on tbltransaction
+after delete, insert, update
+as 
+begin
+	select * from inserted
+	select * from deleted
+end
+go
+
+// creating an instead of trigger
+create trigger nameoftrigger on tablename
+instead of delete (// or instead of insert or instead of update, only one can be used)
+as
+begin
+	select *, 'ViewByDepartment' from deleted
+end
+
+alter trigger tr_viewbydepartment
+on dbo.viewbydepartment
+instead of delete
+as
+begin
+	declare @employeenumber as int
+	declare @dateoftransaction as smalldatetime
+	declare @amount as smallmoney
+	select @employeenumber = employeenumber, @dateoftransaction = dateoftransaction, @amount = totalamount from deleted
+	delete tblTransaction from tblTransaction as T where T.EmployeeNumber = @employeenumber
+	and T.dateoftransaction = @dateoftransaction and t.amount = @amount
+end
+
+alter trigger tr_tbltransaction
+ontbltransaction
+after delete, insert, update
+as
+begin
+	if @@nestlevel = 1 or @@rowcount > 0
+	begin
+		select *, 'tableinsert' from inserted
+		select *, 'tabledelete' from deleted
+	end
+end
+
+// update transaction
+
+alter trigger tr_tbltransaction
+on tbltransaction
+after delete, insert, update
+as
+begin
+	begin
+		-- @@rowcount > 0
+		--if update(dateoftransaction)
+		if columns_updated() & 2 > 2:
+		begin
+			select *, 'inserted - tbltransaction' from inserted
+			select *, 'deleted - tbltransaction' from deleted
+		end
+	end
+end
+go
+
+// union and union all
+
+select * from inserted
+union // removes the duplicate rows
+select * from deleted
+
+select convert(char(5), 'hi') as Greeting
+union all
+select convert(char(11), 'hello there') as GreetingNow
+union all
+select convert (char(11), 'bonjour')
+union all // will not remove the duplication
+select convert(char(11), 'hi')
+
+with cte as (
+select convert (tinyint, 45) as Mycolumn
+union
+select convert(bigint, 456)
+)
+select Mycolumn into tblTemp from cte
+
+// intersect and except
+select *, row_number() over(order by (select null)) % 3 as ShouldIDelete
+into tblTransactionNew
+from tblTransaction
+
+delete from tblTransactionNew
+where shouldIDelete = 1
+
+update tblTransactionNew
+set DateOfTransaction = dateadd(day, 1, DateOfTransaction)
+Where ShouldIDelete = 2
+
+select * from tbltransaction
+intersect 
+select * from tblTransactionNew
+
+select * from tbltransaction
+except
+select * from tbltransactionNew
+
+// case
+
+declare @myoption as varchar(10) = 'Option B'
+
+select case when @myOption = 'Option A' then 'First Option'
+		when @myOption = 'Option B' then 'Second Option'
+		else 'No Option' end as MyOptions
+
+select case @myOption when 'Option A' then 'First Option'
+				when 'Option B' then 'Second Option'
+				else 'No Option' end as MyOptions
+go
+
+select top 1000 [EmployeeNumber], [EmployeeFirstName], [EmployeeMiddleName],
+			[EmployeeLastName], [EmployeeGovernmentID], [DateOfBirth], [Department],
+case when left(EmployeeGovernemtnID, 1)= 'A' then 'Letter A'
+case when left(EmployeeGovernmentID, 1)= 'B' then 'Letter B'
+else 'Neither letter' end
+from [70-461].[dbo].[tblEmployee]	
+
+// null and coalesce
+
+select * from tblEmployee where EmployeeMiddleName is null
+
+declare @myOption as varchar(10 = 'Option B'
+select isnull(@myOption, 'No Option') as MyOptions
+go
+
+declare @myFirstOption as varchar(10) = 'Option A'
+declare @mySecondOption as varchar(10) = 'Option B'
+
+select coalesce(@myFirstOption, @mySecondOption, 'No Option') as MyOptions
+go
+
+select isnull('ABC', 1) as MyAnswer
+select coalesce('ABC', 1) as MyOtherAnswer
+go	
+
+
+select isnull(null, null) as MyAnswer // returns null (also, this can create non-nullable column)
+select coalesce(null, null) as MyOtherAnswer // throws an error (atleast one must be not null) (always creates a nullable column)
+go
+
+// merge
+begin tran
+ merge into tblTransaction as T
+using  (
+	select EmployeeNumber, DateOfTransaction, sum(Amount) as Amount from tblTransactionNew
+	group by EmployeeNumber, DateOfTransaction
+) as S
+on t.EmployeeNumber = S.EmployeeNumber and T.DateOfTransaction = S.DateOfTransaction
+when matched then update Amount = T.Amount + S.Amount
+when not matched by target then 
+	insert ([Amount], [DateOfTransaction], [EmployeeNumber]) values
+		(S.Amount, S.DateOfTransaction, S.EmmployeeNumber)
+output inserted.*, deleted.*;
+rollback tran
+
+disable trigger [tr_tbltransaction] on [dbo].[tblTransaction]
+
+// merge with additional columns
+
+begin tran
+alter table tblTransaction
+add comments varchar(50) null
+go
+
+select * from tblTransaction
+merge top (5) percent into tblTransaction as T
+using (select EmployeeNumber, DateOfTransaction, sum(Amount) as Amount
+from tblTransactionNew
+group by EmployeeNumber, DateOfTransaction) as S
+on T.EmployeeNumber = S.EmployeeNumber and T.DateOfTransaction = S.DateOfTransaction
+when matched and t.amount + s.amount > 0 then update set amount = t.amount + S.amount, comments = 'Updated Row'
+when matched then delete
+when not matched by target then
+	insert ([Amount], [DateOfTransaction], [EmployeeNumber], Comments)
+	values (S.Amount, S.DateOfTransaction, S.EmployeeNumber, 'Inserted Row')
+when not matched by source then
+	update set comments = 'Unchanged';
+output inserted.*, deleted.*, $action;
+select * from tblTransaction
+rollback tran
+
+// creating a procedure or proc (for short)
+create proc NameEmployees as
+begin
+	select EmployeeNumber, EmployeeFirstName, EmployeeLastName
+	from tblEmployee
+end
+
+execute NameEmployees // or exec NameEmployees
+
+if exists (select * from sys.procedures where name='NameEmployees')
+drop proc NameEmployees
+go
+
+if object_ID('NameEmployees', 'P') is not null
+drop proc NameEmployees
+go
+
+// procedures with parameters
+
+create proc NameEmployees(@EmployeeName int) as 
+begin
+	if exists (Select * from tblEmployee where EmployeeNumber = @EmployeeNumber)
+	begin
+		select EmployeeNumber, EmployeeFirstName, EmployeeLastName
+		from tblEmployee
+		where EmployeeNumber = @EmployeeNumber
+	end
+	else
+	begin
+		select 'NA'
+	end
+end
+go
+execute NameEmployees 223
+exec NameEmployees 323
+
+// procedures with multiple arguments
+
+create proc NameEmployees(@EmployeeNumberFrom int, @EmployeeNumberTo int) as
+begin
+	if exists(Select * from tblEmployee where EmployeeNumber between @EmployeeNumberFrom and @EmployeeNumberTo)
+	begin
+		select EmployeeNumber, EmployeeFirstName, EmployeeLastName
+		from tblEmployee
+		where EmployeeNumber between @EmployeeNumberFrom and @EmployeeNumberTo
+	end
+end
+
+exec NameEmployees 223, 227
+exec NameEmployees @EmployeeNumberTo = 327, @EmployeeNumberFrom = 323 // Named parameters
+
+// while loops
+
+declare @EmployeeNumberFrom int = 323
+declare @EmployeeNumberTo int = 327
+
+declare @EmployeeNumber int = @EmployeeNumberFrom
+while @EmployeeNumber <= @EmployeeNumberTo
+begin
+	if exists (Select @ from tblEmployee where EmployeeNumber = @EmployeeNumber)
+	begin
+		select EmployeeNumber, EmployeeFirstName, EmployeeLastName
+		from tblEmployee
+		where EmployeeNumber = @EmployeeNumber
+	end
+	set @EmployeeNumber = @EmployeeNumber + 1
+end
+
+@EmployeeNumber = @EmployeeNumberFrom
+while @EmployeeNumber <= @EmployeeNumberTo
+begin
+	select EmployeeNumber, EmployeeFirstName, EmployeeLastName
+	from tblEmployee
+	where EmployeeNumber = @EmployeeNumber
+	if @EmployeeNumber == 500 break // using continue is also valid
+	set @EmployeeNumber = @EmployeeNumber + 1
+end
+
+// returning from procedure
+
+create proc NameEmployees(@EmployeeNumberFrom int, @EmployeeNumberTo int, @NumberOfRows int OUT) as // OUT or OUTPUT can be used
+begin
+	if exists (Select @ from tblEmployee where EmployeeNumber = @EmployeeNumber)
+	begin
+		select EmployeeNumber, EmployeeFirstName, EmployeeLastName
+		from tblEmployee
+		where EmployeeNumber = @EmployeeNumber
+		set @NumberOfRows = @@rowcount
+		return 0
+	end
+	else
+	begin
+		set @NumberOfRows = 0
+		return 1
+	end
+end
+
+declare @NumberRows int, @ReturnStatus int
+execute @ReturnStatus = NameEmployees 223, 227, @NumberRows OUTPUT
+execute @ReturnStatus = NameEmployees @EmployeeNumberFrom = 323, @EmployeeNumberTo = 327, @NumberOfRows = @NumberRows OUTPUT
+select @NumberRows as MyRowCount, @ReturnStatus as Return_Status
+
+select sum(Amount) from tblTransaction
+where EmployeeNumber between 3 and 11
+
+select count(distinct EmployeeNumber) from tblTransaction
+where EmployeeNumber between 3 and 11
+
+// try catch
+create proc AverageBalance(@EmployeeNumberFrom int, @EmployeeNumberTo int, @AverageBalance int output) as
+begin
+	declare @TotalAmount money
+	declare @NumOfEmployee int
+	begin try
+		select @TotalAmount = sum(Amount) from tblTransaction
+		where EmployeeNumber between @EmployeeNumberFrom and @EmployeeNumberTo
+		select @NumOfEmployee = count(distinct EmployeeNumber) from tblEmployee
+		where EmployeeNumber between @EmployeeNumberFrom and @EmployeeNumberTo
+		set @AverageBalance = @TotalAmount / @NumOfEmployee
+		return 0
+	end try
+	begin catch
+		set @AverageBalance = 0
+		select error_message() as ErrorMessage, error_line() as ErrorLine,
+			error_number() as ErrorNumber, error_procedure() as ErrorProcedure,
+			error_severity() as ErrorSeverity, error_state() as ErrorState
+		if error_number() == 8134
+		begin
+			set @AverageBalance = 0
+			return 8134
+		end
+		else
+			raiserror ('Too many flanges', 10, 1)
+			--throw 56789, 'Too many flanges', 1
+
+			
+	end catch
+end
+go
+
+// print
+
+print 'We have started to the print statement'
+
+create table tblAttendance
+(EmployeeNumber int,
+AttendanceMonth date,
+NumberAttendance smallint,
+constraint pk_attendance primary key (EmployeeNumber, AttendanceMonth),
+constraint fk_attendance_employeenumber foreign key (EmployeeNumber) references tblEmployee(EmployeeNumber))
+
+ // partition by and order by
+select A.EmployeeNumber, A.Atte3ndancemOnth, A.NumberAttendance,
+sum(A.NumberAttendance) over(partition by A.EmployeeNumber, year(A.AttendanceMonth) order by A.AttendanceMont) as RunningTotal
+from tblEmployee as E join tblAttendance as A
+on E.EmployeeNumber = A.EmployeeNumber
+order by A.EmmployeeNumber, A.AttendanceMonth
+
+// rows between
+
+select A.EmployeeNumber, A.AttendanceMonth, A.NumberAttendance,
+sum(A.NumberAttendance)
+over(partition by A.EmployeeNumber, year(A.AttendanceMonth) order by A.AttendanceMonth
+rows between 1 preceding and 1 following) as RunningTotal
+from tblEmployee as E join tblAttendance as A
+on E.EmployeeNumber = A.EmployeeNumber
+
+select A.EmployeeNumber, A.AttendanceMonth, A.NumberAttendance,
+sum(A.NumberAttendance)
+over(partition by A.EmployeeNumber, year(A.AttendanceMonth) order by A.AttendanceMonth
+rows between current row and unbounded following) as RunningTotal
+from tblEmployee as E join tblAttendance as A
+on E.EmployeeNumber = A.EmployeeNumber
+
+// range (can only be used with unbounded and current row, with different combinations)
+
+select A.EmployeeNumber, A.AttendanceMonth, A.NumberAttendance,
+sum(A.NumberAttendance)
+over(partition by A.EmployeeNumber, year(A.AttendanceMonth) order by A.AttendanceMonth
+range between current row and unbounded following) as RunningTotal // includes ties or duplicates
+from tblEmployee as E join tblAttendance as A
+on E.EmployeeNumber = A.EmployeeNumber // the default over() will use range between unbounded preceding and unbounded following and generally, rows is faster than range
+
+// row_number, rank, dense_rank
+
+select A.EmployeeNumber, A.AttendanceMonth, A.NumberAttendance,
+row_number() over (partition by A.EmployeeNumber order by A.EmployeeNumber, a.AttendanceMonth) as TheRowNumber,
+rank() over (partition by A.EmployeeNumber order by a.employeenumber, A.AttendanceMonth) as TheRank,
+dense_rank() over (partition by A.EmployeeNumber order by A.EmployeeNumber, A.AttendanceMonth) as TheDenseRank,
+from tblEmployee as E join(select * from tblAttendance union all select * from tblAttendance) as A
+on E.EmployeeNumber = A.EmployeeNumber
+
+select *, row_number() over(order by (select null)) from tblEmployee;
+
+// ntile
+
+select A.EmployeeNumber, A.AttendanceMonth, A.NumberAttendance
+ntile(10) over(partition by E.EmployeeNumber order by A.AttendanceMonth) as TheNTile,
+convert(int, (row_number() over(partition by E.EmplooyeeNumber 
+	order by A.AttendanceMonth) - 1)
+ / (count(*) over (partition by E.EmployeeNumber order by AttendanceMonth 
+	rows between unbounded preceding and unbounded following) / 10.0)) + 1 as MyNTile
+
+// FIRST_VALUE and LAST_VALUE
+
+select A.EmployeeNumber, A.AttendanceMonth, A.NumberAttendance, first_value(NumberAttendance)
+over(partition by E.EmployeeNumber order by A.AttendanceMonth rows between 2 preceding and current row) as FirstMonth,
+last_value(NumberAttendance)
+over(partition by E.EmployeeNumber order by A.AttendanceMonth
+rows between unbounded preceding and 2 following) as LastMonth
+from tblEmployee as E join tblAttendance as A
+on E.EmployeeNumber = A.EmployeeNumber
+
+// lag and lead
+
+select A.EmployeeNumber, A.AttendanceMonth, A.NumberAttendance
+--lag(NumberAttendance) over (partition by E.EmployeeNumber order by A.AttendanceMonth) as MyLag, // gets the previous value if present else null
+--lead(NumberAttendance) over (partition by E.EmployeeNumber order by A.AttendanceMonth) as MyLead // gets the next value if present else null
+--lag(NumberAttendance, 3) over (partition by E.EmployeeNumber order by A.AttendanceMonth) as MyLag, // gets the value at place 3 moves past current
+--lead(NumberAttendance, 3) over (partition by E.EmployeeNumber order by A.AttendanceMonth) as MyLead // gets the value at place 3 moves after current
+lag(NumberAttendance, 3, 999) over (partition by E.EmployeeNumber order by A.AttendanceMonth) as MyLag, // if there is no value, it replaces with 999 at back
+lead(NumberAttendance, 3, 999) over (partition by E.EmployeeNumber order by A.AttendanceMonth) as MyLead // if there i snot value, it replaces with 999 at front
+from tblEmployee a E join tblAttendance as A
+on E.EmployeeNumber = A.EmployeeNumber
+
+// cume_dist
+
+select A.EmployeeNumber, A.AttendanceMonth, A.NumberAttendance,
+cume_dist() over(partition by E.EmployeeNumber order by A.AttendanceMonth) as MyCume_Dist,
+percent_rank() over(partition by E.EmployeeNumber order by A.AttendanceMonth) as MyPercent_Rank,
+cast(row_number() over (partition by E.EmployeeNumber order by A.AttendanceMonth) as decimal(9, 5))
+/ count(*) over (partition by E.EmployeeNumber) as CalcCume_Dist,
+cast(row_number) o ver(partition by E.EmployeeNumber order by A.AttendanceMonth) - 1 as decimal
+/ count(*) over (partition by E.EmployeeNumber) as MyPercent_Rank
+from tblEmployee as E join tblAttendance as A
+on E.EmployeeNumber = A.EmployeeNumber
+
+// percentile_cont and percentile_disc
+
+select distinct EmployeeNumber,
+percentile_cont(0.5) within group (order by NumberAttendance) over (partition by EmployeeNumber) as AverageCont,
+percentile_disc(0.5) within group (order by NumberAttendance) over (partition by EmployeeNumber) as AverageDisc
+from tblAttendance
+
+
+// rollup, grouping and grouping_id
+
+select E.Department, E.EmployeeNumber, A.AttendanceMonth as AttendanceMonth, sum(A.NumberAttendance) as NumberAttendance,
+grouping(E.EmployeeNumber) as EmployeeNumberGroupedBy,
+grouping_id(E.Department, E.EmployeeNumber, A.AttendanceMonth) as EmployeeNumberGroupedID
+from tblEmployee as E join tblAttendance as A
+on E.EmployeeNumber = A.EmployeeNmber
+group by rollup (E.Department, E.EmployeeNumber, A.AttendanceMonth)
+order by Department, EmployeeNumber, AttendanceMonth
+
+// grouping sets
+
+select E.Department, E.EmployeeNumber, A.AttendanceMonth as AttendanceMonth, sum(A.NumberAttendance) as NumberAttendance,
+grouping(E.EmployeeNumber) as EmployeeNumberGroupedBy,
+grouping_id(E.Department, E.EmployeeNumber, A.AttendanceMonth) as EmployeeNumberGroupedID
+from tblEmployee as E join tblAttendance as A
+on E.EmployeeNumber = A.EmployeeNmber
+group by cube (E.Department, E.EmployeeNumber, A.AttendanceMonth)
+order by Department, EmployeeNumber, AttendanceMonth
+
+select E.Department, E.EmployeeNumber, A.AttendanceMonth as AttendanceMonth, sum(A.NumberAttendance) as NumberAttendance,
+grouping(E.EmployeeNumber) as EmployeeNumberGroupedBy,
+grouping_id(E.Department, E.EmployeeNumber, A.AttendanceMonth) as EmployeeNumberGroupedID
+from tblEmployee as E join tblAttendance as A
+on E.EmployeeNumber = A.EmployeeNmber
+group by grouping sets ((E.Department, E.EmployeeNumber, A.AttendanceMonth), (E.Department), ())
+order by Department, EmployeeNumber, AttendanceMonth
+
+select E.Department, E.EmployeeNumber, A.AttendanceMonth as AttendanceMonth, sum(A.NumberAttendance) as NumberAttendance,
+grouping(E.EmployeeNumber) as EmployeeNumberGroupedBy,
+grouping_id(E.Department, E.EmployeeNumber, A.AttendanceMonth) as EmployeeNumberGroupedID
+from tblEmployee as E join tblAttendance as A
+on E.EmployeeNumber = A.EmployeeNmber
+group by grouping sets ((E.Department, E.EmployeeNumber, A.AttendanceMonth), (E.Department), ())
+order by case when department is null then 1 else 0 end, department,
+		case when E.EmployeeNumber is null then 1 else 0 end, E.EmployeeNumber,
+		case when AttendanceMonth is null then 1 else 0 end, AttendanceMonth
+
+select department, job_title, sum(salary)
+from employees
+group by grouping sets(
+	(department, job_title),
+	(department),
+	()
+)
+
+// point
+
+begin tran
+create table tblGeom
+(GXY geometry,
+Description varchar(30),
+IDtblGeom int constraint pk_tblGeom primary key identity(1, 1))
+
+insert into tblGeom
+values (geometry::STGeomFromText('POINT (3 4)', 0), 'First Point'),
+	(geometry::STGeomFromText('POINT (3 5)', 0), 'Second Point'),
+	(geometry::Point(4, 6, 0), 'Third Point'),
+	(geometry::STGeomFromText('MULTIPOINT ((1 2), (2 3), (3 4))', 0), 'Three Points');
+
+
+select * from tblGeom
+
+select IDtblGeom, GXY.StGeometryType() as MyType,
+GXY.STStartPoint().ToString() as StartingPoint,
+GXY.STEndPoint().ToString() as EndingPoint,
+GXY.STPointN(1).ToString() as FirstPoint,
+GXY.STPointN(2).ToString() as SecondPoint,
+GXY.STPointN(1).STX as FirstPointX,
+GXY.STNumPoints() as NumberPoints
+from tblGeom
+rollback tran
+
+begin
+declare @g as geometry
+declare @h as geometry
+
+select @g = GXY from tblGeom where IDtblGeom = 1
+select @h = GXY from tblGeom where IDtblGeom = 3
+select @g.STDistance(@h) as MyDistance
+
+select @g
+union all
+select @h
+
+rollback trans
+
+// line, polygon and circles
+
+begin tran
+create table tblGeom
+(GXY geometry,
+Description varchar(20),
+IDtblGeom int constraint pk_tblgeom primary key identity(5, 1))
+insert into tblgeom
+values (geometry::stgeomfromtext('linestring (1 1, 5 5)', 0), 'First line'),
+	(geometry::stgeomfromtext('linestring (5 1, 1 4, 2 5, 5 1)', 0), 'Second line'),
+	(geometry::stgeomfromtext('multilinestring((1 5, 2 6), (1 4, 2 5))', 0), 'Third line'),
+	(geometry::stgeomfromtext('polygon ((4 1, 6 3, 8 3, 6 1))', 0), 'Polygon'),
+	(geometry::stgeomfromtext('circularstring (1 0, 0 1, -1 0, 0 -1, 1 0)', 0), 'Circle');
+
+select * from tblgeom
+rollback tran
+
+select IDtblGeom, GXY.StGeometryType() as MyType,
+GXY.STStartPoint().ToString() as StartingPoint,
+GXY.STEndPoint().ToString() as EndingPoint,
+GXY.STPointN(1).ToString() as FirstPoint,
+GXY.STPointN(2).ToString() as SecondPoint,
+GXY.STPointN(1).STX as FirstPointX,
+GXY.STPointN(2).STY as FirstPointY,
+GXY.STBoundary().ToString() as Boundary,
+GXY.STLength() as MyLength,
+GXY.STNumPoints() as NumberPoints
+from tblGeom
+
+declare @g as geometry
+select @g = GXY from tblGeom where IDtblGeom = 5
+
+select IDtblGeom, GXY.STIntersection(@g).ToString() as Intersection, 
+GXY.STDistance(@g) as DistanceFromFirstLine from tblGeom
+
+select GXY.STUnion(@g)
+from tblGeom
+where IDtblGeom = 8
+
+// geography
+begin tran
+create table tbGeog
+(GXY geography,
+Description varchar(30),
+IDtblGeog int constraint pk_tblgeog primary key identity(1, 1))
+insert into tblGeog
+values (geography::stgeomfromtext('point (-73.993492 40.750525)', 4326), 'Madison Square Gardens, NY')
+	(geography::stgeomfromtext('point (-0.117452 51.500905)', 4326), 'Royal Albert Hall, London'),
+	(geography::stgeomfromtext('linestring (-73.993492 40.750525, -0.177452 51.500905)', 4326), 'Connection')
+
+select * from tblgeog
+
+declare @g as geography
+select @g = GXY from tblgeog where idtblgeog = 1
+
+select idtblgeog, gxy.stgeometrytype() as mytype,
+gxy.ststartpoint.tostring() as startingpoint,
+gxy.stendpoint().tostring() as endingpoint,
+gxy.stpointn(1).tostring() as firstpoint,
+gxy.stpointn(2).tostring() as secondpoint,
+gxy.stlength() as mylength,
+gxy.stintersection(@g).tostring() as intersection,
+gxy.stnumpoints() as numberpoitns,
+gxy.stdistance(@g) as distancefromfirstline
+fromtblgeog
+
+
+// spatial aggregates
+
+begin tran
+create table
+(gxy geometry,
+description varchar(20),
+idtblgeom int constrain pk_tblgeom primary key identity(5, 1))
+insert into tblgeom
+values (geometry::stgeomfromtext('linestring (1 1, 5 5)', 0), 'First line'),
+	(geometry::stgeomfromtext('linestring ( 5 1, 1 5, 2 5, 5 1)', 0), 'Second line'),
+	(geometry::stgeomfromtext('multilinestring ((1 5, 2 6), (1 4, 2 5))', 0), 'Third Line'),
+	(geometry::stgeomfromtext('polygon ((4 1, 6 3, 8 3, 6 1, 4 1))', 0), 'Polygon'),
+	(geometry::stgeomfromtext('polygon ((5 2, 7 2, 7 4, 5 4, 5 2))', 0), 'Second Polygon'),
+	(geometry::stgeomfromtext('circularstring (1 0, 0 1, -1 0, 0 -1, 1 0)', 0), 'Circle')
+
+select *, gxy.filter(geometry::parse('polygon((2 1, 1 4, 4 4, 4 1, 2 1))')) from tblgeom union all 
+select geometry::stgeomfromtext('polygon((2 1, 1 4, 4 4, 4 1, 2 1))', 0), 'Filter', 0, 0
+
+select * from tblgeom
+where gxy.filter(geometry::Parse('polygon((2 1, 1 4, 4 4, 4 1, 2 1))')) = 1
+
+select @i as combinedshapes
+
+declare @i as geometry
+select @i = geometry::UnionAggregate(gxy)
+from tblGeom
+
+declare @j as geometry
+select @j = geometry::CollectionAggregate(gxy)
+from tblgeom
+
+select @j
+
+select @i as combinedshapes
+union all
+select geometry::envelopeaggregate(gxy).tostring() as envelope from tblgeom
+union all
+select geometry::convexhullaggregate(gxy).tostring() as envelope from tblgeom
+
+rollback tran
+
+// table structure
+
+select * from tbldepartment
+select * from tblemployee
+select * from tbltransaction
+
+select min(EmployeeNumber) as minnumber, max(employeenumber) as maxnumber
+from tbltransaction
+
+select * 
+from tblTransaction as T
+inner join tblEmployee as E
+on e.employeenumber = t.employeenumber
+where e.employeelastname like 'y%'
+order by t.employeenumber
+
+// where, not clause
+
+select T.* from 
+tblTransaction as T
+inner join tblEmployee as E
+on e.employeenumbe r = t.employeenumber
+where e.employeelastname like 'y%'
+order by t.employeenumber
+
+select *
+from tbltransaction as t
+where employeenumber in (126, 127, 128, 129)
+order by employeenumber
+
+select *
+from tbltransaction as t
+where employeenumber not in
+	(select employeenumber from tblemployee where employeelastname like 'y%')
+order by employeenumber
+
+// any, some, all clauses
+
+select *
+from tbltransaction as t
+where employeenumber <> all (select employeenumber form tblemployee where employeelastname like 'y%') // all == and
+order by employeenumber
+
+select *
+from tbltransaction as t
+where employeenumber <= any (select employeenumber form tblemployee where employeelastname like 'y%') // any/some == or
+order by employeenumber
+
+// from
+
+select * 
+from tblemployee as T
+inner join (select * from tblEmployee
+where employeelastname like 'y%') as E
+on e.employeenumber = t.employeenumber
+order by t.employeenumber
+
+// select
+
+select *, (select count(t.employeenumber) from tbltransaction as t
+where t.employeenumber = e.employenumber
+) as numtransactions
+from tblemployee as e
+where e.employeelastname like 'y%'
+
+select 
+from tbltransaction as t
+where exists (
+select employeenumber from tblemployee as e where employeelastname like 'y%' and t.employeenumber = e.employeenumber\
+)
+order by employeenumber
+
+select d.department, employeenumber, employeefirstname, employeelastname
+	rank() over (partition by d.department order by e.employeenumber) as therank
+from tbldepartment as d join tblemployee as e on d.department = e.department
+order by d.department, employeenumber
+
+
+select * from
+(select d.department, employeenumber, employeefirstname, employeelastname
+		rank() over (partition by d.department order by e.employeenumber) as therank
+from tbldepartment as d
+join tblemployee as e on d.department = e.department) as mytable
+where therank <= 5
+order by department, employeenumber
+
+// with statement
+-- a with statement is used to define a common table expression (a temporary result set) that only exists during the execution of a single sql statement.
+
+with MyTable as
+	(select d.department, employeenumber, employeefirstname, employeelastname
+		rank() over (partition by d.department order by e.employeenumber) as therank
+from tbldepartment as d join tblemployee as e on d.department = e.department)
+
+select * from tblWithRanking left join transaction2014 on tblwithranking.employeenumber = transaction2014.employeenumber 
+where therank <= 5
+order by department, employeenumber
+
+select e.employeenumber from tblemployee as e left join tbltransaction as t
+on e.employeenumber = t.employeenumber
+where t.employeenumber is null
+order by e.employeenumber
+
+select row_number over(order by (select null)) as rownumber from tbltransaction as U
+left join tbltransaction as t on u.rownumber = t.employeenumber
+where t.employeenumber is null
+
+with numbers as (
+select top(1125) row_number() over (order by (select null)) as rownumber
+from tbltransaction as U)
+
+select U.rownumber from numbers as U
+left join tbltransaction as t
+on u.rownumber = t.employeenumber
+where t.employeenumber is null
+
+with numbers as (
+select top(select max(employeenumber) from tblTransaction) row_number() over (order by select null)) as rownumber
+from tbltransaction as U)
+
+with myTable as 
+(select year(dateoftransaction) as theyear, month(dateoftransaction) as themonth, amount from tblTransaction)
+
+select * from mytable // or select theyear, [1], [2], [3], [4], [5], [6], [7], [8], [9], [10], [11], [12] from mytable
+pivot (sum(amount) for themonth in ([1], [2], [3], [4], [5], [6], [7], [8], [9], [10], [11], [12])
+
+// replacing nulls in pivots
+
+with mytable as
+(select year(dateoftransaction) as theyear, month(dateoftransaction) as themonth, dateoftransaction, amount from tbltransaction)
+
+select theyear, dateoftransaction, isnull([1], 0) as [1],
+	isnull([2], 0) as [2],
+	isnull([3], 0) as [3],
+	isnull([4], 0) as [4],
+	isnull([5], 0) as [5],
+	isnull([6], 0) as [6],
+	isnull([7], 0) as [7],
+	isnull([8], 0) as [8],
+	isnull([9], 0) as [9],
+	isnull([10], 0) as [10],
+	isnull([11],  0) as [11],
+	isnull([12], 0) as [12] from mytable
+pivot (sum(amount) for themonth in ([1], [2], [3], [4], [5], [6], [7], [8], [9], [10], [11], [12])) as myPvt
+order by theyear
+
+// unpivot
+select *
+	from [tblPivot]
+unpivot (amount for month in ([1], [2], [3], [4], [5], [6], [7], [8], [9], [10], [11], [12])) as tblUnpivot
+where Amount <> 0
+
+
+// cte
+-- Common Table Expression, a temporary result set that can be reference to within a select, insert, update or delete statement
+
+alter table tblemployee
+add manager int
+go
+
+update tblemployee
+set manager = ((employenumber - 123)/10) + 123
+where employeenumber > 123;
+
+with mytable as
+(select employeenumber, employeefirstname, employeelastname, 0 as bosslevel
+from tblemployee
+where manager is null
+union all
+select e.employeenumber, e.employeefirstname, e.employeelastname, mytable.bosslevel + 1
+from tblemployee as e
+join mytable on e.manager = mytable.employeenumber
+)
+
+// functions
+
+create function amountplusone(@amount smallmoney)
+returns smallmoney
+as
+begin
+	return @amount + 1
+end
+
+select dateoftransaction, employeenumber, amount, dbo.amountplusone(amount) as amountandone
+form tbltransaction
+
+declare @myvalue smallmoney
+exec @myvalue = dbo.amountplusone 345.67
+exec @myvalue = dbo.amountplusone @amount = 345.67
+
+select @myvalue
+if exists
+drop function numberoftransactions
+create function numberoftransactions(@employeenumber int)
+returns int
+as
+begin
+	declare @numberoftransactions int
+	select @numberoftransactions = count(*) from tbltransaction
+	where employeenumber = @employeenumber
+	return @numberoftransactions
+end
+
+select *, dbo.numberoftransactions(employeenumber) as transnum
+from tblemployee
+
+
+// inline-table function
+
+create function transactionlist(@employee int) returns table as return
+(
+select * from tbltransaction
+where employeenumber = @employeenumber
+)
+
+select * from dbo.transactionlist(123)
+
+//multi-statement table funciton
+
+create function translist(@employeenumber)
+returns @translist table
+(amount smallmoney, dateoftransactoin smalldatetime, employeenumber int)
+as begin 
+	insert into @translist(amount, dateoftransaction, employeenumber)
+	select amount, dateoftransaction, employeenumber, from tbltransaction
+	where employeenumber = @employeenumber
+	return
+end
+
+// apply
+
+select * from dbo.translist(123)
+
+select * from tblemployee as e 
+outer apply translist(e.employeenumber) as t
+
+select * from tblemployee as e
+cross apply translist(e.employeenumber) as t
+
+select * from tblemployee as e
+where (select count(*) from dbo.translist(e.employeenumber)) > 3
+
+// synonyms
+-- a synonym is a alias (nickname) for a database object like a table, view, stored procedure, function, sequence
+
+create synonym EmployeeTable
+for tblEmployee
+go
+
+select * from EmployeeTable
+
+create synonym RemoteTable
+for OVERTHERE.70-461remote.dbo.tblRemote
+go
+
+select * from RemoteTable
+
+// dynamic sql
+-- sql code constructed and executed at runtime. The exact sql statement is not known in advance.
+
+declare @command as varchar(255);
+set @command = 'select * from tblEmployee where EmployeeNumber = 129;'
+execute (@command);
+go
+
+declare @command as varchar(255), @param as varchar(50);
+set @command = 'select * from tblEmployee where EmployeeNumber = '
+set @param = '129' // sql-injection as @param = '129 or 1=1' could be a hack
+execute (@command + @param)
+go
+
+declare @command as nvarchar(255), @param as nvarchar(50);
+set @command = N'select * from tblemployee where employeenumber = @productid'
+set @param = N'129'
+execute sys.sp_executesql @statement = @command, @params = N'@productid int, @productid = @param;
+
+// guid (globally unique identifier) (128-bit integer number) and sequential ids
+
+declare @newvalue as uniqueidentifier
+set @newvalue = newid()
+select @newvalue as thenewid
+go
+declare @randomnumbergenerator int = datepart(millisecond.sysdatetime())+1000*(datepart(second,sysdatetime())+60*(datepart(minute, sysdatetime())+60*datepart(hour, sysdatetime())))
+select rand(@randomnumbergenerator) as randomnumber;
+
+begin tran
+create table tblemployee4
+(uniqueid uniqueidentifier constrain df_tblemployee4_uniqueid default newid(),
+employeenumber int constraint uq_tblemployee4_employeenumber unique)
+
+insert into tblemployee4(employeenumber)
+values (1), (2), (3)
+select * from tblemployee4
+
+rollback tran
+go
+
+declare @newvalue as uniuqeidentifier
+set @newvalue = newsequentialid() // can't use it here
+select @newvalue as thenewid
+go
+
+
+begin tran
+create table tblemployee4
+(uniqueid uniqueidentifier constraint df_tblemployee4_uniqueiddefault newsequentialid(),
+employeenumber int constrain uq_tblemployee4_employeenumber unique)
+
+insert into tblemployee4(employeenumber)
+values (1), (2), (3)
+
+select * from tblemployee4
+
+// sequences
+-- An object that generates a sequence of unique numberic values typically used to generate IDs or primary key values
+
+begin tran
+create sequence newseq as bigint
+start with 1
+increment by 1
+minvalue 1
+maxvalue 9999999
+cycle
+cache 50
+create sequence secondseq as int
+select from ses.sequences
+rollback tran
+
+// using sequences
+
+select next value for newseq as nextvalue;
+
+alter table tbltransaction
+add nextnumber int constraint df_transaction default next value for newseq
+
+alter sequence newseq
+restart with 15 // now starts with 15s
+
+drop sequence newseq
+
+// xml
+
+<Shopping ShopperName="Phillip Burton Weather="Nice">
+	<ShoppingTrip>
+		<Item>Bananas
+			<Name>Banana</Name>
+			<Cost>5</Cost>
+		</Item>
+		<Item Cost="6">Apples</Item>
+		<Item Cost="3">Black Cherries</Item>
+	</ShoppingTrip>
+	<ShoppingTrip>
+		<Item>Emeralds</Item>
+		<Item>Diamonds</Item>
+		<Item>Furniture</Item>
+	</ShoppingTrip>
+</Shopping>
+
+// xml variable and xml field
+
+declare @x xml
+set @x = '
+<Shopping ShopperName="Phillip Burton Weather="Nice">
+	<ShoppingTrip>
+		<Item>Bananas
+			<Name>Banana</Name>
+			<Cost>5</Cost>
+		</Item>
+		<Item Cost="6">Apples</Item>
+		<Item Cost="3">Black Cherries</Item>
+	</ShoppingTrip>
+	<ShoppingTrip>
+		<Item>Emeralds</Item>
+		<Item>Diamonds</Item>
+		<Item>Furniture</Item>
+	</ShoppingTrip>
+</Shopping>
+'
+select @x as XMLOutput
+
+update [dbo].[tblEmployee]
+set xmloutput = @x
+where employeenumber = 200
+
+// for xml raw
+
+select e.employeenumber, e.employeefirstname, e.employeelastname, e.dateofbirth, t.amount, 
+t.dateoftransaction
+from [dbo].[tblemployee] as e
+left join [dbo].[tbltransaction] as t
+on e.employeenumber = t.employeenumber
+where e.employeenumber between 200 and 202
+for xml raw
+--for xml raw('MyRow), elements
+-- for xml raw('MyRow'), elements
+
+// for xml auto
+
+select e.employeenumber, e.employeefirstname, e.employeelastname, e.dateofbirth, t.amount, 
+t.dateoftransaction
+from [dbo].[tblemployee] as e
+left join [dbo].[tbltransaction] as t
+on e.employeenumber = t.employeenumber
+where e.employeenumber between 200 and 202
+for xml auto
+--for xml auto, elements
+
+// for xml path (almost same as raw but, element naming can be defined thru path)
+
+select e.employeenumber as '@EmployeeFirstName',
+e.employeefirstname as '@EmployeeLastName',
+e.employeelastname, 
+e.dateofbirth, 
+t.amount as 'Transaction/Amount',
+t.dateoftransaction as 'Transaction/DateOfTransaction'
+from [dbo].[tblemployee] as e
+left join [dbo].[tbltransaction] as t
+on e.employeenumber = t.employeenumber
+where e.employeenumber between 200 and 202
+for xml path('Employees')
+
+gives ->
+
+<Employees EmployeeFirstName="Michiko" EmployeeLastName="Robinett">
+	<EmployeeNumber>200</EmployeeNumber>
+	<DateOfBirth>1981-12-23</DateOfBirth>
+	<Transaction>
+		<Amount>958.9400</Amount>
+		<DateOfTransaction>2015-02-25T00:00:00</DateOfTransaction>
+	</Transaction>
+<Employees>
+<Employees EmployeeFirstName="Michiko" EmployeeLastName="Robinett">
+	<EmployeeNumber>200</EmployeeNumber>
+	<DateOfBirth>1981-12-23</DateOfBirth>
+	<Transaction>
+		<Amount>-5.0900</Amount>
+		<DateOfTransaction>2015-0831T00:00:00</DateOfTransaction>
+	</Transaction>
+</Employees>
+.....
+
+By using nested query,
+
+select E.EmployeeFirstName as '@EmployeeFirstName',
+	E.EmployeeLastName as '@EmployeeLastName',
+	E.EmployeeNumber,
+	E.DateOfBirth,
+	(select T.Amount as 'Amount' from [dbo].[tblTransaction] as T
+where T.EmployeeNumber = E.EmployeeNumber
+for xml path(''), type // type makes the output to be strictly in xml format
+) as TransactionElement
+from [dbo].[tblEmployee] as E
+where E.EmployeeNumber between 200 and 202
+for xml path('Employees'), root('MyXML')
+
+// for xml explicit
+
+select 1 as Tag
+	 E.EmployeeFirstName, [Elements!1!EmployeeFirstName]
+	E.EmployeeLastName, [Elements!1!EmployeeLastName]
+	E.EmployeeNumber, [Elements!1!EmployeeNumber]
+	E.DateOfBirth, [Elements!1!DateOfBirth]
+	E.Amount, [Elements!1!Amount]
+	T.DateOfTransaction as [Elements!1!DateOfTransaction],
+	null as [Elements!1!Amount],
+	null as [Elements!1!DateOfTransaction]
+from [dbo].[tblEmployee] as E
+where E.EmployeeNumber between 200 and 202
+union all
+select 2 as Tag, 1 as Parent,
+	null as [EmployeeFirstName],
+	null as [EmployeeLastName],
+	T.EmployeeNumber,
+	null as DateOfBirth,
+	Amount,
+	DateOfTransaction
+from [dbo].[tblTransaction] as T
+inner join [dbo].[tblEmployee] as E on T.EmployeeNumber = E.EmployeeNumber
+where T.EmployeeNumber between 200 and 202
+order by EmployeeNumber, [Elements!2!Amount]
+for xml explicit
+
+// shredding (converting well-formed xml to table-like info)
+
+declre @x xml
+
+set @x = '
+<Shopping ShopperName="Phillip Burton">
+	<ShoppingTrip>
+		<Item>Bananas
+			<Name>Banana</Name>
+			<Cost>5</Cost>
+		</Item>
+		<Item Cost="6">Apples</Item>
+		<Item Cost="3">Black Cherries</Item>
+	</ShoppingTrip>
+	<ShoppingTrip>
+		<Item>Emeralds</Item>
+		<Item>Diamonds</Item>
+		<Item>Furniture</Item>
+	</ShoppingTrip>
+</Shopping>
+'
+
+select @x.value('(/Shopping/ShoppingTrip/Item/@Cost)[1]',  'varchar(50)') (1-indexed)
+--@ refers to attribute of the element
+
+// xml modify
+
+set @x.modify('replace value of (/Shopping/ShoppingTrip[1]/Item[3]/@Cost)[1] with "6.0"')
+
+select @x
+
+set @.modify('insert <Item Cost="5">New Food</Item>
+			into (/Shopping/ShoppingTrip)[2]')
+
+select @x
+
+// xquery query method using for, return and order, where, let
+
+select @x.query('for $Value in /Shopping/ShoppingTrip/Item
+			return $Value')
+select @x.query('for $Value in /Shopping/ShoppingTrip/Item
+			return string($Value)')
+select @x.query('for $Value in /Shopping/ShoppingTrip/Item
+			return concat(string($Value), ";")')
+select @x.query('for $Value in /Shopping/ShoppingTrip/Item
+			where $Value/@Cost >= 4
+			order by $Value/@Cost
+			return concat(string($Value), ";")')
+select @x.query('for $Value in /Shopping/ShoppingTrip/Item
+			let $Cost := $Value/@Cost
+			where $Cost >= 4
+			order by $Cost
+			return concat(string($Value), ";")')
+
+// xquery nodes shredding a variable
+
+select tbl.col.query('.')
+from @x.nodes('/Shopping/ShoppingTrip') as tbl(col)
+select tbl.col.query('.')
+from @x.nodes('/Shopping/ShoppingTrip/Item') as tbl(col)
+select tbl.col.value('.', 'varchar(50)') as Item, tbl.col.value('@Cost', 'varchar(50)') as Cost
+from @x.nodes('/Shopping/ShoppingTrip/Item') as tbl(col)
+
+// xquery nodes shredding a table
+
+declare @x1, @x2 xml
+
+set @x1 = '
+<Shopping ShopperName="Phillip Burton">
+	<ShoppingTrip>
+		<Item>Bananas
+			<Name>Banana</Name>
+			<Cost>5</Cost>
+		</Item>
+		<Item Cost="6">Apples</Item>
+		<Item Cost="3">Black Cherries</Item>
+	</ShoppingTrip>
+</Shopping>
+'
+set @x2 = '
+<Shopping ShopperName="Phillip Burton">
+	<ShoppingTrip>
+		<Item>Emeralds</Item>
+		<Item>Diamonds</Item>
+		<Item>Furniture</Item>
+	</ShoppingTrip>
+</Shopping>
+'
+drop table #tblXML
+create table #tblXML(pkXML int primary key, xmlCol XML)
+
+insert into #tblXML(pkXML, xmlCol) values (1, @x1)
+insert into #tblXML(pkXML, xmlCol) values (2, @x2)
+
+select * from #tblXML
+
+select tbl.col.query('.')
+from #tblXML cross
+@x.nodes('/Shopping/ShoppingTrip') as tbl(col)
+
+select tbl.col.value('@Cost', 'varchar(50)')
+from #tblXML cross
+@x.nodes('/Shopping/ShoppingTrip') as tbl(col)
+
+// importing and exporting using the bcp utility
+
+bcp [70-46155].dbo.tblDepartment out mydata.out -N -T // -N is for unicode and -T is for trusted connection
+
+bcp [70-46155].db.tblDepartment2 in mydata.out -N -T // there needs to be a table tblDepartment2 beforehand
+
+// bulk insert and openrowset
+
+drop table #tblXML
+go
+
+create table #tblXML(XmlCol xml)
+go
+bulk insert #tblXML from 'C:\XML\SampleDataBulkInsert.txt'
+select * from #tblXML
+
+drop table #tblXML
+go
+create table #tblXML (IntCol int, XmlCol xml)
+go
+insert into #tblXML(XmlCol)
+select * from
+openrowset(bulk 'C:\XML\SampleDataOpenRowset.txt', SINGLE_BLOB) as x
+select * from #tblXML
+
+
+// schema (enforces the data with the data types, and structure of the table as defined)
+
+
+select E.EmployeeNumber, E.EmployeeFirstName, E.EmployeeLastName, T.Amount, T.DateOfTransaction 
+from [dbo][tblEmployee] as E
+left join [dbo].[tblTransaction] as T
+on E.EmployeeNumber = T.EmployeeNumber
+where E.EmployeeNumber between 200 and 202
+for xml raw, xmldata // xmldata gives schema
+for xml raw, xmlschema // xmlschema gives much more complicated schema
+
+// use xml when structure is unknown or data is sparsed or heirarchy is needed
+
+create primary xml index pk_tblXML on #tblXML(xmlCol) // 
+
+create xml index spek_tblXML_Path on#tbXML(xmlCol) using xml index pk_tblXML for value // useful whie retriveing multiple values forma query
+
+create xml index spek_tblXML_Value on#tbXML(xmlCol) using xml index pk_tblXML for value // useful whie retriveing multiple values forma query
+
+create xml index spek_tblXML_Property on#tbXML(xmlCol) using xml index pk_tblXML for value // useful whie retriveing multiple v
+
+// working with json (javascript object notation)
+
+declare @json nvarchar(4000)
+set @json '
+{
+	"name": "Philip",
+	"Shopping": 
+			{
+				"ShoppingTrip": 1,
+				"Items": [
+						{"Item": "Bananas", "Cost": 5},
+						{"Item": "Apples", "Cost": 4}
+				]
+			}
+}
+'
+
+select isjson(@json)
+
+--json_value - returns 1 value
+--json_query - returns an array or an object
+
+select json_query(@json, 'strict $.name') -- strict throws whats wrong when something wrong
+
+select json_value(@json, 'strict $.Shopping.ShoppingTrip.Items[0].Cost') 0-indexed
+
+select json_modify(@json, 'string $.Shopping.Items[0]', json_query('{"Item": "Big Bananas", "Cost": 1}'))
+
+select * from openjson(@json, '$.Shopping.Items') with (Item varchar(10), Cost int)
+
+select  'Bananas' as Item, 5 as Cost
+union
+select 'Apples', 4
+union
+select 'Cherries', 3
+for json path, root('Items') // works similar to xml path but returns a json instead of xml
+
+
+// creating temporal tables
+-- A table that exists only for the duration of a specific session or transaction.
+
+create table [dbo].[tblEmployeeTemporal]
+	([EmployeeNumber] int not null,
+	[EmployeeFirstName] varchar(50) not null,
+	[EmployeeMiddleName] varchar(50) not null,
+	[EmployeeLastName] varchar(50) not null,
+	[EmployeeGovernmentID] char(10) not null,
+	[DateOfBirth] date not null, [Department] varchar(19) null,
+	ValidFrom datetiem(2) generated always as row start,
+	ValidTo datetime(2) generated always as row end,
+	period for system_time (validfrom, validto)) 
+	with (system_versioning = on (history_table = dbo.tblEmployeeHistory))
+
+insert into [dbo].[tblEmployeeTemporal]
+([EmployeeNumber], [EmployeeFirstName], [EmployeeMiddleName], [EmployeeLastName], [EmployeeGovernemntID],
+[DateOfBirth], [Department])
+values (123, 'Jane', null, 'Zwilling', 'AB123456G', '1985-01-01', 'Customer Relations'),
+(124, 'Carolyn', null, 'Zabokristki, 'LU778728T', '1977-12-09', 'Commercial');
+
+select * from dbo.tblEmployeeTemporal
+
+// making existing tables temporal
+
+alter table [dbo].[tblEmployee]
+add
+	ValidFrom datetime2(2) generated always as row starrt start_constraint def_ValidFrom default sysutcdatetime(),
+	ValidTo datetime2(2) generated always as row end constraint def_ValidTo default convert(datetime2(2), '999-12-31 23:59:59'),
+	period for system_time (validfrom, validto)
+
+select * from [dbo].[tblEmployee]
+alter table [dbo].[tblEmployee]
+set (system_versioning = on (history = dbo.tblEmployeeHistory2))
+
+// querying temporal tables at a point of time
+
+select * from dbo.tblEmployeeTemporal
+for system_time as '2021-02-01'
+
+// querying temporal tables between range of times
+
+
+select * from dbo.tblEmployeeTemporal
+for system_time
+between '2019-01-01' and '2024-01-01'
+where EmployeeNumber = 124
+
+select * from dbo.tblEmployeeTemporal
+for system_time
+--contained in ('2019-01-01', '2024-01-01')
+from '2019-01-01' to '2024-01-01'
+where EmployeeNumber = 124
+
+-- transaction is a series of statements or batch of sql queries that either all of them gets succeeded or failed
+-- ACID - Atomicity, Consistency, Isolation, Durability
+-- Atomicity - Every transaction is treated as a single, indivisible unit
+-- Consistency - Ensures that a transaction takes the database from one valid state to another maintaining all predefined rules and constraints
+-- Isolation - Ensures that transactions ar executed independently of one another, even if they are occurring simultaneosly.
+-- Durability - Guarantees that once a transaction has been committed, its changes are permanent even in the event of a system failure.
+
+// implicit transactions
+
+update [dbo].[tblEmployee]
+set EmployeeNumber = 122
+where EmployeeNumber = 123
+-- this code doesn't involve any manual transaction definition, by default, the transaction will be commited 
+
+
+// explicit transactions - start and end transactions
+
+begin transaction
+
+select * form [dbo].[tblEmployee]
+
+update [dbo].[tblEmployee]
+set EmployeeNumber = 122
+where EmployeeNumber = 123
+
+commit tran // without committing, the transaction goes on and there will be an exclusive lock on resources it is using.
+rollback tran // the same goes for this (only one of either is used)
+
+// marking a transaction
+
+begin transaction MyTransaction with mark 'My Transaction'
+
+select * from [dbo].[tblEmployee]
+
+update [dbo].[tblEmployee] set EmployeeNumber = 122 where EmployeeNumber = 123
+
+rollback tran MyTransaction
+
+// trancount
+
+begin tran
+	begin tran
+		update [dbo].[tblEmployee] set EmployeeNumber = 122 where Employee = 123
+	commit tran // (success)
+rollback tran // (fails)
+
+begin tran
+	begin tran
+		update [dbo].[tblEmployee] set EmployeeNumber = 122 where Employee = 123
+	rollback tran // (fails)
+commit tran // (fails)
+
+select @@trancount // (shows the level of transactions) (level= 0)
+begin tran
+	select @@trancount (level = 1)
+	begin tran
+		update [dbo].[tblEmployee] set EmployeeNumber = 122 where Employee = 123
+	rollback tran // (fails)
+	select @@trancount (level = 0)
+commit tran
+select @@trancount // (level = 0)
+
+
+// scope and types of locks
+
+-- rows, pages and tables (1. Intent shared (IS), 2. Shared (S), 3. Update (U), 4. Intent Exclusive (IX), 5. Shared with intent exclusive (SIX), 6. Exclusive (X))
+
+// Shared locks
+
+-- allows concurrent transactions to read (select)
+-- no other transactions can modify the data
+-- released as soon as the read operation is completed
+
+// Update locks
+
+-- used to prevent deadlock
+-- transactions reading data - shared lock
+-- to update data, must convert to exclusive
+-- cannot convert to exclusive if there is a shared lock
+-- solution - use update lock; then convert to exclusive lock
+
+// exclusive locks
+
+-- prevents access by concurrent transactions
+-- used by insert, update, delete
+
+// intent locks
+
+-- signal intent to place locks at a lower level
+-- prevent other transactions from modifying higher level resources
+-- detecting lock conflicts
+
+Lock Mode	Purpose					Conflicts With
+IS		Intent to read at lower level		X
+S		Read (shared access)			U, X, IX, SIX
+U		Intent to update (avoids deadlocks)	U, X, SIX
+IX		Intent to write at lower level	S, U, X, SIX
+SIX		Read all, update some			S, U, X, SIX
+X		Write (exclusive access)		All except IS, IX
+
+// results of no concurrency control
+
+-- lost updates
+-- uncommitted dependency (dirty read)
+-- inconsistent analysis (nonrepeatable read)
+-- phantom reads
+-- missing and double reads caused by row updates
+-- missing one or more rows that were not the target of update
+
+// transaction isolation levels (read committed, read uncommitted, repeatable read, snapshot, serializable)
+
+// read uncommited
+
+-- transactions can see uncommitted changes made by other transactions (dirty reads)
+
+// read committed
+
+-- a transaction only sees data that has been committed by other transactions uncommitted changes are not visible
+
+// repeatable read
+
+-- once a row is read by a transaction, it cannot be changed by other transactions until the first transaction completes. Prevents non-repeatable reads
+
+// snapshot
+
+-- transactions see a consistent view of the data as it was at the start of the transaction, regardless of changes made by others.
+
+// serializable
+
+--transactions are completely isolated from each other, as if they were run one after another ("serially")
+
+// heaps
+
+-- not to use heaps when needed to retreive data that's grouped together
+-- not to use heaps when the table is large
+-- not to use use when we need data to be sorted
+
+-- Scan is performed when querying a table (heap)
+
+// b-tree
+
+-- There should be no more than 3 childs at any point in the tree
+
+// clustered indexes
+
+-- a clustered index determiens the physical order of data in a table
+-- When a table has a clustered index, its rows are stored on disk in the same order as the index. (.i.e, the table's data is organized and sorted according to the clustered index's key columns)
+-- It is usually implemented as a B-tree (balanced tree) structure
+-- The leaf nodes of the clustered index contain the actual data rows of the table
+-- as you traverse the index, you are traversing the actual data
+-- if a table doesn't have clustered index, it is called a heap
+-- data in a heap is stored in no particular order
+
+create clustered index idx_tblEmployee on [dbo].[tblEmployee]([EmployeeNumber])
+
+select * from [dbo].[tblEmployee] // will perform a clustered index scan
+
+select * from [dbo].[tblEmployee] where [EmployeeNumber] = 127 // with perform a clustered index seek
+
+
+select * into [dbo].[tblEmployee2] from [dbo].[tblEmployee]
+where EmployeeNumber <> 131
+
+alter table [dbo].[tblEmployee]
+add constraint pk_tblEmployee primary key(EmployeeNumber) // creates a clustered index by default
+
+-- can't have more than clustered index in a table as the data can only be sorted in one way at a time
+-- can have duplicate values
+
+// non-clustered index
+
+-- a non-clustered index is a seperate structure from the data table.
+-- It maintains a logical order of the index keys, with pointers (references) to the physical data rows
+-- It is a B-tree too.
+-- The leaf nodes contain the idnex key and pointer (Row ID, or row locator) to the actual data row in the table
+-- The data rows themselves are not physically reordered.
+
+create nonclustered index idx_tblEmployee_DateOfBirth on [dbo].[tblEmployee]([DateOfBirth])
+
+// filtered indexes
+
+create nonclustered index idx_LastNameForHR on [dbo].[tblEmployee]([EmployeeLastName]) where
+[Department] = 'HR' // reduces when maintenance costs when person of different department is added
+
+select [EmployeeLastName] from [dbo].[tblEmployee]
+where [Department] = 'HR' // uses non-clustered index scan
+
+// include
+
+select [EmployeeLastName]
+from [dbo].[tblEmployee]
+
+create nonclustered index idx_EmployeeNumber
+on [dbo].[tblEmployee]([EmployeeNumber])
+include ([EmployeeFirstName], [EmployeeMiddleName], [EmployeeLastName])
+
+drop index [idx_tblEmployee] on [dbo].[tblEmployee]
+
+// different join types (hash match, nested loop match, merge match)
+-- 
+
+select D.Department, D.DepartmentHead, E.EmployeeNumber, E.EmployeeFirstName, E.EmployeeLastName
+from [dbo].[tblEmployee] as E
+left join [dbo].[tblDepartment] as D
+on E.Department = D.Department
+-- uses hash match here
+
+// nested loops and merge joins
+select D.Department, D.Department, E.EmployeeNumber, E.EmployeeFirstName, E.EmployeeLastName
+from [dbo].[tblEmployee] as E
+left join [dbo].[tblDepartment] as D
+on E.Department = D.Department
+where D.Department = 'HR'
+-- On is big table and one is small table (Uses nested loop join here..)
+
+create unique clustered index [idx_tblEmployee] on dbo.tblEmployee (EmployeeNumber, [DateOfTransaction], [Amount]) // almost equals primary key
+
+select E.EmployeeNumber, T.Amount from [dbo].[tblEmployee] as E
+left join [dbo].[tblTransaction] as T
+on E.EmployeeNumber = T.EmployeeNumber
+-- uses merge join here..
+
+// sarg - search arguments
+
+-- sarg can use indexes
+-- year(dateorignal) = 2020 doesn't use index
+-- dateoriginal >= '2020-01-01' and dateoriginal < '2021-01-01' uses index
+
+-- E.Employee / 10 = 34 -- not sarg
+-- E.EmployeeNumber between 340 and 349 -- sarg
+
+-- Plans scan when a direct field is not used even when there is a clustered index
+
+// hints
+
+-- nolock, readuncommited, updlock, repeatableread, serializable, readcommitted, tablock, tablockx, paglock, rowlock,
+-- nowait, readpast, xlock, snapshot, noexpand, forceseek, forcescan
+
+select D.Department, D.DepartmentHead, E.EmployeeNumber, E.EmployeeFirstName, E.EmployeeLastName
+from [dbo].[tblDepartment] as D
+left merge join [dbo].[tblEmployee] as E
+on D.Department = E.Department
+where D.Department = 'HR'
+
+// statistics io (input - output)
+
+set statistics io on
+go
+
+
+// set showplan_all and client statistics
+
+set showplan_all on
+go
+-- gives the execution plan as a table output
+
+set showplan_text on
+go
+
+set statistics time on // we get cpu time of executing the statements
+go
+
+// dynamic vs. parameterised queries
+
+declare @param varchar(1000) = '127'
+declare @sql varchar(1000) = 
+		'select * from [dbo].[tblTransaction] as t where t.employeenumber = ' + @param;
+
+execute (@sql);
+
+execute sys.sp_executesql 
+@statement = 'select * from [dbo].[tblTransaction] as t where t.employeenumber = @employeenumber'
+@params = N'@Employeenumber varchar(1000)',
+@employeenumber = @param
+
+// dmv (dynamic management view)
+-- dm_db_index_usage_stats
+
+// dm_db_index_usage_stats
+
+select * sys.dm_db_index_usage_stats
+
+select db_name(database_id) as [Database Name], object_name(object_id) as [Table Name],
+ * from sys.dm_db_index_usage_stats where database_id = db_id()
+
+select db_name(database_id) as [Database Name],
+object_name(ddius.object_id) as [Table Name],
+ddius.*
+from sys.dm_db_index_usage_stats as ddius
+join sys.indexes as i on ddius.object_id = i.object_id = ddius.index_id = i.index_id
+where database_id = db_id()
+
+// dm_db_index_physical_stats
+
+select * from 
+sys.dm_db_index_physical_stats(db_id('70-461S7'), object_id('dbo.tblEmployee'), NULL, NULL, 'DETAILED')
+
+
+select * from 
+sys.dm_db_index_physical_stats(null, null, null, null, 'detailed')
+
+// dm_db_missing_index_details
+
+select T.*
+into dbo.tblTransactionBigger
+from [dbo].[tblTransaction] as T
+cross join [dbo].[tblTransaction] as T2
+
+select * from dbo.tblTRansactionBigger
+where [EmployeeNumber] = 127
+
+select * from sys.dm_db_missing_index_details
+where database_id = db_id()
+
+select * from sys.dm_db_missing_index_details as mid cross apply sys.dm_db_missing_index_columns(mid.index_handlle)
+inner join sys.dm_db_missing_index_groups as mig on mig.index_handle = mid.index_handle
+where database_id = db_id()
+order by column_id
+
+// cursor
+
+-- declare cursor cursor for select statement from table
+-- open cursor
+-- fetch cursor into
+-- close cursor
+
+declare @EmployeeID int
+declare csr CURSOR for  // this is not a mistake @csr makes it an object... use without @
+select * from [dbo].[tblEmployee]
+where EmployeeNumber between 120 and 299
+
+open csr
+fetch next from csr into @EmployeeID
+while @@fetch_status = 0
+begin
+	select * from [dbo].[tblTransaction] where EmployeeNumber = @EmployeeId
+	fetch next from csr into @EmployeeID
+end
+
+close cursor
+deallocate cursor
+
+// alternative ways
+
+select * 
+from tblTransaction as T
+right join tblEmployee as E
+on T.EmployeeNumber = E.EmployeeNumber
+where E.EmployeeNumber between 120 and 299
+and T.EmployeeNumber is not null
+
+// impact of scalar udfs
+
+create function fnc_TransactionTotal (@intEmployee as int)
+returns oney
+as begin
+declare @TotalAmount as money
+select @TotalAmount = sum(Amount)
+from [dbo].[tblTransaction] where EmployeeNumber = @intEmplyee
+return @TotalAmount
+end
+
+select EmployeeNumber, dbo.func_TransactionTotal(EmployeeNumber)
+from dbo.tblEmployee
+
+
+--alternative for this
+
+select E.EmployeeNumber, sum(T.Amount) as TotalAmount
+from dbo.tblEmployee as E
+left join dbo.tblTransaction as T
+on E.EmployeeNumber = T.EmployeeNumber
+group by E.EmployeeNumber
+
+-- both are almost the same 
+
+-- for a tabular function
+
+create function fnc_transactionAll (@intEmployee as int)
+returns @returnable table
+(Amount smallmoney)
+as begin
+	insert @returnable
+	select amount
+	from dbo.tblTransaction
+	where EmployeeNumber = @intEmployee
+	return
+end
+
+select * from dbo.func_TransactionAll (127)
+
+select EmployeeNumber, sum(T.Amount) as TotalAmount
+from dbo.tblEmployee as E
+outer apply fnc_TransactionAll(EmployeeNumber) as T
+group by EmployeeNumber
+
+select E.EmployeeNumber, sum(T.Amount) as TotalAmount
+from dbo.tblEmployee as E
+left join tbl.tblTransaction as T on E.EmployeeNumber = T.EmployeeNumber
+group by EmployeeNumber
+
+-- using a function for simpler statements might reduce performance or costs more than writing it raw
+
+

@@ -1,0 +1,1229 @@
+*****encapsulation
+-- The process of wrapping dat and methods that ooperate on the data into a single unit, typically a calss.
+-- It restricts direct access to some of the object's components, which can prevent the accidental modification of data.
+```
+class Record {
+	public decimal Balance { get; private set; }
+	public void Deposit(int amount) {
+		Balance += amount;
+	}
+	public void WithDraw(int amount) {
+		Balance -= amount;
+	}
+	public ClaimReward() {
+		Balance += 1;
+	}
+}
+```
+
+*****inheritance
+-- A phenomenon of allowing a class to inherit properties and methods from another class
+-- an example of inheritance is as follows,
+```
+class Vehicle
+{
+	public string brand = "Ford";
+	public void honk()
+	{
+		Console.WriteLine("Tuut, tuut!");
+	}
+}
+
+class Car: Vehicle
+{
+	public string modelName = "Mustang";
+}
+-- sealed makes a class un-inheritable, i.e, no class can inherit a sealed class. An example is as follows,
+```
+sealed class Vehicle
+{
+	...
+}
+
+class Car: Vehicle
+{
+	...
+}
+// throws an error that 'Car' cannot derive from sealed type 'Vehicle'
+```
+
+*****polymorphism
+-- Polymorphism means 'many forms'. There are two types of polymorphism (Compile-time or method overloading, and run-time or overriding)
+-- Compile-time - allows to define multiple methods with the same name in the same class, but with either of (same types but different order, same order but different types) or with different number of parameters
+-- Run-time - allows a derived class to provide a specific implementation of a method that is already defined in its base class
+-- Few examples are below,
+```
+public class Calculator {
+	public int Add(int a, int b)
+	{
+		return a + b;
+	}
+	public double Add(double, a, double b)
+	{
+		return a + b;
+	}
+	public int Add(int a, int b, int c)
+	{
+		return a + b + c;
+	}
+}
+
+public class Animal
+{
+	public virtual void MakeSound()
+	{
+		Console.WriteLine("Some generic animal sound");
+	}
+}
+
+public class Dog: Animal
+{
+	public override void MakeSound()
+	{
+		Console.WriteLine("Bark");
+	}
+}
+```
+
+*****Abstraction
+-- Abstraction is the process of hiding certain details and showing only essential information to the user
+-- Can be achieved with either abstract classes or interfaces
+
+*****abstract class
+-- Cannot be instantiated directly (should be inheried by other classes)
+-- Can contain abstract methods and must be implemented by the derived classes
+-- Can contain non-abstract members such as fields, properties and methods
+-- An example is as follows,
+```
+public abstract class Animal
+{
+	public abstract void MakeSound();
+	public void Eat()
+	{
+		Console.WriteLine("This animal eats food.");
+	}
+}
+
+public class Dog: Animal
+{
+	public override void MakeSound()
+	{
+		Console.WriteLine("Bark");
+	}
+}
+```
+
+*****interface
+-- an interface is a completely 'abstract class'
+-- It can only contain abstract methods and properties (there is no need to mention abstract keyword in method declerations)
+-- Any class that implements interfaces must provide definitions for all properties and methods
+-- An example is as follows,
+```
+public interface Custom
+{
+	int a { get; set; }
+	void func1();
+	void func2();
+}
+```
+-- Multiple Inheritance can be achieved using interfaces like as below,
+```
+interface IFirstInterface
+{
+	void myMethod();
+}
+
+interface ISecondInterface
+{
+	void myOtherMethod();
+}
+
+class DemoClass: IFirstInterface, ISecondInterface
+{
+	public void myMethod()
+	{
+		Console.WriteLine("Some text..");
+	}
+	public void myOtherMethod()
+	{
+		Console.WriteLine("Some other text...");
+	}
+}
+```
+
+// virtual keyword
+-- A method from the base class can only overrided only when that method is marked with virtual keyword
+
+// override
+-- override can be used only when the method from the base class is marked as either virtual or override.
+
+// new keyword
+-- used to instantiate an object of a class as follows,
+```
+class ClassA {
+	...
+}
+...
+var a = new ClassA()
+```
+-- used to instantiate a anonymous type class (an object without a class) as follows,
+```
+var person = new { Name = "John", Age = 30 };
+```
+
+// delegates
+-- A type that represents references to methods with a specific signature (like a function pointer)
+-- An example is as follows,
+```
+public delegate void MyDelegate(string message);
+
+public class MessagePrinter
+{
+	public void PrintUpperCase(string message) => Console.WriteLine(message.ToUpper());
+	public void PrintLowerCase(string message) => Console.WriteLine(message.ToLower());
+}
+
+public class Program
+{
+	static void Main(string name)
+	{
+		MessagePrinter printer = new MessagePrinter();
+		PrintMessage upperCaseDelegate = printer.PrintUpperCase;
+		PrintMessage lowerCaseDelegate = printer.PrintLowerCase;
+		
+		upperCaseDelegate("Hello, World!"); // Output: HELLO, WORLD!
+		lowerCaseDelegate("Hello, World!"); // Output: hello, world!
+
+		PrintMessage combinedDelegate = upperCaseDelegate + lowerCaseDelegate;
+		combinedDelegate("Hello World!");
+		// Output: HELLO, WORLD!
+		//         hello, world!
+	}
+}
+
+```
+
+// Events
+-- A mechanism built on delegates that allows an object (the publisher) to notify other objects (the subscribers) when something occurs.
+-- Events follows the Observer pattern, enabling loose coupling between the publisher and subscribers. 
+-- Few examples are as follows,
+```
+public delegate void EventHandler(string message);
+public event EventHandler MyEvent;
+
+public class Publisher
+{
+	public event NotifyEventHandler OnNotify;
+	public void DoSomething(string message)
+	{
+		Console.WriteLine($"Publisher: Doing something with { message }");
+		OnNotify?.Invoke(message); // Safely raise the event
+	}
+}
+
+public class Subscriber
+{
+	private string _name;
+	public Subscriber(string name) => _name = name;
+	
+	public void HandleEvent(string message)
+	{
+		Console.WriteLine($"{_name} received: {message}");
+	}
+}
+
+class Program
+{
+	static void Main()
+	{
+		Publisher publisher = new Publisher();
+		Subscriber subscriber1 = new Subscriber("Sub 1");
+		Subscriber subscriber2 = new Subscriber("Sub 2");
+		
+		publisher.OnNotify += subscriber1.HandleEvent;
+		publisher.OnNotify += subscriber2.HandleEvent;
+		
+		publisher.DoSomething("Test Event");
+		
+		publisher.OnNotify -= subscriber1.HandleEvent;
+		publisher.DoSomething("Second Event");
+	}
+}
+```
+
+*****Lambda Expressions
+-- A short way to write anonymous methods using the => syntax
+-- An example is as follows,
+```
+Func<int, int, int> add = (a, b) => a + b;
+Console.WriteLine(add(3, 4));
+
+*****Value Type
+-- Value types directly store their data in memory where the variable is allocated (typically on the stack)
+-- Assigning a value type to another variable creates a copy of the value
+-- They are of fixed size
+-- Few of the value types are 
+```
+Primitive types: int, float, double, char, bool, etc.
+Structs: struct, enum
+```
+
+*****Reference Type
+-- Reference types store a reference (or pointer) to the actual data, which is allocated on the heap.
+-- Assigning a reference type to another variable copies the reference, not the data, so both variables point to the same object.
+-- Reference types can be null
+-- Few of the reference types are classes, interfaces, delegates, arrays, string and object
+```
+class Person { public int Age; }
+Person p1 = new Person { Age = 30; };
+Person p2 = p1;
+p2.Age = 40;
+Console.WriteLine(p1.Age);
+
+*****Boxing
+-- Boxing is the process of converting a value type to a reference type (specifically, object or an interface type)
+-- The value type is wrapper in an object on the heap, and a reference to this object is created
+-- This is implicit and happens automatically when a value type is assigned to an object or passed to a method expecting an object
+-- An example is as follows,
+```
+int i = 42;
+object boxed = i; // Boxing: i is wrapped into an object on the heap
+```
+
+*****Unboxing
+-- Unboxing is a process of converting a boxed value type (stored as a reference type) back to its original value type
+-- The value is extracted fromt he heap-allocated object and ocpied back to a value type variable
+-- This is explicit and requies a cast. An example is as follows,
+```
+object boxed = 42;
+int unboxed = (int) boxed;
+```
+-- It involves type checking and can throw an InvalidCastException if the boxed tyhpe doesn't match the target type.
+
+*****Memory in C#
+-- C# uses two primary regions (stack and heap)
+-- Stack - stores value types and short-lived variable (Fast and automatically managed)
+-- Heap - stores reference type data (objects), managed by the garbage collector(GC)
+
+*****Struct vs Class
+-- Struct - a value type, stored on the stack (or inline in objects). Used for small, lightweight data structures
+-- Class - A reference type, stored on the heap. Used for small, lightweight data structures.
+-- Structs are copied on assignment, classes passes references
+-- structs cannot be null (nuless Nullable<T>) and classes can
+-- structs do not support inheritance (except interfaces), classes do.
+
+*****Nullable Value Types
+-- Value types such as int, bool cannot be null by default
+-- Nullable<T> (or T?) allows value types to represent null
+-- It wraps a value type in a struct that includes a HasValue flag and the value
+-- Nullable value types bridge the gap between value and reference types, as null
+-- An example is as follows,
+```
+int? nullableInt = null;
+if (nullableInt.HasValue) Console.WriteLine(nullableInt.Value);
+nullableInt = 42;
+Console.WriteLine(nullableInt.Value);
+
+*****Type Casting and Type Safety
+-- Casting - Converting between types (unboxing or converting a reference type to a derived type)
+-- Type Safety - C# enforces strict type checking to prevent invalid operations
+-- There are three types of casting (implicit, explicit and safe casting)
+-- implicity casting - automatic, safe conversions (e.g., int to double)
+-- explicit casting - requires a cast operator (e.g., (int)doubleValue or unboxing)
+-- safe casting - Using as or is to avoid exceptions with reference types, an example is as follows,
+```
+object obj = "Hello";
+if (obj is string str) Console.WriteLine(str;
+int num = (int) (object) 42;
+
+*****Garbage Collection (GC)
+-- .NET runtime automatically maages memory for reference types on the heap, reclaiming unused objects
+-- GC tracks references to objects. When no references exist, the object is eligible for collection
+-- Boxing creates objects on the heap, increasing GC workload
+-- an example is as follows,
+```
+object boxed = 42;
+boxed = null;
+```
+
+*****Generics
+-- Generics allow type type-safe, reusable code without boxing/unboxing for value types
+-- Non-generic collections (e.g., ArrayList) box value types, degrading performance.
+-- Generic collections (e.g., List<T>)store value types directly avoiding boxing.
+```
+ArrayList list = new ArrayList();
+list.Add(42); // Boxes int
+int value = (int) list[0]; // Unboxing
+// Generic (no boxing)
+List<int> genericList = new List<int>();
+genericList.Add(42);
+int value2 = genericList[0];
+```
+
+*****Pass by Value vs Pass by Reference
+-- Pass by Value - default for both value and reference types. Copies the value for value type and object for reference types (and create a reference to the new object)
+-- Pass by Reference - Uses ref, out or in to pass a reference to the variable itself, not copy.
+-- An example is as follows,
+```
+void ModifyValue(int x) { x = 100; }
+void ModifyRef(ref int x) { x = 100; }
+int num = 42;
+ModifyValue(num); // num remains 42
+ModifyRef(ref num); // num becomes 100
+```
+
+*****Exception handling
+-- try block - contains code that might throw an exception (potentially risky code (e.g., file operations, network calls) are typically wrapped in a try block), an example is as follows,
+```
+try {
+	int result = 10 / 0; // throw DivideByZeroException
+}
+// if an exception occurs, control jumps to the corresponding catch block
+```
+-- catch block - handles specific exceptions thrown ini the try block (exception type to catch, or use a general Exception class for all exceptions is specified in the catch). An example is as follows,
+```
+// single catch block
+try {
+	int result = 10 / 0;
+} catch (DivideByZeroException ex) {
+	Console.WriteLine("Cannot divide by zero");
+}
+// multiple catch blocks
+try {
+	...
+} catch (DivideByZeroException ex) {
+	..
+} catch (InvalidCastException ex) {
+	..
+} catch (Exception ex) {
+	..
+}
+```
+-- finally block - Executes code regardless of whether an exception occurs or not. Generally used for cleanup (e.g., closing files, releasing resources). An example is as follows,
+```
+try {
+	int result = 10 / 0;
+} catch (DivideByZeroException ex) {
+	Console.WriteLine("Error: " + ex.Message);
+} finally {
+	Console.WriteLine("Cleanup code here");
+}
+// finally runs even if return, break, or an unhandled exception occurs
+}
+```
+-- custom exceptions - define application-specific exceptions for better error handling. Every custom exception must implement Exception base class or its sub classes. An example is as follows,
+```
+public class InvalidUserException: Exception {
+	public InvalidUserException(string message): base(message) { }
+}
+
+try {
+	throw new InvalidUserException("User not found");
+} catch (InvalidUserException ex) {
+	Console.WriteLine(ex.Message);
+}
+```
+-- throw - explicitly throws an exception. An example is as follows,
+```
+if (age < 0) {
+	throw new ArgumentException("Age cannot be negative");
+}
+```
+-- throw ex - rethrows an exception, but resets the stack trace (not recommended)
+```
+try {
+	int result = 10 / 0;
+} catch (DivideByZeroException ex) {
+	throw ex; // resets stack trace, losing original error location
+//    throw; // preserves stack trace
+}
+```
+-- when filters - conditionally handle exceptionsbased on additional criteria. An example is as follows, 
+```
+try {
+	int[] arr = {1, 2};
+	int index = 5;
+	Console.WriteLine(arr[index]);
+} catch (IndexOutOfRangeException ex) when (index < 0) {
+	Console.WriteLine("Negative index error");
+} catch (IndexOutOfRangeException ex) {
+	Console.WriteLine("Index out of range: " + ex.Message);
+}
+// this avoids nested if statements in catch blocks for cleaner code
+```
+
+*****File I/O and Streams
+-- System.IO.File class provides static methods for basic file operations
+-- the common methods are 
+```
+File.ReadAllText(string path); // reads all text from a file
+File.WriteAllText(string path, string contents); // writes text to a file, overwriting if it exists
+File.AppendAllText(string path, string contents); // appends text to a file
+File.Create(string path); // Creates or overwrites a file
+File.Delete(string path); // Deletes a file
+File.Exists(string path); // Checks if a file exists
+```
+-- An example is as follows,
+```
+string content = File.ReadAllText("example.txt");
+File.WriteAllText("output.txt", "Hello, World!");
+``
+-- The async versions are as follows,
+```
+File.ReadAllTextAsync,
+File.WriteAllTextAsync,
+File.AppendAllTextAsync
+// To use await for non-blocking I/O operations
+```
+-- An example is as follows,
+string content = await File.ReadAllTextAsync("example.txt');
+await File.WriteAllTextAsync("output.txt", "Hello, World!");
+-- StreamReader is used to read text from a file or stream sequentially. (Efficient for reading large text files line by line or in chunks)
+-- The key mehtods of StreamReader are 
+```
+ReadLine() // Reads a single line of text
+ReadToEnd() // Reads all remaining text
+ReadAsync(char[] buffer, int index, int count) // reads characters asynchronously
+-- An example is as folows,
+```
+using (StreamReader reader = new StreamReader("example.txt"))
+{
+	string line;
+	while ((line = reader.ReadLine()) != null)
+	{
+		Console.WriteLine(line);
+	}
+}
+-- Async versions of StreamReader are ReadLineAsync and ReadToEndAsync for asynchronous reading. An example is as follows,
+```
+using (StreamReader reader = new StreamReader("example.txt"))
+{
+	string line = await reader.ReadLineAsync();
+	Console.WriteLine(line);
+}
+```
+-- StreamWriter is used to write text to a file or stream. (It supports writing strings, characters or formatted text)
+-- The key methods of StreamWriter are as follows,
+```
+Write(string value) // Writes text without a newline
+WriteLine(string value) // Writes text with a newline
+Flush() // Flushes the buffer to the underlying stream
+```
+-- An example is as follows,
+```
+using (StreamWriter writer = new StreamWriter("output.txt"))
+{
+	writer.WriteLine("Hello, World!");
+}
+```
+-- Async versions of StreamWriter are WriteAsync, WriteLineAsync or FlushAsync
+```
+using (StreamWriter writer = new StreamWriter("output.txt"))
+{
+	await writer.WriteLineAsync("Hello, World!");
+}
+```
+-- FileStream provides low-level access to files for reading and writing binary or text data (supports reading/writing bytes)
+-- FileStream allows control over file access modes (FileMode), access permissions (FileAccess), and sharing (FileShare)
+-- FileStream can be used with StreamReader or StreamWriter for text operations. An example is as follows,
+```
+using (FileStream fs = new FileStream("output.bin", FileMode.Create, FileAccess.Write))
+{
+	byte[] data = System.Text.Encoding.UTF8.GetBytes("Hello, World!");
+	fs.Write(data, 0, data.Length);
+}
+```
+-- Async versions of FileStream are ReadAsync and WriteAsync. An example is as follows,
+```
+using (FileStream fs = new FileStream("output.bin", FileMode.Create, FileAccess.Write))
+{
+	byte[] data = System.Text.Encoding.UTF8.GetBytes("Hello, World!");
+	await fs.WriteAsync(data, 0, data.Length);
+}
+```
+-- Using Statement ensures that objects implementing IDisposable (like StreamReader, StreamWriter, FileStream) are properly disposed of, releasing resources like file handles. An example is as follows,
+```
+using (StreamWriter writer = new StreamWriter("output.txt"))
+{
+	writer.WriteLine("Hello, World!");
+} // Automatically calls writer.Dispose()
+
+// or
+
+using StreamWriter writer = new StreamWriter("output.txt");
+writer.WriteLine("Hello, World!");
+```
+
+*****Collections and Data Structures
+-- List<T> - a dynamic, resizable array-like collection that stores elements of type T in a continguous, ordered sequence (from System.Collections.Generic) (operations: Add, Remove, Insert, Sort, Find)
+-- Dictionary<TKey, TValue> - a collectiono f key-value pairs where each key is unique and maps to a value of type TValue (from System.Collections.Generic) (operations: Add, Remove, ContainsKey, TryGetValue)
+-- HashSet<T> - a collection of unique elements of type T with no particular order (from System.Collections.Generic) (operations: Contain, Union, Intersect, Except)
+-- Queue<T> - a first-in, first-out (fifo) collection where elelments are added (enqueue) at the end and removed (dequeue) from the front. (from System.Collections.Generic) (operations: Enqueue, Dequeueu, Peek)
+-- Stack<T> - a last-in, first-out (lifo) collection where elements are added (push) and removed (pop) from the top (from System.Collections.Generic) (operations: Push, Pop, Peek)
+-- IEnumerable - an interface that provides a way to iterate over a collection of type T using a foreach loop or LINQ. (from System.Collections.Generic). An example is as follows,
+```
+IEnumerable<int> numbers = new List<int> { 1, 2, 3 };
+foreach (var num in numbers)
+{
+	Console.WriteLine(num);
+}
+// Classes such as List<T>, Dictionary<TKey, TValue>, HashSet<T>, Queue<T>, Stack<T> implements IEnumerable
+```
+-- IQueryable - an interface extending IEnumerable<T> for querying data sources (database) with deferred execution, typically used with LINQ providers like Entity Framework (from System.Linq) 
+-- IQueryable enables building query expressions that are translated to data source-specific queries (e.g., SQL). It supports deferred execution only when results are enumerated
+-- ObservableCollection - a dynamic collection that implements INotifyCollectionChanged and INotifyPropertyChanged to notify the UI when items are added, removed or modified. (from System.Collections.ObjectModel)
+-- ObservableCollection is similar to List<T> but with change notifications. Automatically raises events when the collection changes (e.g., Add, Remove, Clear)
+
+***C# with Databases
+--- ADO.NET is a data access technology in the .NET Framework for interacting with databases (e.g., SQL Server, Oracle, MySQL) at a low level. It provides a set of classes to connect to database , execute commands, and retrieve or manipulate data
+-- Key Components of ADO.NET are 
+```
+Connection: Estables a connection to a database (e.g., SqlConnection for SQL Server)
+Command: Executes SQL queries or stored procedures (e.g., SqlCommand)
+DataReader: REads data in a forward-only, read-only stream (e.g., SqlDataReader)
+DataAdapter: Bridges the gap between a database and a DataSet or DataTable for disconnected data access
+DataSet: An in-memory representation of data, allowing manipulation without an active database connection
+```
+-- ADO.NET requires manual writing of SQL queries and connection management
+-- Entity Framework Core (EF Core) - a modern, lightweight, open-source Object-Relational Mapping (ORM) framework for .NET. It simplifies data access by allowing developers to work with database data as .NET objects, abstracting much of the low-level ADO.NET plumbing.
+-- Key features of EF Core are as follows,
+```
+ORM: Maps database tables to .NET classes (entities) and columns to properties.
+Cross-Platform: Works on Windows, macOS, and Linux
+Database Providers: Supports multiple database (e.g., SQL Server, SQLite, PostgreSQL)
+Code-First and Database-First: Supports generating database schemas from code or mapping code to existing databases
+Querying: Uses LINQ for type-safe, readable queries
+```
+--- LINQ (Language Integrated Query) with EF Core - a .net feature that allows querying data in a type-safe, expressive way. When used with EF Core, LINQ enables developers to query databases using c# syntax instead of raw sql.EF Core translates LINQ queries into SQL queries executed against the database
+-- Key Features of LINQ are as follows,
+```
+Type Safety: Compile-time checking prevents runtime errors
+Readability: Queries are written in C#, resembling object-oriented code
+Flexibility: Supports filtering sorting, grouping, joins, and more.
+```
+-- Migrations in EFCore - a way to manage database schema changes (e.g., creating tables, adding columns) by generating and applying scripts based on changes in the .NET entity classes.
+-- More info about Migrations is as follows,
+```
+- EF Core compares your entity classes and DBContext configuration to the current database schema
+- Migrations are applied to update the database or rollback to revert changes
+Add-Migration <Name>: Generates a migration file based on changes in the model.
+Update-Database: Applies pending migrations to the database
+Remove-Migration: Deletes the latest migration (if not yet applied).
+Update-Database -Migration <Name>: Applies or reverts to a specific migration
+-- DbContext in EF Core is the core class in EF Core that acts as a bridge between the .NET applicationa and the database. It manages entity objects, track changes, and facilitates querying and saving data.
+-- Key responsibilities of DbContext are as follows
+```
+Configuration: Defines how entities map to database tables (via OnModelCreating or data annotations)
+Querying: Provides access to data via DbSet<T> properties, which represent database tables
+Change Tracking: Tracks changes to entities (added, modified, deleted) for saving to the database
+Connection Management: Handles database connections and transactions
+
+*****Middleware
+-- A component or piece of code that sits in the request-response pipeline to process HTTP requests and responses.
+-- It handles tasks such as authentication, logging, exception handling, or modifying requests/responses before they reach the endpoint or after a response is generated
+-- Middle ware is executed in the order it's registered (for requests) and in reverse order for responses.
+-- ASP.NET Core provides middleware for common tasks like routing, authentication, cors, and exception handling
+-- Some of the common built-in middleware are as follows,
+```
+UseRouting(): Matches requests to endpoints
+UseAuthentication(): Authenticates users
+UseAuthorization(): Enforces access control
+UseCors(): Enables Cross-Origin Resource-Sharing
+UseStaticFiles(): Serves static files like images or Javascript
+``
+-- First the middleware process the incoming request, passes control to the next middleware, and modify or generate a request/response.
+
+*****Data Serialization
+-- the process of converting an object or data structure (e.g., a .NET object, list, or dictionary) into a format that can be easily stored, transmitted, or reconstructed later. The resulting format is basically a stream of bytes or a text-based representation, such as JSON, XML, or binary.
+-- Saves objects to files, databases or caches
+-- Transmits data between systems, apis or services (e.g., in a web api over http)
+-- enable data exchange between different platforms or languages
+-- The working of serialization in .net web api works as below,
+```
+- asp.net core use System.Text.Json (default in .NET core 3.0+) or newtonsoft.Json (used in older versions or when explicitly configured) for serialization
+- When an api endpoint returns a .net object, the framework automatically serializes it into JSON(or another format) before sending it in the HTTP response.
+- Similarly, incoming JSON data from a client request is deserialized into a .NET object for processing.
+
+*****AutoMapper
+-- A popular object-to-object mapping library in .net that simplifies the process of mapping one object's properties to another
+-- converts data between two objects, typically between data transfer objects (dtos) and domain models or view models.
+-- Convention-based mapping (e.g., maps Customer.Name to CustomerDto.Name automatically)
+-- Custom mappings for complex scenarios (e.g., flattening, nested objects).
+-- an example is as follows,
+```
+using AutoMapper;
+using EventManagementWebApi.Models.Domain;
+using EventManagementWebApi.Models.DTO;
+using EventManagementWebApi.Models.DTO.Event;
+namespace EventManagementWebApi.Models.Profiles
+{
+    public class Eventprofile: Profile
+    {
+        public Eventprofile()
+        {
+            CreateMap<RequestEventDto, Event>(); // All the properties of RequestEventDto satisfies Event Properties
+            CreateMap<Event, ResponseEventDto>()
+            .ForMember(dest => dest.AvgRating, opt => opt.MapFrom(src =>
+                src.Feedbacks.Any() ? src.Feedbacks.Average(f => f.Rating) : -1));
+            CreateMap<Event,ResponseMyEventDto>()
+                .ForMember(dest => dest.AvgRating, opt => opt.MapFrom(src =>
+                src.Feedbacks.Any() ? src.Feedbacks.Average(f => f.Rating) : -1));
+        }
+    }
+}
+
+```
+
+*****MassTransit
+-- A .NET library for building distributed systems using message-based communication. It abstracts the complexities of message brokers (e.g., RabbitMQ, Azure Service Bus) and provides a framework for creating loosely coupled, scalable applications
+
+*****Interoperability
+-- Refers to ability of different systems, applications, or components to work together by exchanging and using information seamlessly, regardless of their underlying technologies or platforms.
+-- Key Aspects are as follows,
+```
+- Standards and Protocols: Uses common formats (e.g., JSON, XML) and protocols (e.g., HTTP, gRPC) for communication.
+- Data compatibility: Ensures data structures and schemas are compatible or translable.
+- APIs and Interfaces: Exposes well-defined APIs (e.g., REST, SOAP) to enable interaction.
+- Cross-Platform Support: Allows sytems on different platforms (e.g., Windows, Linux) or languages (e.g., Java, .NET) to collaborate.
+```
+-- Some examples are as below,
+```
+- A .Net application using REST APIs to interact with a Java-based service.
+- A Python script reading data from a SQL Server database via ODBC.
+
+*****Tuples
+-- A lightweight data structure that groups multiple values into a single object without having to define a custom class or struct
+-- There are two types of tuples (old-style tuples, value tuples)
+-- Few examples of value tuple are as follows,
+```
+(string Name, int Age) person = ("Andy", 22);
+Console.WriteLine(person.Name);
+var point = (X: 10, Y: 20);
+Console.WriteLine(point.X);
+(string FirstName, string LastName) GetFullname() 
+{
+	return ("Andys", "TMC");
+}
+var name = GetFullName();
+var (first, last) = GetFullName();
+Console.WriteLine(first);
+```
+-- The old type Tuple<T1, T2> is of reference type.
+
+*****Records
+-- A record is a reference type (like a class) that provides built-in support for: (value-based equality, immutability, concise syntax for data models, With-expressions (cloning with modifications))
+-- C# classes compare by reference by default, Records compare by value 
+-- There are two types of record (positional and non-positional)
+-- An example of positional record is as follows,
+```
+public record Person(string Name, int Age);
+// This auto-generates properties (get-only by default), constructor, ToString(), Equals(), GetHashCode(), Deconstruct()
+```
+-- An example of non-positional record is as follows,
+```
+public record Person
+{
+	public string Name { get; init; }
+	public int Age { get; init; }
+}
+```
+-- An example for with-expression is as follows,
+```
+// Records support non-destructive mutation via with
+var original = new Person("Andy", 22);
+var modified = original with { Age = 23 };
+Console.WriteLine(original);
+Console.WriteLine(modified);
+```
+-- Some other examples are as follows,
+```
+var person = new Person("Andy", 22);
+var (name, age) = person; // Records are deconstructable
+```
+-- Records often use init instead of set to ensure immutability (for init, assigned while declared, init properties must be defined during decleration, cannot assign anytime later once declared)
+-- Inheritance is possible with records. An example is as follows,
+```
+public record Animal(string Name);
+public record Dog(string Name, string Breed): Animal(Name);
+// also works with virtual, override, etc.
+```
+-- Examples checking Equality are as follows,
+```
+var p1 = new Person("Andy", 22);
+var p2 = new Person("Andy", 22);
+
+Console.WriteLine(p1 == p2); // true
+Console.WriteLine(p1.Equals(p2)); // true
+```
+--- Despite, value-like behavior, records are still reference types
+```
+-- To make record a value typed, struct is appended to the keyword record
+```
+
+*****loops
+-- while(), for(;;), foreach(var of )
+
+*****misc
+-- C# is a strongly typed language, i.e., the variables are declared either implicitly or explicitly.
+-- The compiler enforces type safety, and catches type-related errors in the code even before running the code
+-- the is statement checks if a variable "is" some pattern
+
+*****string interpolation
+-- allows to insert evaluated expressions in a string,, rather than usingpositional identifiers
+-- Raw string literals provide a way to minimize escape sequences in text
+-- Local functions - In c#, functions can be nested inside methods or other local funcitons. Local functions provide yet another layer of encapsulation
+
+*****Misc
+-- C# is an object-oriented, modern programming language that was Microsoft. It runs on the .NET Framework. C# is very close to C/C++ and Java programming languages.
+
+*****C vs C#
+-- C supports procdeural programming whereas C# supports object-oriented programming
+-- C supports pointers whereas in C# pointers are used only in unsafe mode
+-- C# has garbase collection managed by CLR (Common Language Runtime) where as C has none
+-- C can be executed cross-platform whereas .NET Framework is required to execute C# language
+-- Low level abstraction can be achieved using c whereas a high degree of abstraction can be achieved using C#
+-- C is more on functions whereas C# is more on design
+-- C gives a top-notch performance while c# gives an objectives standard performance.
+-- There are 32 total keywords used in the C language whereas 86 keywords in C#
+-- C languages is mainly used in commercial industries and engineering whereas C# is used for software formation and other networking-related objectives.
+
+*****Common Language Runtime (CLR)
+-- CLR is the basic and Virtual Machine component of .NET Framework. 
+-- It is the run-time environment in the .NET Framework that runs the code and helps in making the development process easier by providing various services such as remoting, thread management, type-safety, memory management, robustness, etc.
+-- Basically, it is responsible for execution of .NET programs regardless of any .NET programming language.
+
+*****Managed Code vs Un-managed Code
+-- Code that is executed by the .NET Common Language Runtime (CLR, the virtual machine component of .NET) is known as Managed Code
+-- In case of managed code, CLR handles memory allocation, garbage collection, security and type safety for managed code.
+-- Examples of managed code are C#, VB.NET and F# (compiled to intermediate language)
+-- Code that is executed directly by the operating system, outside the control of the clr
+-- In case of unmanaged code, the developer is responsible for memory allocation and deallocation, as there is no automatic garbage collection.
+-- Examples of unmanged code are C/C++ (compiled to native machine code)
+-- .NET provides ways (such as P/Invoke or COM Interop) for managed code to interact with unmanaged code (e.g., calling Windows API functions or using C++ libraries)
+
+*****Inheritance & Multiple Inheritance
+-- It is a mechanism by which one class is allowed to inherit the features (fields and methods) of another class.
+-- C# does not support multiple class inheritance but C# does support implementing multiple interfaces. A class can implement any number of interfaces, which is a common way to achieve a form of multiple inheritance
+-- An example is as follows,
+```
+interface IA { }
+interface IB { }
+class C: IA, IB { }
+
+*****Struct vs Class
+-- A class is a user-defined blueprint or prototype from which objects are created. 
+-- A structure is a collection of variables of different data types under a single unit.
+-- Class is of reference type whereas a structure is of value type
+-- Instances of Class are stored in heap where as objects of structure are stored in stack.
+
+*****Enum
+-- An enum is a value type that allows to define a set of named constants called the enumerator list.
+-- Enums are used to represent a collection of related named values, making code more readable and maintainable.
+
+*****ref vs out keywords
+-- ref and out are keywords used to pass arguments to methods by reference
+-- ref is used to pass a variable by reference so the method can read and modify the caller's variable (The variable must be initialized before being passed to the method)
+-- out is used to pass a variable by reference for the method to assign a value for it (The variable does not need to be initialized before being passed, the method must assign a value to the variable before the method  returns)
+-- A few examples are as follows,
+```
+void AddFive(ref int number)
+{
+	number += 5;
+}
+int x = 10;
+AddFive(ref x);
+void GetValues(out int a, out int b)
+{
+	a = 5;
+	b = 10;
+}
+
+int x, y;
+GetValues(out x, out y);
+```
+
+*****Properties in C#
+-- Properties are members of a class, struct, or interface that provides a flexible mechanism to read, write or compute the values of private fields.
+-- Properties are special methods called accessors, and are used to encapsulate data and control how values are accessed or modified, etc. 
+-- An example is as follows,
+```
+public class Person
+{
+	private string name;
+	public string Name
+	{
+		get { return name; }
+		set { name = value; }
+	}
+}
+```
+-- C# also allows to use auto-implemented properties, which automatically creates a hidden backing field, such as follows,
+```
+public class Person
+{
+	public string Name { get; set; }
+}
+``
+-- Properties can be read-only, write-only, read-write or auto-implemented (when there is no additional logic in the property accessors)
+
+*****Misc
+-- The main purpose of catch block is to handle the exception raised in the try-block. In c#, more than one catch-blocks with the try block can be used to handle different types of exceptions.
+-- So, multiple catch blocks cannot be executed for a single exception. If there are same exception types for multiple catch blocks, there will be a compile time error.
+
+
+*****Jagged Arrays
+-- A jagged array is an array of arrays such that member arrays can be of different sizes. In other words, the length of each array index can differ. 
+-- The elements of Jagged Array are references types and initialized to null by default. 
+-- The number of member arrays is fixed but the length of each member array can be varied.
+
+*****Misc
+-- System.Array.CopyTo() (shallow) copies all the elements of the current array instance to a specified destination array, starting at a particular index of the destination array. An example is as follows,
+```
+int[] arr1 = { 1, 2, 3 };
+int[] arr2 = new int[3];
+arr1.CopyTo(arr2, 0); // arr2 now contains 1, 2, 3
+```
+-- System.Array.Clone() creates a shallow copy of the current array instance and returns a new array with the same elements. An example is as follows,
+```
+int[] arr1 = {1, 2, 3};
+int[] arr2 = (int[])arr1.Clone();
+```
+-- is Operator checks if an object is compatible with a given type. An example is as follows,
+```
+if (obj is MyClass)
+{
+	// obj is of type MyClass or derived from MyClass
+}
+-- as operator attemps to cast an object to a given type. An example is as follows,
+```
+MyClass myObj = abj as MyClass;
+if (myObj != null)
+{
+	// Cast succeeded
+}
+```
+-- a namespace is a way to organize and group related classes, interfaces, structs, enums, and delegates under a single name
+-- Namespaces help avoid naming conflicts and make it easier to manage large codebases by logically organizing code
+-- Members of namespaces can be other namespaces, classes, structures, interfaces, enums and delegates
+
+*****Access specifiers 
+-- Access specifiers are keywords to specify the accessibility of a class, method, property, field.
+-- The keywords are public, private, protected, internal, protectedinternal
+-- The default access specifier is internal
+-- The accessibility for each access specifier is as follows,
+```
+Public
+- Can access inside same class in same assembly
+- Can access inside derived class in same assembly
+- Can access inside other code in same assembly
+- Can access inside derived class in other assembly
+- Can access inside Other code in other assembly
+Private
+- Can access inside same class in same assembly
+Internal
+- Can access inside same class in same assembly
+- Can access inside derived class in same assembly
+- Can access inside other code in same assembly
+Protected
+- Can access inside same class in same assembly
+- Can access inside derived class in same assembly
+- Can access inside derived class in other assembly
+ProtectedInternal
+- Can access inside same class in same assembly
+- Can access inside derived class in same assembly
+- Can access inside other code in same assembly
+- Can access inside derived class in other assembly
+```
+
+*****Indexers
+-- Indexers are special class members that allow objects to be indexed like arrays, using the [] syntax.
+-- They allow instances of a class or struct to be accessed using array-like notation, making the objects behave like collections. An example is as follows,
+```
+public class SampleCollection<T>
+{
+	private T[] arr = new T[100];
+	public T this[int i]
+	{
+		get { return arr[i]; }
+		set { arr[i] = value; }
+	}
+}
+var collection = new SampleCollection<string>();
+collection[0] = "Hello";
+```
+
+*****Misc
+-- JIT is a part of Common Language Runtime (CLR) in .NET. A language-specific compiler converts the source code to intermediate language. This intermediate language is then converted into machine code by the Just-In-Time compiler. This machine code is specific to the computer environment that the JIT compielr runs on.
+-- System.String and System.Text.StringBuilder are classes used to work with text. String is a immutable reference type whereas StringBuilder is a mutable reference type. A few examples are as follows,
+```
+string greeting = "Hello";
+greeting += " Word"; // Creates a new string object
+
+StringBuilder sb = new StringBuilder("Hello");
+sb.Append(" World"); // Modifies the existing StringBuilder object
+string result = sb.ToString();
+```
+-- There are four types of classes (abstract, partial, sealed, static)
+
+*****Garbage Collection
+-- Garbage Collection (GC) in C# is an automatic memory management feature provided by the .NET runtime (CLR - Common Language Runtime).
+-- Its primary purpose is to free up memory occupied by objects that are no longer accessible by the program, preventing memory leaks and improving application performance.
+-- There is no need to manually release memory, the GC runs automatically
+-- All reference type objects are allocated on the managed heap.
+-- GC tracks which objects are still accessible (referenced) and which are not.
+-- When an object is no longer referenced, it becomes eligible for garbage collection, and the GC will eventually free its memory.
+-- The managed heap is divided into three generations (Gen 0, Gen 1, Gen 2) to optimize memory management as follows,
+```
+Gen 0: Short-lived objects (collected frequently).
+Gen 1: Objects that survived Gen 0 collection
+Gen 2: Long-live objects (collected less frequently)
+// Process
+- When a new object is created, it is allocated in Gen 0, which is intended for short-lived objects
+- The garbage collector periodically runs to reclaim memory. When it runs, it first collects Generation 0. All unreachable (unused) objects in Gen 0 are removed.
+- The surviving objects (still referenced) are promoted to Gen 1
+- The next time the GC runs and collects Gen 0 and Gen 1, unreachable objects in gen 1 are removed. Surviving objects in Gen 1 are promoted to Gen 2
+- Objects in Gen 2 are long-lived and only collected during a full GC (which is less frequent because it is more expensive)
+- A full gc is when the .NET GC collects all generations of objects in the managed heap
+```
+-- Cannot predict exactly when the garbage collector will run.
+-- For unmanaged resources (files, database connections), using IDisposable and the Dispose() method is necessary for explicity cleanup
+
+*****Partial Class && Static Class
+-- Partial class is a class whose definition can be split across multiple files. All parts are combined at compile time. an example is as follows,
+```
+public partial class MyClass
+{
+	public void Method1() { }
+}
+
+public partial class MyClass
+{
+	public void Method2() { }
+}
+```
+-- Static class ia a class that cannot be instantiated or inherited, and can only contain static members
+
+*****Misc
+-- An abstract cannot be instantiable, but is inheritable and can contain static member
+-- A partial class is instantiable, inheritable, can contain static members and instance members
+-- In C#, extension methods concept is used to add new methods to an existing class or in the structure without modifying their original source code or creating a new derived type
+-- Extension methods are defined as static methods in a static class, but are called as if they were instance methods on the extended type. An example is as follows,
+```
+public static class StringExtensions
+{
+	public static bool IsNullOrEmpty(this string str) 
+	{
+		return string.IsNullOrEmpty(str);
+	}
+}
+// Usage:
+string myString = "";
+bool result = myString.IsNullOrEmpty(); // Calls the extension method
+```
+
+*****Abstract Class vs Interface
+-- Abstract class can contain both declaration and definition parts whereas interface contains only declaration part
+-- Multiple inheritance is not achieved by an abstract class whereas multiple inheritance is achieved by the interfaces
+-- Abstract class contains a constructor whereas interface doesn't contain a constructor
+
+*****Early Binding vs Late Binding
+-- The method or property to be called is determined at compile time (compiler knows exactly what object and method will be used during compilation). An example is as follows,
+```
+// Early Binding Example
+string s = "Hello";
+int length = s.Length; // Resolved at compile time
+```
+-- The method or property to be called is determined at runtime (objects are accessed through reflection or dynamic typing, so the actual method to invoke is resolved while the program is running). An exmaple is as follows,
+```
+// Late Binding Example with dynamic
+dynamic s = "Hello";
+int length = s.Length; // Resolved at runtime
+
+// Late Binding Example with reflection
+object s2 = "Hello";
+var length2 = s2.GetType().GetProperty("Length").GetValue(s2, null);
+```
+
+*****Reflection
+-- Reflection is a C# feature that allows code to inspect, discover, and interact with the metadata of types at runtime. An example is as follows,
+```
+using System;
+using System.Reflection;
+
+public class MyClass
+{
+    public void Hello() { Console.WriteLine("Hello!"); }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Type t = typeof(MyClass);
+        MethodInfo method = t.GetMethod("Hello");
+        object obj = Activator.CreateInstance(t);
+        method.Invoke(obj, null); // Prints "Hello!"
+    }
+}
+```
+
+*****Multithreading in .NET
+-- A programming technique that allows multiple threads to run concurrently within a single application. Threads are independent paths of execution, and multithreading helps improve applicaiton responsiveness, utilize multi-core processors, and perform multiple tasks simultaneously.
+-- A thread is a smallest unit of execution within a process. In .NET, threads cann be created and managed using System.Threading namespace. An example is as follows,
+```
+using System.Threading;
+
+Thread t = new Thread(MyMethod);
+t.Start();
+
+void MyMethod()
+{
+    // Code to run on new thread
+}
+```
+-- The .NET Thread Pool (ThreadPool class) manages a pool of worker threads, reducing the overheads of creating and destroying threads
+-- The Task class provides a higher-level API for multi-threaded programming
+
+*****Misc
+-- Constructor chaining in C# refers to the process of calling one constructor from another constructor within the same class or form a base class. This helps avoid code duplication and allows to reuse initialization logic. A few examples are as follows,
+```
+public class Person
+{
+    public string Name;
+    public int Age;
+
+    public Person() : this("Unknown", 0) { } // Calls the next constructor
+
+    public Person(string name, int age)
+    {
+        Name = name;
+        Age = age;
+    }
+}
+
+// or
+
+public class Animal
+{
+    public Animal(string name)
+    {
+        // Initialization code
+    }
+}
+
+public class Dog : Animal
+{
+    public Dog(string name)
+        : base(name) // Calls the base class constructor
+    {
+        // Additional initialization
+    }
+}
+```
+-- Access Specifiers are also called as Accessibility Modifiers or Access Modifiers
+-- A virtual method in C# is a method in a base class that can be overridden in a derived class to provide a new implementation. It enables runtime polymorphism, allowing the most derived implementation of the method to be called, even when using a base class reference. An example is as follows,
+```
+public class Animal
+{
+    public virtual void MakeSound()
+    {
+        Console.WriteLine("Some generic animal sound");
+    }
+}
+
+public class Dog : Animal
+{
+    public override void MakeSound()
+    {
+        Console.WriteLine("Bark");
+    }
+}
+
+// Usage
+Animal animal = new Dog();
+animal.MakeSound();  // Output: Bark
+```
+-- Some of the commonly used types of exception are as follows,
+```
+ArrayTypeMismatchException
+DivideByZeroException
+IndexOutOfRangeException
+InvalidCastException
+OutOfMemoryException
+OverflowException
+NullReferenceException
+```
+-- Singleton design pattern in C# is a common design pattern where a class has only a single instance in the program that gives global access to it. The following are the ways of doing this,
+```
+- Private and parameterizes single constructor
+- Sealed class
+- Static variable to hold a reference to the single made example
+- A public and static method of getting the reference to the made example
+```
+-- A Multicasting delegate is an extension of the normal delegate (sometimes termed as single cast delegate). It helps the user to point more than one method in a single call.
+-- Hash table represents a collection of key/value pairs that are organized based on the hash code of the key.
+
+*****Generics & Features of Generics
+-- a feature that allows to define classes, interface, methods, and delegates with a placeholder for data type
+-- Makes code more flexible, reusable, and type-safe
+-- Can use the same code logic for different data types without sacrificing compile-time type checking
+
+*****SortedList vs. SortedDictionary
+-- In sorted list, the elements are stored in a continuous block in memory whereas in sorted dictionary, the elements are stored in a seperate object that can spread all over the heap
+-- Sorted list requires less memory for storage, whereas sorted dictionary requires more memory for storage
+-- In sorted list, elements can be accessed using the index whereas in sorted dictionary, elements can be accessed using index or key
+
+*****Dispose vs Finalize methods
+-- Dispose() is a method defined by the IDisposable interface. It is used to explicitly release unmanaged resources (like file handles, database connections, etc.)
+-- Dispose() is called manually by code or via a using statement as follows,
+```
+using (var resource = new MyResource())
+{
+	// use resource
+} // Dispose() is called automatically here
+```
+-- Finalize is a special method (destructor, written as ~ClassName()) that is automatically called by the Garbage Collector before an object is destroyed.
+-- Finalize is used to clean up unmanaged resources if Dispose() was not called. An example is as follows,
+```
+~MyResource()
+{
+	// Cleanup code
+}
+```
+
+*****Array vs ArrayList
+--
+
+*****Design Patterns
+-- Creational Patters are as belows
+```
+Singleton Pattern - Ensures a class has only one instance and provides a global point of access to it.
+Factory Method Pattern - Defines an interface for creating objects but lets subclasses decide which class to instantiate
+Abstract Factory Pattern - Provides an interface for creating families of related or dependent objects wihtout specifiying their concrete classes.
+Builder Pattern - Seperates the construction of a complex object form its representation allowing same construction process to create different representations.
+Prototype Pattern - Creates new objects by copying an existing object (prototype), avoiding costly initialization.
+```
+-- Structural Patterns
+```
+Adapter Pattern - Allows incompatible interfaces to work together by wrapping an objet with a compatible interface.
+Bridge Pattern - Decouples an abstraction from its implementation, allowing them to vary independently.
+Composite Pattern - Composes objects into tree-like structures to represent part-whole hierarchies, treating individual objects and compositions uniformly.
+Decorator Pattern - Dynamically adds responsibilities to objects in a flexible and reusable way.
+Facade Pattern - Provides a simplified interface to a complex subsystem.
+Flyweight Pattern - Reducs memory usage by sharing commong parts of objects.
+Proxy Pattern - Controls access to an object, adding functionality like lazy loading, access control, or logging.
+```
+-- Behavioral Patterns
+```
+Chain Of Responsibility Pattern - Passes a request along a chain of handlers, each deciding to process it or pass it on
+Command Pattern - Encapsulates a request as an object allowing parameterization and queing.
+Interpreter Pattern - Defines a grammer for interpreting a language and provides a way to evaluate its sentences.
+Iterator Pattern - Provides a way to access elements of a collection sequentially wihtout exposing its underlying structure.
+Mediator Pattern - Reduces direct communication between objects by introducing a meditator to handle interactions
+Memento Pattern - Captures and restores an object's state wihtout exposing its internals
+Observer Pattern - Defines a one-to-many dependency where objects (observers) are notified of state changes in a subject
+State Pattern - Allows an object to alter its behavior when its internal state changes, appearing as if it changes it class
+Strategy Pattern - Defines a familiy of algorithms, encapsulates each one, and makes them interchangeable.
+Template Pattern - Dfines the skeleton of an algorithm in a method, deferring some steps to subclasses
+Visitor Pattern - Seperates an algorithm from the object structure it operates on, allowing new operations without modifying objects.
+```

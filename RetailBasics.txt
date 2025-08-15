@@ -1,0 +1,549 @@
+***Retail Basic Concepts Merchandising
+- Merchandising
+- Supply Chain Management
+- Store Operations
+- Customer Experience
+
+***Merchandising
+- A critical retail business function that ensures the right mix of products are available at the right price point at the right store location in the right quantity.
+- It involves
+- - Understanding consumer needs
+- - Planning demand
+- - Making product purchases
+- - Deciding product placements
+- - Managing pricing and promotion
+- - Monitoring product performance
+- Merchandising process involves six steps. They are:
+- - Customer > Concept > Plan > Buy > Move > Sell
+- It defines the road map of the organization
+- It builds a brand and is the primary driver of key business decisions
+- It drives all processes from planning to selling
+- Merchandising decision-making involves understanding the customer, competition, market, and product lifecycle.
+- The merchandising framework lists 9 key factors that impact business performance
+- - Price (At what price to sell? Is the price competitive? Does it match customer expectations?)
+- - Promotions (What discounts, sales, or freebies to offer?)
+- - Position (Who is your competitor? What is your differentiation?)
+- - Place (What are the channels to reach customers?)
+- - Projections (How will the demand change in the future, and how does it impact sales? What should be the budget?)
+- - Performance (How to measure performance?)
+- - Pattern (How are consumer preferences/needs changing?)
+- - Product (What categories, brands and variants to sell? What should be the quantity?)
+- Merchandising can be divided into four broad functions
+- - Planning
+- - - Merchandise Planning
+- - - Assortment Planning
+- - - Category Planning
+- - - Space Planning
+- - Buying
+- - - Ordering
+- - - Item Management
+- - - Vendor Management
+- - - Purchase Order Management
+- - Allocation and Replenishment
+- - - Demand Forecasting
+- - - Allocation
+- - - Replenishment
+- - - Vendor Managed Inventory (VMI)
+- - - Direct Store
+- - - Direct Store Delivery (DSD)
+- - Pricing and Promotions
+- - - Pricing Strategy and Policies
+- - - Price Management
+- - - Pricing Execution
+- - - Markdown Management
+- - - Promotions Management
+- Planning
+- - The key objective that merchandise planning aims to achieve include sales maximization, inventory optimization, profitability, customer satisfaction, and adaptability to changing market trends and consumer preferences.
+- - Four types of planning done in merchandising to achieve the above objectives are:
+- - - Merchandise Planning (focuses on the financial aspects of merchandise management and involves planning, reviewing, and adjusting annual or monthly targets.
+- - - Category Planning (involves managing product categories as individual business units and tailoring them to meet the diverse needs of customers. Key components of category planning include category definition, market analysis, and assortment strategy.)
+- - - Assortment Planning (focuses on curating the right mix of products to meet customer demands and maximize sales. Analysis of past performance such as color effectiveness, styling visualizaiton, in-store placement, and geographic selling are key inputs in building a new assortment.)
+- - - Space Planning (focuses on optimizing the use of physical retail space to improve efficiency and foster an appealing shopping atmosphere. Space planning can help in enhancing the customer experience and can also contribute to increased sales and profitability.)
+- Buying 
+- - It involves sourcing goods from vendors and wholesalers so that they can be sold to customers at a retail store.
+- - By carefully selecting and sourcing the right products, buyers can help to ensure that their stores are profitable and competitive.
+- - Buying involves the following core processes:
+- - - Ordering (Selecting and requesting products from suppliers to stock in your store or warehouse.)
+- - - Item Management (Effeciently managing product assortment, including pricing, categorization, and inventory levels)
+- - - Vendor Management (Building and maintaining strong relationships with suppliers)
+- - - Purchase Order Management (Creating, tracking and managing purchase orders)
+- Allocation and Replenishment
+- - Demand Forcasting is the process of quantifying the anticipated demand for the product at a future time frame primarily through historical data.
+- - Forcasting involves:
+- - - Looking at past events from the previous year
+- - - Anticipating events for the current year
+- - - Looking at strategic and financial planning, including budgets
+- - - Planning merchandise details
+- - - Considering causal factors like holidays, sporting events, and complementary products for forecasting new products.
+- - Demand forecasting guides inventory planning and procurement, ensuring organizations have what they need, where they need it, at the right time.
+- - - Procurement
+- - - Allocation
+- - - Replenishment
+- - Techniques used in demand forecasting:
+- - - Quantitative
+- - - - Time Series
+- - - - Causal Forecasting
+- - - - Machine Learning Models
+- - - Qualitative
+- - - - Delphi Method
+- - - - Market Research
+- - - - Focus Group/Surveys
+- - Allocation and replenishment are fulfillment processes that work together to ensure that the right products are available in the right quantities at the right store locations at the right time.
+- - The goal of allocation and replenishment is to optimize inventory to meet customer demand while reducing stockouts and improving on-shelf availability.
+- - Allocation is the process of determining how to distribute the stock in terms of quantity, interval, or time from the central warehouse to individual stores.
+- - Allocation is used for goods that are highly trend or season-oriented or have a short life cycle.
+- - Allocation is also used for first-time launches (such as jewelry, phones, accessories, etc.)
+- - Replenishment is the process of reordering stocks from suppliers, moving them from reserve to primary storage or from storage to warehouse to order-picking locations.
+- - Orders are placed to the vendor when stock levels drop below the threshold.
+- - Replenishment works best for staple or fast-moving products that have everyday use.
+- Pricing
+- - Pricing is the process of determining the monetary value assigned to a product.
+- - It considers factors such as product cost, profit margin, market demand, competition, and perceived value.
+- - The goal of pricing is to ensure growth in sales, coverage of expenses, profits, and fairness towards consumers.
+- - Types of Pricing Strategies:
+- - - Everyday Low Pricing (Stable everyday prices are set between the MRP and the "deep-discount sale price" of the product)
+- - - High or Low Pricing (Retailers alternate between offering products at high prices during certain periods and then lowering the prices significantly during promotional or sale periods.)
+- - - Loss-Leader Pricing (Targets price-sensitive customers and deliberately prices merchandise lower than normal to attract customers and generate volumes.)
+- - - Multiple Unit Pricing (Offers a lower price per unit for the purchase two or more products of the same type when bought together.)
+- - - Price Bundling (Two or more different products are bundled and sold at one price to move the less desirable product with fast moving product.)
+- - - Price Lining (Retailers offer limited pre-determined price points within a classification.)
+- - Promotion is marketing tool designed to induce consumers to purchase a product.
+- - A promotion mix is a set of different marketing approaches used by retailers to optimize promotional efforts and reach a broader audience.
+- - The goal of promotion is to increase existing product sales, gain a competitive advantage, sell excess inventory, and build a brand for new products.
+- Key Trends in merchandising are:
+- - Omnni Channel Retial Experience
+- - Dynamic Pricing
+- - Hyper Personalized Promotions
+- - Integrated Planning and Execution
+- - Insights-driven Merchandising
+- - Agility in Supplier and Product Onboarding
+- Cognizant has partenered with leading brands like:
+- - Lowe's
+- - Levi's
+- - Payless
+- - Largest Global Retailer
+- - Waitrose
+- - Matalan
+- - Walgreens
+- - Regtag
+- - Staples
+
+***SupplyChainManagement
+- There are two primary process flows in supply chain management
+- - Traditional Retailing
+- - Experiential Retailing
+- Traditional Retailing
+- - Stores were the pivot of brik-and-mortar retailing.
+- - In this format of retailing,
+- - - Shoppers hadone touch point with the retail brand in the form of physical stores.
+- - - Supplier relationships played a major role in achieving differentiation.
+- - - Assortment planning was at the discretion of the retailers and was not driven by customer choices.
+- - - Retailers strived to fulfill customer's needs more than improving the shopping experience.
+- Experiential Retailing
+- - BAFARA - Buy Anywhere, Fulfill from Anywhere, and Return Anywhere.
+- - BAFARA involves:
+- - - Consumer-driven retailing
+- - - Demand-driver agile supply chains
+- - - Better shopping experience as a key differentiator
+- - - Unified picture of inventory, price, promotions, and customers across channels.
+- - - Consistent and seamless shopping experience across various channels.
+- The two different retail process flows are:
+- - Store Replenishment Process 
+- - - Purchase orders are generated from Supply/Planning Systems to Suppliers. 
+- - - Suppliers then fulfill these orders transporting goods to the warehouse.
+- - - The order management system (OMS) tracks stores and distribution center inventory for these orders
+- - - Orders are then place in OMS for the movement of inventory from the distribution centre to the store
+- - - Using sales data which flows through the data lake to the supply planning systems, replenishment requests are generated.
+- - Online Orders Process Flow
+- - - As first step, Purchase orders flowing from supply/planning systems to the suppliers for the forcasted quantity.
+- - - Suppliers, then fulfill the request and transports them to the warehouse.
+- - - A customer can login to the capture channel such as web frontend market place to place an order which will be ingested into the OMS.
+- - - OMS has the visibility of the store inventory, distribution centre inventory, Drop Ship Vendor Inventory, and inventory available at any fulfillment node.
+- - - OMS will source and allocate the order to any of the fulfillment nodes based on preset rules and configurations.
+- - - The fulfillment node then process the order and handover the order to the logistics provider to deliver the order at the customer's place.
+- Process involved in end-to-end supply chain network process
+- - Planning, Forecasting & Replenishment (Ensures inventory availability throughout the supplychain network. Supply Chain planning (SCP) is the process of predicting product demand and planning for the procurement of materials and components, production, marketing, distribution, and sales. The ultimate goal of supplychain planning is to maintain a balance between supply and demand ensuring that sales revenue opportunities are maximized at the lowest possible cost.)
+- - - Demand Forecasting
+- - - - Demand forecasting involves predictive analysis of historical data to estimate future customer demand. 
+- - - - It assists businesses in making better-informed supply decisions and forecasting total sales for upcoming periods. 
+- - - - It drives decisions regarding purchase quantites, timing, and inventory management, addressing questions like how much to buy, when to buy, and how much stock to hold.
+- - - - The core elements of forecasting are:
+- - - - - Analyzing Sales History (Involves collecting historical data from various sales data streams such as promotions, events, etc.)
+- - - - - Managing Base Forecast (Involves forecast algorithms to account for varying demand patterns. It also invovles item lifecycles like new item introduction and item discontinuations.)
+- - - - - Adjusting Forecasts for Events and Promotions (helps in defining promotions and external events that impact demand.)
+- - - - - Obtaining Forecast Consensus (helps in predicting future demand. This is done by combining several forecasts which have been created using different methodologies.)
+- - - - - Generating a Demand Plan (helps in predicting and forecasting the suitable demand for an item by analyzing past or projected demand patterns associated with that item.)
+- - - - - Managing Forecast Exceptions (helps in identifying the predicted increase or influence of different causal factors using regression models.)
+- - - - - Measuring Forecast Performance (helps in evaluating forecast accuracy by comparing predicted demand against actual demand to measure accuracy.)
+- - - Replenishment
+- - - - It is the controlled and regular movement of inventory from an upstream point ot a downstream location that requires sufficeint stock to cover demand.
+- - - - It involves analyzing current stock information, forecast demand, and safety stock requirements for each node.
+- - - - These methods vary based on business type and situation. For instance:
+- - - - - Ordering inventory from suppliers to ensure that a warehouse or fulfillment center has adequate products to cover demand.
+- - - - - Moving stock from a warehouse to a retail sotre in anticipation of customer sales.
+- - - - It ensures optimal inventory is available across the supply chain.
+- - - - It looks at the current stock information (such as stock on hand (SOH), In-Transit inventory and future inventory), forcasted demand and safety stock requirements for the node and releases replenishment plan.
+- - - - Replenishment plan are then further broken down into transfer orders such as store to store orders or distribution centre to store orders. It is important to note that transfer orders are nothing but internal inventory movement across nodes based on actual inventory across the nodes. Replenishment also involves placing vendor purchase orders based on organization level to an inventory level to ensure service levels are met across the supply chain network.
+- - - Inventory Allocation (or stock allocation)
+- - - - It strategically distributes goods within a company's distribution network. 
+- - - - It aligns with diverse customer demands across different geographical locations and ensure demands across different geographical locations and esnures well-stocked shelves in stores, and faster and cost-effective delivery for online orders from nearby warehouses.
+- - - - Inventory allocation optimizes warehouse space to accommodate the appropriate storage capacity, enhancing overall efficiency in the distribution network.
+- - - - Allocation of product to stores involves calculating items or store allocation profiles, and ensuring sufficient management of distribution center inventories while strategically allocating products to individual stores.
+- - - - Management of allocation parameters involves efficiently handling allocation parameters by capturing sales history per item or store and establishing an allocation calendar for streamlined management of inventory distribution.
+- - - - Measurement of in-stock performance involves assessing in-stock performance against set targets and comparing actual figures with targets. It also involves updating allocation profiles and fine-tuning fulfillment parameters based on these comparisions to optimize inventory management.
+- - - Supply Chain Collaboration
+- - - - It involves strong coordination within internal departments and significantly with external partners to sustain an optimized flow through the supply chain. 
+- - - - It helps in efficiently meeting demand and ensuring on-time, in-full delivery.
+- - - - It ensures that the retialer has visibility across the network and that all parties across the network are enabled to meet the desried service levels.
+- - - - Without an effective collaboration with upstream and downstream nodes and systems, retailers will not be able to effectively plan across the supply chain network.
+- - - - Steps involved in an effective collaboration are:
+- - - - - Develop Front End Agreement
+- - - - - Create a Joint Business Plan
+- - - - - Create Sales Forecast
+- - - - - Identify/Resolve Exceptions for Sales Forecast
+- - - - - Create Order Forecast
+- - - - - Identify/Resolve Exceptions for Order Forecast
+- - - - - Order Generation
+- - Fulfillment Planning (Process of allocating the inventory to be moved from the right source to the destination while ensuring optimal inventory levels throughout the supplychain. The order fulfillment process involes processing orders, warehousing, packing, and shipping products.)
+- - - Order Mangement System
+- - - - Enables organizations to manage inventory strategies and effectively track fulfillment while 
+- - - - It involves processing orders for delivery while optimizing costs.
+- - - - Enables a customer to explore, buy and use the product.
+- - - - A user can look at the real-time availability and buy a product or return a product
+- - - - An OMS will fulfill the product using rules defined by the organization or enable the customer to pickup the product from a nearby store while reducing the time required for the store checkout.
+- - - - Post purchase through OMS, a customer can modify the order, cancel the order, exchange a product or return a product.
+- - - Inventory Management
+- - - - Plays a very important role in an organization to ensure demand is fulfilled at the right moment.
+- - - - An order management system provides the flexibility to an organization to adapt to various inventory management strategies across various selling channels so that the desired service can be met.
+- - - - Different strategies used by organization are:
+- - - - - Separate Nodes, Separate Replenishment & Fulfullment
+- - - - - - Separate facility for separate channels
+- - - - - - No link in replenishment and forecasting
+- - - - - - Inventory is moved between channels on an ad-hoc basis
+- - - - - Separate Nodes, One Node Replenishes Other
+- - - - - - Separate facilities for separate channels
+- - - - - - One channel is a consumer of inventory from another channel and vice versa
+- - - - - Warehouse within Warehouse
+- - - - - - High-volume customers can be segregated into a separate warehouse inside regular warehouse walls.
+- - - - - Same Node, Physical Segregation
+- - - - - - Same facility for seperate channels but physical inventory segregation is involved
+- - - - - - Separate replenishment and forecasting
+- - - - - - Limited collaboration between channels
+- - - - - Same Node, Shared Inventory, No Physical Inventory Segregation
+- - - - - - Same facilities for separate channels and physical inventory segregation
+- - - - - - Sales orders are assigned a priority when released to WMS
+- - - - - - WMS pre-allocates inventory based on priority
+- - - - - Same Node, Shared Inventory, Virtual Segregation
+- - - - - - Same facilities for separate channels
+- - - - - - Physical inventory virtually segregated for different channels
+- - - - - - Shared supply & demand
+- - - Order Sourcing
+- - - - Sourcing is the process of identifying which partners or node sin the supply chain network can potentially fulfill order
+- - - - Order Mangement System 
+- - - - - It plays a crucial role in order sourcing. They ensure orders are sourced based on rules that best define the organization strategies to fulfill the orders at the least cost while ensuring service levels are met.
+- - - - - It acts as a custodian of inventory. OMS has visibility of inventory across all the ndoes.
+- - - - - It identifies the right ndoe to source for the customer order to optimize the fulfillment for customer service and costs.
+- - - - - Maintains and updates the inventory in near-real-time for various fulfillment nodes such as warehouses, dark stores, stores, drop-ship vendors, and inventory in transit.
+- - - - - Once an order is ingested, it looks for an inventory in the nearby store for customer pickup. If the customer wants the order to be delivered and inventory is not available at the nearby store, it looks at the in-region DC (mapped to the customer's location zipcode). If still oms is not able to locate an inventory, then it looks at the next nearest dc for fulfillment. In case if there is no on hand inventory, oms will source the order against future inventory in-transit inventory.
+- - - - Sample sourcing constraints are:
+- - - - - Fulfillment nodes
+- - - - - Delivery region for each fulfillment node
+- - - - - Order allcoation rules (FIFO, prioritization based on customer type, order value)
+- - - - - Fulfillment method
+- - - - - Inventory (on hand, future, on dock, in transit)
+- - - - Optimization involves:
+- - - - - Minimizing packages
+- - - - - Minimizing order split
+- - - - - Minimizing cost
+- - - - - Promising delivery date
+- - - - - Minimizing carbon footprint
+- - - Order Allocation
+- - - - It is the process of holding or assigning inventory for customer orders.
+- - - - There are two types of allocations
+- - - - - Soft allocation that checks for the availability of an item without assigning it for customer order.
+- - - - - Hard allocation that assigns the item for customer order which leads to a reduction in ATP quantity.
+- - - - Allocation quantity is the quantity allocated to an order as requested by the customer.
+- - - - In retail, 100% of the customer-requested good needs to be shipped. However, in wholesale, it is acceptable to ship less than the requested quantity and complete the order (configurable parameter).
+- - - - Order release is the process of splitting the order as per the ship node determined and then transmitting the order for the shipment.
+- - - Customer Service
+- - - - It encompasses a range of suppot and assitance provided to customers before, durign and after their interaction with the product.
+- - - - It involves addressing inquires, resloving issues, and ensuring a positive experience to meet customer needs and satisfaction.
+- - - - OMS has capabilities in facilitating shoppers to make amendments to the orders placed
+- - - - OMS also assits shoppers to enjoy a seamless experience by providing convenient return options such as return in-store or return through mail.
+- - - - OMS can be used to:
+- - - - - Create order
+- - - - - Modify order details
+- - - - - Change shipping address
+- - - - - Add/remove items
+- - - - - Change quantity
+- - - - - Make pricing and promotion adjustments
+- - - - - Schedule services
+- - - - - Track order status
+- - - - - Manage order returns
+- - - - - Manage exchanges
+- - - - - Cross-sell and up-sell to the customer
+- - - - - Provide value added services like gift wrapping, kitting and bundling
+- - - Returns Management
+- - - - Some of the main reasons for return orders are
+- - - - - Wrong items
+- - - - - Damaged items
+- - - - - Change of mind
+- - - - - Change of address
+- - - - - Size or expectation mismatches
+- - - - The 'Return Anywhere' options which can be enabled in an OMS are 
+- - - - - Return order pick-up from home
+- - - - - Return through mail
+- - - - - Return in store
+- - Fulfillment Execution (Process of ensuring the allocated inventory is picked, packed and ready to be moved from the source. The process typically involves receiving goods, short-term storage of these goods in a warehouse or distrubution center, customer order processing (picking and packaging), and shipping and logistics.)
+- - - An order fulfillment example is as follows
+- - - - The customer places an order
+- - - - Retailer system receives and verifies the order
+- - - - Order details are sent to the warehouse
+- - - - Warehouse staff receives a notification and prepare it for shipment
+- - - - Order is handed over to the shipping carrier for delivery
+- - - - Order is delivered to customer
+- - - A Warehouse Management System enables an organization to track inventory inside a warehouse and manage all activities, equipment, labor, and processes that are required to efficiently manage inventory.
+- - - Steps involved in warehosue process flow are:
+- - - - Receiving and Putaway (involves the process where truck is unloaded at the dock door and the goods are moved to the drop zones. Drop zone goods are then moved to reserve storage locations or active storage locations.
+- - - - Storage Locations (consist of various equipment to store goods like bins and racks.)
+- - - - Pick Zone (From storage locations, goods are moved to reserve pick locations or active pick locations based on order type and demand in the warehouse.)
+- - - - Waving and Picking (which involves strategies and rules by which orders and goods are picked while minimizing order processing costs inside warehouse.)
+- - - - Packing (the picked goods are then moved to the packing stations where they are containized and made ready to be shipped out.
+- - - - Manifest (Organized by carriers, checked the weight accuracy and moved to the loaded trucks.)
+- - - - Order Shipping (The packed goods are loaded onto the truck for delivery.)
+- - - Pre-Receiving
+- - - - It is the process where the warehouse is notified by the supplier that goods have been dispatched from the supplier facility and are inbound to the warehouse.
+- - - Receiving
+- - - - Unloading and inspection of the material received from the vendor with corresponding documentation
+- - - - Receiving all materials entering the warehouse in an orderly manner.
+- - - - Assuring that the quantity and quality of such materials are as ordered.
+- - - - Disbursing materials to storage or other organizational functions requiring them.
+- - - Wave Planning
+- - - - A Wave is an automated grouping of orders by some criteria that are released to the floor for processing as a set.
+- - - - The grouping criteria for a wave can be a combination of factors like carriers, destination or group of stores in retail, priority of orders, orders requiring value-added services, pallet or carton types, weight, dimensions, cube and quantity constraints, HAZMAT compliance, and equipment compatability.
+- - - Picking
+- - - - The order-picking operation consists of taking and collecting articles in a specified quantity before shipment to satisfy customer's orders.
+- - - - There are various ways in which a pick may be communicated:
+- - - - - Using voice commands
+- - - - - Using a RF handheld device
+- - - - - Using a printed report
+- - - - - Using labels
+- - - Packing
+- - - - It is a coordinated system of preparing goods for transport, warehousing, logistics, sale, and end-use.
+- - - - Packages can be categorized by a layer or function such as primary, secondary, etc.
+- - - - There are three types of packaging:
+- - - - - Primary packaging is the material that first envelops the product and hold it.
+- - - - - Secondary packaging is outside the primary packaging, used to group primary packages.
+- - - - - Tertiary packaging is used for bulk handling, warehouse storage, and transport shipping. The most common form of tertiary packaging is a palletized unit load.
+- - - Shipping
+- - - - Once the orders are packed, they are loaded onto the container/truck as a shipment. Shipment is a grouping of one or more orders to be shipped out on the same day by the same carrier. Shipping marks the completion of an outbound order cycle fulfilled from a warehouse.
+- - - - Shipment is a grouping of one or more orders to be shipped out on hte same day by the same carrier. Shipping marks the completion of an outbound order cycle fulfilled from a warehouse.
+- - Transportation (Process of moving the product from source to destination at the least cost while ensuring customer service levels are met. The primary goal of transportation and logistics management is to transport inventory throughout a company's supply chain efficiently and effectively.)
+- - - Transportation and logistics management includes:
+- - - - Transportation Sourcing (Load Optimization)
+- - - - Freight Order Management (Dock Management)
+- - - - Transportation Planning (Tendering and Bidding)
+- - - - Shipment Execution (International Trade Compliance)
+- - - - Global Trade Management (Dashboard and KPIs)
+- - - - Fleet Management (3PL Billing)
+- - - - Freight Audit and Payment (Inbound Visibility)
+- - - - GPS Tracking (Business Intelligence)
+- - - - Business Intelligence (GPS Tracking)
+- - - - Mileage and Routing (Partner Management)
+- - - - Event Management (POD Signature Capture)
+- - - Shipment Building
+- - - - A shipment is a transportable set of goods taken by a service provider or carrier from one point to another.
+- - - - A shipment may contain one or more order releases.
+- - - - A Transport Management System (TMS) enables one to build orders (order release) to shipment(s) through bulk plans and direct plans. Bulk plans enable users to plan multiple orders at on time whereas direct plan  enables the user to plan orders into shipments one at a time.
+- - - - Order releases can be planned into a single shipment or multiple shipments while order releases can be planned into a single shipment.
+- - - Routing & Scheduling
+- - - - Routing refers to mapping routes for trucks to ensure assigned deliveries happen on time.
+- - - - Scheduling can be defined as the method of planning time intervals for delivery executives to make assigned delivieries.
+- - - - The goals of the routing and scheduling processes are to:
+- - - - - Find the best path a vahicle should follow through networks of roads, rail lines, shipping lanes, and air routes.
+- - - - - Determine the best pattern for stops, multi-vehicle use, driver layovers, and time of day restrictions.
+- - - - Benifits of routing and scheduling include:
+- - - - - Enhanced vehicle utilization
+- - - - - Improved customer service
+- - - - - Reduced transportation expenses
+- - - - - Reduced captial investment in equipment
+- - - Shipment Execution
+- - - - Shipment executioon involves implementing the routing and scheduling strategy to move freight cost-effectively and efficiently from one location to another.
+- - - - Shipment can be tendered to carriers using broadcast tendering:
+- - - - - It involves sending simultaneous tendering to multiple carriers and the first one to respond with an acceptance is awarded the freight.
+- - - - - The goal of the broadcast tender is to find a service provider for a Hot Load. The load is tendered to all valid service providers that accept broadcast tenders.
+- - - - Spot Bidding is the second method for tendering
+- - - - - It invloves auctioning a shipment to specified carriers, with the lowest-cost carrier winning the auction when the duration ends.
+- - - - - The goal of a spot bid tender is to find the Lowest Cost service provider for the shipment. The load is tendered to all valid service providers that accept spot bid tenders.
+- - - - A good transport management system will enable organizations to get feedback from an ongoing delivery based on events and update KPI dashboards. This ensures that organizations can effectively monitor and track their KPIs while taking proactive actions to minimized late delivery. 
+- - - - Shipment tracking invloves receiving real-time updates form carriers or GPS on shipment events, event reasons, and status.
+- - - - Tracking a shipment based on location is done using the shipment executioon information rerlevant to the locaiton.
+- - - - Tracking a shipment based on position is done using the shipment execution information relevant to a place such as latitude or longitude on the map.
+- Some key trends in supply chain management are:
+- - Cross-channel Convenience
+- - Applications Going to the Cloud
+- - On-demand Warehousing and Transportation
+- - Warehousing Automation Systems and Techniques
+- - WES Layer as the Brains of Operations
+- - Last-mile Options Proliferation and Integration
+- - AR/VR/Wearables Tech Integration into Operations
+- - Green Supply Chain
+- Some of the Offerings are
+- - Target
+- - Schneider
+- - CAT Logistics
+- - Walgreens
+- - Walgreens
+- - Payless
+- - Walmart
+- - American Girl
+- - Costco
+- - Kohl's
+
+***Store Operations
+- A store is the face of retail process channel.
+- Store operations encompass activities that ensure the smooth functioning of a retail establishment.
+- Store operations aim to create a positive shopping experience, optimize sales, and drive customer satisfaction.
+- Store operations encompass day-to-day tasks and strategies like:
+- - Inventory Management (Ensures products are in stock)
+- - Visual Merchandising (Entice customers)
+- - Efficient Checkout Processes (Ensures seamless transactions)
+- - Store Opening and Closing Procedures (Focuses on security and accessibility)
+- Retail stores are undergoing constant transformation in response to evolving consumer preferences and technological advancements.
+- To engage customers store must:
+- - Empower store associates
+- - Build efficient Pick, Pack and Ship services
+- - Focus on Phygital encounters
+- The core functions of a store are:
+- - Store Operations
+- - - Frictionless checkout processes in retail have evolved significantly with the integration of technology. The different integrated technologies involved in checkout processes are:
+- - - - Point of Sale (POS) Devices (This process helps customers finalize purchases, make payments and receive receipts)
+- - - - POS Sales (This process involves managing transaction details, including item scanning, pricing, and processing payments, ensuring accuracy and effeciency.
+- - - - Smart Checkout Solutions (This process helps in analyzing the composition of the shopper's basket, validating their loyalty card, and assessing their payment methods.
+- - - - Just Walk Out Technology (This technology allows shoppers to grab items and simply walk out, with sensors and AI automatically tracking items and builling the customer's account.)
+- - - Inventory Management plays an important role in carryign out efficient retail operations. It comprises of:
+- - - - Inventory Receiving (Ensuring the accurate receipt of goods, verifying quantities, and inspecting product quality upon delivery.)
+- - - - Handheld Equipment (Utilizing handheld devices for real-time inventory tracking, reducing errors, and managing stock levels.)
+- - - - Store-To-Store Transfer (Facilitating the seamless movement of products between locations to balance stock levels, meet demand, and optimize resources.)
+- - - - Inventory Forecasting (Leveraging data analytics and historical sales patterns to predict customer demands)
+- - - Store Opening and Closing Procedures are critical for retail operations. The tasks involved in this procedure are:
+- - - - Store Open (Staff prepare the store for business, ensuring a clean, organized, and safe environment.)
+- - - - Register/Till Open (Cash registers are initialized, and tills are stocked with cash for transactions.)
+- - - - Till Pickup/Pay In/Pay Out (Throughout the day, cashiers manage cash flow, performing till pickups and handling pay0ins or pay-outs as needed.
+- - - - Till Reconciliation (Regular reconciliation of tills to ensure cash matches sales records, identifying discrepancies and errors.)
+- - - - Register/ Store Close (A register or store close task occurs at the end of the day when registers are closed and the store is secured.)
+- - - - Excess cash is deposited in the bank to minimize on-site cash levels, enhancing security.
+- - - - Shrink Management (Implementing comprehensive retail shrink management practices is crucial for minimizing losses and safeguarding profitability in the retail industry.)
+- - - - - Shrink refers to the difference between the inventory recorded by a retailer and the tangible quantity of merchandise sold, arising from factors such as an external theft, internal employee theft, operational or control shortcomings, and unidentified losses.
+- - - - - Security is vital for retailers to counter potential losses in their value chain. In shrink management, addressing concerns like internal theft is crucial. AI-powered solutions enhance shrink management. These solutions equip the store to fight internal theft.
+- - - - - - EAS Technology (Triggers exit alarm to ensure tagged/label items are properly accounted before leaving the store)
+- - - - - - RFID System (Helps to monitor inventory in real-time and identify stock discrepancies)
+- - - - - - Computer Vision Analytics (Analyze transaction data, inventory patterns, and computer vision)
+- - - - - - Integrated POS Analytics (Analyze transaction data, and inventory patterns)
+- - - - - - Predictive Modeling (Translates data into prioritized actions to combat loss and gain)
+- - - Order fulfillment is a critical component of modern retail.
+- - - - It involves selecting ordered items from inventory and preparing them for shipment for timely delivery to the customers.
+- - - - Effective order fulfillment relies on efficient planning and prioritization of orders.
+- - - - Bank Deposit
+- - Customer Engagement
+- - - Customer Service is a cornerstone for achieving success in retail withing customer engagement functions. Some of the systems and programs used by retailers to enhance customer service include:
+- - - - CRM (Customer Relationship Management) (Retailers use CRM systems to track and manage customer interactions)
+- - - - Customer Lifecycle Management (Retailers engage with customers throughout their journey, from acquisition to retention.)
+- - - - Reward Programs (Retailers use loyalty programs and reward incentives to encourage repeat business)
+- - - Pricing and promotions are integral to retail strategy, encompassing:
+- - - - Pricing Incremental Updates (Store associates regularly adjust prices based on market dynamics, demand fluctuations, and competitor actions.)
+- - - - Markdowns/Clearance (Store associates manage inventory through strategic markdowns and clearance sales.)
+- - - - Simple/Complex Promotion Offers
+- - - - - Executing promotional strategies, ranging froms imple discounts to BOGO deals to more complex buy-and-save or loyalty programs.
+- - Business Insights
+- - - Business insights, driven by data analytics and reports generated within the stores, offer valuable intelligence on consumer purchasing behavior, inventory trends, and operational efficiencies.
+- - - By examining these reports, retailers can make informed decisions, optimize workforce management, and harness technology to adapt to market trends and consumer behaviours.
+- - - Reporting in retail stores entails the gathering and analysis of critical data. Some of the reports that stores use for data analysis include:
+- - - - Daily Sales (Tracking daily sales figures provides insights into revenue performance, helping retailers make informed decisions on inventory pricing, and staffing.
+- - - - Returns (Monitoring returns allows retailers to identify trends, address product quality issues, and refine return policies for better customer satisfaction.)
+- - - - Damages (Reporting on damaged goods helps manage inventory losses, enabling timely restocking and minimizing financial impact.)
+- - - - Operation (Monitoring inventory levels, staffing efficiency, and store maintenance, helping retailers optimize their processes.)
+- - - - Tracking different payment methods, highlighting customer preferences, and assist in financial reconcillation)
+- - - Effective workforce management enhances store operations, boosts employee morale, and contributes to a superior customer experience. Cutomer workforce management encompasses.
+- - - - Labor Scheduling (Optimizing staff schedules base don sales trends and peak hours)
+- - - - Time and Attendance (Accurate tracking of employee hourshelps prevent time theft)
+- - - - Workforce Management (Efficienlty deploying and managing staff to match store needs)
+- - - - Labor Forecasting (Predictive analytics help anticipate staffing needs)
+- - - - Task Management (Assigning and tracking tasks to employees)
+- - - - Training Mode (Training initiatives within workforce management to foster skill development and growth.)
+- - - Technology empowers retailers to operate efficiently, harness valuable insights, and adapt to evolving customer demands. Technology can influence various facets including:
+- - - - Transaction Updates to Finance (Real-time integration of transaction data)
+- - - - Data Extract Processing (Automated data extraction and processing improves efficiency in inventory management)
+- - - - Data Monetization (Retailers cna monetize customer data through analytics and personalized marketing)
+- - - - Audit Trails (Detailed digital audit trails help track and verify all activities)
+- - - - Networking (Robust networking infrastructure support smooth in-store operations)
+- Key Trends
+- - Omnichannel
+- - Interactive Technology
+- - Experience Stores
+- - Personalization
+- Case Studies
+- - For Macy's, self-checkout has been implemented. Service offerings are
+- - - Product lookup, product location in store, applicable promotions, coupons, wallet balance, etc.
+
+***Customer Experience
+- It refers to how a business engages with its customers at every point of their buying journey - From marketing to sales to customer service and everywhere in between.
+- Positive customer experiences include:
+- - Well-targeted marketing campaigns
+- - Simplified buying processes
+- - Self-service customer service options
+- - Ability to connect with company representatives anytime anywhere, through any device.
+- Negative customer experience often stems from
+- - Difficult to navigate websites
+- - Products that don't meet expectations
+- - Sluggish customer service requests
+- - Irrelevant marketing outreach
+- A good customer experience:
+- - Improves Customer Satisfaction
+- - Builds Brand Awareness
+- - Builds Brand Loyalty
+- - Adds Value to Products and Services
+- - Improves Bottom Line and Boosts Revenue
+- - Helps in Retaining Customers
+- Key Elements of Good Customer Experience
+- - Accountability (Taking responsibility issues and acting promptly to rectify them.)
+- - Clarity (Clear and concise communication of product information, pricing and billing, policies and terms.)
+- - Reliability (Consistently exceeding customer expectations through timely delivery across various touchpoints.)
+- - Availability (Accessible 24/7 customer support via channels such as phone, email, chat, social media, service centers, etc.)
+- - Swiftness (Quick responses to customer queries and issues, quick delivery of products and services, swift and hassle-free checkout.)
+- - Relevance (Tailored product suggestions, content, and personalized promotions ensure customer interactions align with individual needs and expectations)
+- A customer experience strategy enables businesses to fulfill customer expectations, cultivate brand loyalty, and create memorable interactions.
+- The core components of a customer experience strategy are:
+- - Omnichannel Retailing
+- - - It is a fully integrated approach that focuses on providing a seamless and unified shopping experience across multiple channels
+- - - It aims to break down the barriers between different shopping channels, such as physical stores, e-commerce websites, mobile apps, and social media.
+- - - Incorporation of omnichannel retail into business operations enables retailers to improve the customer experience, meet shoppers where they are, and use customer data for personalization.
+- - Loyalty Programs
+- - - It is a structured marketing strategy that is designed to enahnce the overall customer journey and improve customer satisfactioniby providing incentives, rewards, and personalized experiences to customers.
+- - - By encouraging sustained interaction and providing tailored benefits , a loyalty program helps in retaining customers.
+- - Content Management and Development
+- - - Content management and development refers to the process of gathering, disseminating, retrieving, controling, and managing information in any format.
+- - - It plays a crucial role in shaping the customer experience of a brand or business.
+- - - Creating and delivering the right content to the target audience at the right time significantly impacts how customers perceive the brand and engage with its products or services.
+- - E-commerce Service
+- - - E-commerce encompasses a range of activities, technologies, and solutions that facilitate the online buying and selling of goods and services.
+- - - An e-commerce portal with a smooth, user-friendly interface, transparent pricing, and responsive customer support constributes to a positive customer experience.
+- - - Personalization in recommendations, targeted promotions, and order tracking further enhance the online shopping experience.
+- - Data-Driven Personalization
+- - - It is a strategy used by businesses to tailor products, services, content, and marketingefforts to individual customers based ontheir data and preferences.
+- - - Personalizaiton not only increases engagement but also fosters a deeper emotional connection between the customer and the brand, ultimately leading to a more satisfying and memorable customer experience.
+- Some key trends in customer experience are:
+- - Cross-channel Convenience
+- - Personalized Experience
+- - Adoption of Loyalty Programs
+- - Data-Driven Insights
+- - Chatbots
+- Service offering provided by Cognizant are:
+- - Business Advisory
+- - Transformation Roadmap Design
+- - Maturity Assessment
+- - Package Evaluation
+
+
+
+

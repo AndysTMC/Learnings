@@ -1,0 +1,928 @@
+***** DOM, HTML vs DOM
+-- DOM (Document Object Model) represents web page as a tree like structure
+-- HTML (Hypertext Markup Language) is the standard markup language for documents designed to be displayed in a web browser.
+
+***** Javascript, Role of Javascript
+-- Javascript is a programming language that is used for converting static web pages to interactive and dynamic web pages.
+-- Every browser has a JavaScript engine inside it (V8 for Chrome, Spider-Monkey for Firefox, Javascrfipt Core for safari, Chakra for edge)
+-- The JavaScript engine executes the JS code inside the browser.
+-- Javascirpt is what makes a web page interactive and dynamic
+
+*****Client Side & Server Side
+-- A client is a device application or software component that requests and consumes services or resources from a server.
+-- A server is a device, computer, or software application that provides services, resources, or functions to clients.
+
+***** Scope in JS
+-- A scope defines the accessibility of a variable inside the code.
+-- There are mainly three scopes (global scope, functional scope, block scope) such as below,
+```
+let globalVariable = "global";
+
+greet();
+function greet() {
+	// Function - accessible inside function only
+	let functionVariable = "function";
+	if (true) {
+		// Block - accessible inside block only
+		let blockVariables = "block";
+		console.log(blockVariables);
+		console.log(functionVariable);
+		console.log(globalVariable);
+	}
+	console.log(functionVariable);
+	console.log(globalVariable);
+}
+console.log(globalVariable);
+```
+
+*****Type of a variable in JS without a suing the (var, let or const keywords)
+-- var is the implicit type of variable when a variable is declared wihtout var, let, or const keywords
+
+*****Hoisting
+-- When a javascript code is run, the functions declarations are moved to the top of the scope.
+-- Therefore, the function calls could be literally anywhere
+-- The same goes to the variable declarations with var keyword
+-- Hoisting is a JavaScript behavior where functions and variable declarations are moved to the top of their respective scopes during the compilation phase.
+
+*****JSON
+-- JSON (JavaScript Object Notation) is a lightweight data exchange format
+-- JSON consists of key-value pairs
+-- It is a serialized format (selerialized means converting some data into data exchangeable format)
+
+*****var, let, const
+-- var creates function-scoped variable
+-- let creates block-scoped variable
+-- const can be assigned only once, and its value cannot be changed afterwards in a scope.
+
+*****Data types
+-- The data types are implicitly obtained from the assignments such as below,
+```
+let age = 25; // number
+let message = 'Hello!'; // string
+let isTrue = true; // boolean
+let x; // undefined
+let y = null; // null
+```
+-- A data type determines the type of a variable
+-- There are two types of data types (Primitive) and (Non-Primitive)
+-- Primitive - Numbers, Strings, Booleans, Undefined, Null
+-- Non-Primitive - Object, Array, Function, Date, RegExp
+
+*****Primitive & Non-Primitive Data Types
+-- Primitive data types can hold only single value
+-- Primitive data types are immutable, meaning their values, once assigned, cannot be changed. When the variable is modified or updated, a new memory is assigned with a new value.
+-- Non-Primitive data types can hold multiple values and methods
+-- Non-Primitive data types are mutable and their values can be changed.
+
+*****null vs undefined
+-- null means that there is a valid variable with a value of no data type
+-- undefined means that the variable is not yet assigned with any value.
+
+*****typeof operator
+-- Used to get the type of a variable as below,
+```
+let num = 42;
+let str = "Hellow, world!"
+let func = function() {};
+console.log(typeof num); // number
+console.log(typeof nstr); // string
+console.log(typeof func); // function
+```
+
+*****Type coercion
+-- The automatic conversion of values from one data type to another during certain operations or comparisions
+-- The precedence is as string > number > boolean > null 
+-- A few examples are as follows,
+```
+let string = "42";
+let number = 42;
+let boolean = true;
+let nullValue = null;
+console.log(string + number); // 4242
+console.log(number + boolean); // 43
+console.log(number == string); // true
+console.log(boolean == 1); // true
+console.log(boolean + nullValue); // 1
+```
+
+*****operator precedence
+-- BODMAS -> brackets > order > division > multiplication > addition > subtraction
+
+*****unary, binary, ternary operators
+-- operations that are applied to a single operand are called unary such as below,
+```
+let b = -a; // single operand
+console.log(++a); // singled operand)
+```
+-- operators that deals with two operands are called binary such as below,
+```
+let x = 10;
+let y = 3;
+let z = x + y; // two operands, binary
+console.log(z);
+```
+-- operators that deals with three operands are called ternary such as below,
+```
+let a = 1;
+let b = 2;
+let condition = 1 > 2;
+let result = condition ? a : b;
+console.log(result);
+```
+
+*****Short-circuit evaluation
+-- For && operation, if any of the left side sub results is false, the result is returned as false without even considering the right side statements
+-- For || operation, if any of the left side sub results is true, the result is returned as true without even considering the right side statements
+-- The evaluation stops the execution as soon as the result can be determined without evaluation the reminaing sub-expressions
+-- A few examples are as follows,
+```
+let result1 = false && someFunction(); // stops at first expression
+console.log(result1);
+let result2 = true || someFunction(); // stops at first expression
+console.log(result2);
+```
+
+*****Condition statements
+-- There are three types of conditions statements (if/else, ternery, switch case)
+
+*****== vs ===
+-- '==' is called as Loose Equality, it compares two values for equality after performing type coercion
+-- '===' is called as String Equality, it compares two values wihtout performing type coercion.
+
+*****Spread and Rest operators
+-- The spread operator(...) is used to expand or spread elements from an iterable (such as an array, string or object) into individual elements
+-- Few examples of spread operator are as follows,
+```
+const array = [1, 2, 3];
+console.log(...array); // 1, 2, 3
+
+const originalArray = [1, 2, 3];
+const copiedArray = [...originalArray];
+console.log(copiedArray); // [1, 2, 3]
+
+const array1 = [1, 2, 3];
+const array2 = [4, 5];
+const mergedArray = [...array1, ...array2];
+console.log(mergedArray);
+
+const numbers = [1, 2, 3, 4, 5, 6]
+sum(...numbers)
+function sum(a, b, c, d, e, f) {
+	console.log(a + b + c + d + e + f); // 15
+}
+```
+-- The rest operator is used in function parameters to collect all remaining arguments into an array. An example is as follows,
+```
+display(1, 2, 3, 4, 5);
+
+function display(first, second, ...restArguments) {
+	console.log(first);
+	console.log(second);
+	console.log(restArguments);
+}
+```
+
+*****Arrays, (get, add, remove) from arrays
+-- An array is a data type that allows to store multiple values in a single variable
+-- Methods of arrays are as follows,
+```
+get - indexOf(), find(), filter(), Slice()
+add - push(), concat(), shift(), unshift()
+remove - pop(), shift(), splice()
+modify - map(), forEach()
+others - join(), length, sort(), reverse(), reduce(), some(), every()
+```
+-- unshift method is used to put a new elemnt in the front of the array
+-- shift method is used to pop the first element of the array
+-- indexOf returns -1 if element is not found
+-- find method will return the first element of the array which satisfies the provided condition. An example is as follows,
+```
+const array = [1, 2, 3, 4, 5];
+let c = array.find((num) => num % 2 == 0);
+console.log(c);
+```
+-- filter, unlike find, will retreive all the elements of the array which satisfies the provided condition.
+-- slice, will have startIndex, and endIndex parameters, when provided will return all the elements in the range (endIndex is excluded)
+-- push method is used to add elements to the array (modifies the origial array itself, returns the new length of the array)
+-- concat method is to add elements to the array (creates a new array and returns it)
+-- pop method will remove the last element of the array
+-- splice method is used to add, remove, or replace elements in an array. An example is as follows,
+```
+array.splice(startIndex, deleteCount, ...itemsToAdd)
+let letters = ['a', 'b', 'c'];
+letters.splice(1, 0, 'x', 'y');
+console.log(letters); ['a', 'x', 'y', 'b', 'c']
+letters.splice(1, 1);
+console.log(letters); ['a', 'y', 'b', 'c']
+letters.splice(2, 1, 'q');
+console.log(letters);
+```
+-- map method is used to modify each element of an array and create a new array with the modified values
+-- forEach() method is used to perform some operation on each element of an array without creating an array
+-- sort method is used to perform sort the array in-place
+-- reverse method is used to perform reverse operation in-place
+
+*****Array Destructuring
+-- Allows to extract elements form an array and assign them to individiual variables in a single statement
+-- introduced in ECMAScript 6 (ES6) (standard for scripting languages, including Javascript, JScript, and ActionScript)
+-- An example is as follows,
+```
+const fruits = ['apple', 'banana', 'orange'];
+const [a, b, c] = fruits;
+console.log(a); // apple
+console.log(b); // banana
+console.log(c); // orange
+```
+
+*****Array-like Objects
+-- Array-like objects are objects that have indexed elements and a length property, similar to arrays, but they may not have all the methods of arrays like push(), pop() & others.
+-- Types of array like objects are arguments, strings, HTML collections. A few examples are as follows,
+```
+sum(1, 2, 3);
+function sum() {
+	console.log(arguments); // [1, 2, 3]
+	console.log(arguments.length); // 3
+	console.log(arguments[0]); // 1
+}
+
+const str = "Hello";
+console.log(str); // Hello
+console.log(str.length); // 5
+console.log(str[0]); // H
+
+var boxes = document.getElementsByClassName('box');
+console.log(boxes[0]);
+console.log(boxes.length);
+```
+-- Array-like objects can be converted to array with Array.from, spread syntax, and array.prototype.slice.call() as follows,
+```
+var arrayLike = { 0: 'a', 1: 'b', 2: 'c', length: 3};
+var array1 = Array.from(arrayLike);
+console.log(array1);
+var array2 = [...arrayLike];
+console.log(array2);
+var array3 = Array.prototype.slice.call()
+console.log(array3);
+```
+
+*****Loop & Types of Loops
+-- A loop is a programming way to run a piece of code repeatedly until a certain condition is met.
+-- The js loops are for, while, do-while, for...of, for...in
+-- A few examples of loops are as follows,
+```
+for (let i = 0; i < 5; i++) {
+	console.log(i);
+}
+let j = 0; 
+while (j < 5) {
+	console.log(j);
+	j++;
+}
+let k = 0;
+do {
+	console.log(k);
+	k++;
+} while (k > 1);
+```
+
+*****Break vs Continue
+-- Break stops the looping where else continue skips the current iteration and proceed with the next iteration in the looping
+-- A few examples are as follows,
+```
+for (let i = 1; i <= 5; i++) {
+	if (i == 3) {
+		break;
+	}
+}
+for (let i = 1; i <= 5; i++) {
+	if (i == 3) {
+		continue;
+	}
+	console.log(i);
+}
+```
+
+*****For-in vs For-of
+-- for...in - iterates over the enumerable property names (keys) of an object
+-- for...of - iterates over the values of an iterable object (like arrays, strings, maps, sets, etc.)
+-- A few examples are as follows, 
+```
+const person = { name: "Alice", age: 30, city: "London" };
+for (let key in person) {
+	console.log(key);
+	console.log(person[key]);
+}
+const numbers = [10, 20, 30];
+for (let index in numbers) {
+	console.log(index);
+	console.log(numbers[index]);
+}
+for (let value of numbers) {
+	console.log(value);
+}
+const greeting = "Hi!";
+for (let index in greeting) }
+	console.log(index);
+	console.log(greeting[index]);
+}
+for (let char of greeting) {
+	console.log(char);
+}
+```
+-- A break statement in a forEach is illegal, leads to an error. So, a for...of loop is suitable when more control over the loop is needed, such as using break or continue inside the looping.
+
+*****Functions & Types of functions
+-- A function is a reusable block of code that performs a specific code.
+-- There are 7 types of functions (named function, anonymous function, function expression, arrow function, IIFE, callback function, higher-order function)
+-- Named function - A function with a name, defined using the function keyword. An example is as follows,
+```
+function greet() {
+	console.log("Hello, world!");
+}
+// Used for reusing at multiple places 
+// Used for big and complex logics
+```
+-- Anonymous Function - A function without a name
+```
+function f1(func) {
+	func();
+}
+f1(function(a, b) {
+	return a + b;
+});
+// used for small logic
+// used only for single place
+```
+-- Function Expression - A function defined without a name and assigned to a variable
+```
+const add = function(a, b) {
+	return a + b;
+};
+console.log(add(5, 3));
+```
+-- Named Function Expression - A function defined with a name and assigned to a variable. An example is as follows,
+```
+const add = function sum(a, b) {
+	return a + b;
+};
+console.log(add(2, 3));
+```
+-- Arrow Function - A simpler and shorter way for defining functions in javascript. An example is as follows,
+```
+const multiply = (a, b) => a * b;
+console.log(multiply(3, 4));
+-- Callback Function - A function passed as an argument to another function, to be "called back" later
+```
+function add(x, y) {
+	return x + y;
+}
+let a = 3, b = 5;
+let result = add(a, b);
+console.log(result);
+function display(x, y, operation) {
+	var result = operation(x, y);
+	console.log(result);
+}
+display(10, 5, add);
+display(10, 5, multiply);
+```
+-- Higher-order function - A function that takes another function as an argument or returns a function. An example is as follows,
+```
+function double(x) {
+  return x * 2;
+}
+
+function applyOperation(arr, operation) {
+  return arr.map(operation);
+}
+
+console.log(applyOperation([1, 2, 3], double)); // Output: [2, 4, 6]
+```
+-- IIEM (Immediately Invoked Function Expression) - A function that runs immediately after it is defined. An exmaple is as follows,
+```
+(function() {
+	console.log("This runs immediately!");
+})();
+---
+
+*****Arguments vs Parameters
+-- Arguments are the actual values passed to a function when it is invoked or called
+-- Parameters are the placeholders defined in the function declaration
+-- The below is an example demonstrations,
+```
+function displayTwo(a, b) { // There are 2 parameters
+	console.log(a, b);
+}
+displayTwo(1, 2, 3, 4); // There are 4 arguments
+```
+-- There are three types of arguments (positional, named, arguments object). Few examples demonstrating each are as follows,
+```
+// Positional Arguments
+function add(a, b) {
+	console.log(a + b);
+}
+var person = {
+	name: "Happy",
+	role: "Developer",
+};
+function greet(person) [
+	console.log(person.name + " " + person.role);
+}
+greet(person);
+sum(1, 2, 3);
+function sum() {
+	console.log(arguments[0]);
+	console.log(arguments[1]);
+	console.log(arguments[2]);
+	console.log(arguments.length);
+}
+```
+-- default parameters - allows to specify default values for function parameters. An example is as follows,
+```
+function greet(name = "Happy") {
+	console.log("Hello, " + name + + "!");
+}
+
+greet(); // Hello, Happy!
+greet("Amit"); // Hello, Amit!
+```
+
+*****Event Handling
+-- Process of responding to user actions in a web page
+-- The addEventListener method JavaScript allows to attach an event name and with the function you want to perform on that event.
+-- The top 10 events are as follows,
+```
+click event: addEventListener('click', handler)
+mouseover event: addEventListener('mouseover', handler)
+keydown event: addEventListener('keydown', handler)
+keyup event: addEventListener('keyup', handler)
+submit event: addEventListener('submit', handler)
+focus event: addEventListener('focus', handler)
+blur event: addEventListener('blur', handler)
+change event: addEventListener('change', handler)
+load event: addEventListener('load', handler)
+resize event: addEventListener('resize', handler)
+```
+-- An example is as follows,
+```
+<button id="myButton">Click me</button>
+const button = document.getElementById('myButton');
+button.addEventListener('click', function() {
+	alert('Button clicked!');
+});
+
+*****First-Class functions
+-- A programming language is said to have First-class functions if functions in that language are treated like other variables
+-- They are assignable, passable as arguments, returnable as values. A few examples are as follows,
+```
+const myFunction = function() {
+	console.log("Interview, Happy!");
+};
+myFunction();
+function double(number) {
+	return number * 2;
+}
+function performOperation(double value) {
+	return double(value);
+}
+console.log(performOperation(double, 5));
+function createSimpleFunction() {
+	return function () {
+		console.log("I am from return function.");
+	};
+}
+const simpleFunction = createSimpleFunction();
+simpleFunction();
+```
+
+*****Pure & Impure functions
+-- A pure function is a function that always produces the same output for the same input.
+-- An impure function, can produce different outputs for the same intput.
+-- Pure functions cannot modify the state, and cannot have side effects.
+-- Impure functions can modify the state, and can have side effects.
+
+*****Function Currying
+-- Currying transforms a function with multiple arguments into a nested series of functions, each taking a single argument.
+-- The advantages are reusability, modularity, and specialization. Big, complex functions with multiple arguemnts can be broken down into small, reusable functions with fewer arguments.
+-- An example is as follows,
+```
+function multiple(a, b) {
+	return a * b;
+}
+
+function curriedMultiply(a) {
+	return function (b) {
+		return a * b;
+	}
+}
+
+const double = curriedMultiply(2);
+console.log(double(5));
+
+const triple = curriedMultiply(3);
+console.log(triple(5));
+```
+
+*****Call, Apply and Bind methods
+-- Methods to work with functions and control how they are invoked and what context they operate in.
+-- Provides a way to manipulate the this value and pass arguments to functions
+-- Some of the examples are as follows,
+```
+function sayHello(message) {
+	console.log(`${message}, ${this.name}!`);
+}
+const person = { name: 'Happy' };
+// Using call
+sayHello.call(person, 'Hello');
+// Using apply
+sayHello.apply(person, ['Hi']);
+// Using bind
+const greetPerson = sayHello.bind(person);
+greetPerson('Greetings');
+```
+
+*****String, Template literals, String Interpolation, Methods
+-- String is a data type used to store sequence of characters or data.
+-- A template literal, also known as a template string, is a feature introduced in ECMAScript ES6 for string interpolation and multiline strings in JS.
+```
+// Backticks (`) for template literal
+var myname = `Happy`;
+// String interpolation
+var str3 = `Hello ${myname}!`; // the expression in the braces is evaluated during runtime
+console.log(str3);
+var multilineStr = `
+This is a 
+multiline string.
+`;
+```
+--- Methods of strings are as follows,
+```
+substr()
+indexOf()
+
+trim()
+// using trim()
+let str = "  Hello, World!  ";
+let trimmedStr = str.time();
+
+substring()
+// using substring()
+let subString = result.substring(6, 11);
+
+includes()
+charAt()
+
+replace()
+// using replace
+result.replace("World", "JavaScript");
+
+slice()
+valueOf()
+search()
+
+concat()
+// using concat
+let result = str1.concat(" ", str2);
+
+split()
+// using split()
+let arr = result.split(",");
+
+toLocaleLowerCase()
+
+toUpperCase()
+// using toUpperCase()
+console.log(result.toUpperCase());
+
+toLowerCase()
+// using toLowerCase()
+console.log(result.toLowerCase());
+
+lastIndexOf()
+toString()
+toLocaleUpperCase()
+charCodeAt()
+match()
+```
+-- length property of the string returns the length of the string
+-- Whenever a string is assigned to a variable, a new memory is created for it. And whenever it is modified or re-assigned, a new memory is allocated for the new string. This is known as Stringimmutability.
+-- The ways of concatenating strings are as follows,
+```
++ Operator
+concat() method
+template literals
+join() method
+// using join
+let strings = [s1, s2];
+let r4 = string.join(' ');
+```
+
+*****Single Quote, Double Quotes & Backticks
+-- The usage of Single Quote and Double Quote are same (used to define strings)
+-- The backticks are used to define template literals or strings.
+
+*****DOM, HTML vs DOM
+-- DOM (Document Object Model) represents the structure of a web page as a tree of objects. Each element, attribute, and piece of text in the html document becomes a node in this tree.
+-- The DOM allows programming languages to read, modify, add, or remove content and structure on the web page dynamically.
+-- HTML (HyperText Markup Lanugage) is a markup language that defines the structure and content of a web page.
+-- Selectors are methods used to select or access HTML elements on a web page to manipulate them using Javascript
+-- The below are few selector methods,
+```
+getElementById()
+getElementsByClassName()
+getElementsByTagName()
+querySelector()
+querySelectorAll()
+```
+-- The below are few dom methods to modify elements and their properties,
+```
+textContent
+innerHTML
+setAttribute
+removeAttribute
+style.setProperty
+classList.add()
+```
+-- The below are dom methods to create new elements in dom using js,
+```
+createElement()
+// using createElement
+let newDiv = document.createElement('div');
+newDiv.textContent = "Hello!";
+document.body.appendChild(newDiv);
+
+cloneNode()
+// using cloneNode()
+let original = document.getElementById('myDiv');
+let copy = original.cloneNode(true); // true = deep clone (includes children)
+document.body.appendChild(copy);
+
+createTextNode()
+// using createTextNode()
+let text = document.createTextNode("This is some text.");
+let p = document.createElement('p');
+p.appendChild(text);
+document.body.appendChild(p);
+
+innerHTML()
+// using innerHTML()
+let div = document.getElementById('myDiv');
+div.innerHTML = "<strong>Bold Text</strong>";
+
+insertAdjecentHTML()
+// using innerAdjecentHTML()
+let div = document.getElementById('myDiv');
+div.insertAdjecentHTML('beforeend', '<span>Appended!</span>');
+
+document.write()
+// using document.write()
+document.write("<h2>Hello from document.write!</h2>");
+```
+
+*****Error Handling
+-- Error handling is the process of managing errors
+-- try, catch, finally are used to manage error handling in js
+-- The code inside the finally block will always be executed regardless of presence of an error.
+-- The code inside the catch block will only be executed whenever there is an error.
+-- The throw statements stops the execution of the current function and passes the error to the catch block of calling function
+-- A demonstration is as follows,
+```
+function UserData() {
+	try {
+		validateUserAge(25);
+		validateUserAge("invalid");
+		validateUserAge(15);
+	} catch (error) {
+		console.error("Error:", error.message);
+	}
+}
+function validateUserAge(age) {
+	if (typeof age !== "number") {
+		throw new Error("Age must be a number");
+	}
+	console.log("User age is valid");
+}
+```
+-- Error propagation refers to the process of passing or propagating an error from one part of the code to another by using the throw statement with try catch.
+-- Best practices for error handling,
+```
+// Using try catch blocks
+try {
+	// code that may throw an error
+} catch (error) {
+	// error handling and recovery actions
+
+// Using descriptive Error Message
+throw new Error("Cannot divide by zero");
+
+// Avoiding Swallowing errors
+try {
+	// code that may throw an error
+} catch (error) {
+	// do not leave the catch blank
+}
+
+// Logging errors
+try {
+	// code that may throw an error
+} catch (error) {
+	console.error("An error occured:", error);
+	// log the error with a logging library
+}
+```
+-- A few different types of erros in js are as follows,
+```
+syntax error
+reference error
+type error
+range error
+```
+
+*****Objects
+-- Objects are collections of key-value pairs, where keys are called properties (or methods, if value is a functions).
+-- Objects allows to group and store related data and functionality together
+-- Properties or Methods in an object can be added, deleted or modified any time (so, dynamic behavior)
+-- An object can be created in the following ways,
+```
+// through object literal
+let obj = { name: "Alice", age: 25 };
+
+// through new Object() syntax
+let obj = new Object();
+obj.name = "Bob";
+obj.age = 30;
+
+// through constructor function
+function Person(name, age) {
+	this.name = name;
+	this.age = age;
+}
+let person1 = new Person("Charlie", 28);
+
+// through Object.create()
+let proto = { greet() { console.log("Hello!"); } };
+let obj = Object.create(proto);
+obj.greet();
+
+// using es6 classes
+class Car {
+	constructor(make, model) {
+		this.make = make;
+		this.model = model;
+	}
+}
+let car1 = new Car("Toyota", "Camry");
+```
+-- Properties or methods of an object can be added, modified, or delted using the '.' operator as follows,
+```
+var person = {};
+person.name = "Happy"; // adding
+person.age = 35; // adding/
+person.country = "India"; // adding
+person.age = 30; // modifying
+delete person.age // deleting
+```
+-- Both dot notation and bracket notation are used to access properties or methods of an object
+-- Dot notation is more popular and used due to its simplicity
+-- Some common methods to iterate over the properties of an object are as follows,
+```
+for...in loop
+Object.keys() & forEach loop
+Object.values() & forEach() loop
+```
+-- The existance of a property in an object can be checked as follows,
+```
+var person = {
+	name: "Alice",
+	age: 25
+};
+
+// using the 'in' operator
+console.log("name" in person);
+console.log("city" in person);
+
+// using the hasOwnProperty() method
+console.log(person.hasOwnProperty("name"));
+console.log(perosn.hasOwnProperty("city"));
+
+// comparing with undefined
+console.log(person.name !== undefined);
+console.log(person.city !== undefined);
+```
+-- An object can be clond or copied as follows,
+```
+const originalObject = {
+	name: 'Happy',
+	age: 35,
+	city: 'Delhi'
+};
+
+// using spread syntax (shallow copy)
+const cloneObjectSprea = { ...originalObject };
+
+// using Object.assign() (shallow copy)
+const clonedObjectAssign = Object.assign({}, originalObject); // first is target, second is source
+
+// using JSON.parse() and JSON.stringify() (deep copy)
+const clonedObjectJSON = JSON.parse(JSON.stringify(originalObject));
+```
+-- The difference between shallow copy and deep copy, is that the shallow copy creates a new object, but copies only the references to nested objects or arrays, not the actual nested objects themselves but the deep copy recursively copies all nested objects and arrays so the copy is completely independent of the original.
+-- In deep copy, changes to nested objects/arrays in the copy do not affect the original unlike shallow copy
+
+*****Arrays vs Objects
+-- Arrays are collection of values whereas Objects are collections of key-value pairs
+-- Arrays are denoted by square brackets [] whereas Objects are denoted by curly braces {}.
+-- Elements in array are ordered whereas Properties in objects are unordered
+
+*****Set Object
+-- A collection of unique values, i.e., duplicate values are not allowed
+-- An example is as follows,
+```
+const uniqueNumbers = new Set();
+uniqueNumbers.add(5);
+uniqueNumbers.add(10);
+uniqueNumbers.add(5);
+console.log(uniqueNumbers);
+console.log(uniqueNumbers.size);
+console.log(uniqueNumber.has(10));
+uniqueNumbers.delete(10);
+console.log(uniqueNumbers.size);
+```
+
+*****Map Object
+-- A collection of key-value pairs where each key can be of any time, and each value can also be of any time.
+-- An example is as follows,
+```
+const personDetails = new Map();
+personDetails.set("name", "Alice");
+personDetails.set("age", 30);
+console.log(personDetails.get("name"));
+console.log(personDetails.has("age"));
+personDetails.delete("age");
+console.log(personDetails.size);
+```
+-- A map maintains the order of key-value pairs as they were inserted.
+
+*****Maps vs Object
+-- Keys in a map can be of any data type whereas keys in regular js object are limited to strings and symbols
+-- a map maintains the order of key-value pairs as they were inserted whereas in a regular object, there is no guaranteed order of keys
+
+*****Events
+-- Events are actions that happen in the browser, which javascript can respond to.
+-- Events can be triggered as follows,
+```
+by the user: mouse clicks, key presses, etc.
+by the browser: page load, resizing, scrolling, etc.
+programmatically: Using methods like element.click(), elements
+```
+-- Some common types of events are as follows,
+```
+mouse events: click, dblclick, mouseover, mouseout, mousedown, mouseup
+keyboard events: keydown, keyup, keypress
+form events: submit, change, focus, blur, input
+window events: load, resize, scroll, unload
+touch events: touchstart, touchemove, touchend
+...
+```
+-- Whenever any event is triggered, the browser automatically creates an event object and passes it as an argument to the event handler function
+-- An event object contains various properties and methods that provide information about the event, such as type of event, the element that triggered the event etc.
+-- Event delegation is a technique where a single event listener is attached to the parent element instead of attaching the listener to each and every child element. The event bubbles up from the child to the parent, allowing the parent to handle events for all current and future children.
+-- Event bubbling is the process where an event starts from the element that triggered it (the target) and then bubbles up to its ancestors (parent elements) in the DOM tree.
+-- Event propagation or event bubbling can be stopped by using .stopPropagation() in the event handler method as follows,
+```
+function handleEvent(event) {
+	console.log("Bubbling: " + this.id);
+	event.stopPropagation();
+}
+```
+-- Event capturing is the opposite of the event bubbling. A demonstration for using event capturing is as follows,
+```
+var outer = document.getElementById("outer");
+outer.addEventListener('click', handleCapture, true); // the last parameter set to true to use Event Capturing (the default is false, i.e., Bubbling)
+```
+-- In event capturing, the event is first captured by the outermost parent and then propagated down to the target element.
+-- To prevent the default action associated with the event from occuring, event.preventDefault() method is used, as follows,
+```
+form.addEventListener('submit', function(event) {
+  event.preventDefault(); // Stops the form from submitting
+});
+```
+-- In a regular function used as an event handler, 'this' refers to the element the event was attached to. A demonstration is as follows,
+```
+button.addEventListener('click', function() {
+	this.style.background = 'red'; // 'this' is the button
+});
+// if an arrow function is used, this is not bound to the element
+```
+-- An event handler can be removed from an element in js using 'removeEventListener' method as follows,
+```
+function handler() {
+  alert('Clicked!');
+}
+button.addEventListener('click', handler);
+// Later, to remove:
+button.removeEventListener('click', handler);
+```
+
+
+
