@@ -67,7 +67,6 @@
   - (Note) Zones in a region are connected through low-latency links.
   - New regions and zones are constantly added.
   - An example is as below
-```
 Region Code	Region					Zones	Zones List
 us-west1	The Dalles, Oregon, North America	3	us-west1-a
 								us-west1-b
@@ -78,7 +77,6 @@ europe-north1	Hamina, Finland, Europe			3 	europe-north1-a
 asia-south1	Mumbai, India APAC			3	asia-south1-a
 								asia-south1-b
 								asia-south1-c
-```
 
 ***Google Compute Engine (GCE)
 - In corporate data centers, applications are deployed to physical servers.
@@ -292,14 +290,12 @@ asia-south1	Mumbai, India APAC			3	asia-south1-a
   - OS upgrades and patches
   - Availability
   - etc.. (and a lot of things!)
-```
 Applications (Manually setup by User)
 Application Runtime (Manually installed by User)
 OS (Installed by User)
 Virtualization (Managed by Cloud)
 Physical Hardware (Provided by Cloud)
 Networking (Provided by Cloud)
-```
 
 ***PAAS (Platform as a Service)
 -Use a platform provided by cloud
@@ -317,14 +313,12 @@ Networking (Provided by Cloud)
   - CAAS (Container as a Service): Containers instead of Apps
   - FAAS (Function as a Service): Functions instead of Apps
   - Databases - Relational & NoSQL (Amazon RDS, Google Cloud SQL, Azure SQL Database etc.), Queues, AI, ML, Operations, etc.
-```
 Applications (Configured by User)
 Application Runtime (Installed by Cloud)
 OS (Installed by Cloud)
 Virtualization (Managed by Cloud)
 Physical Hardware (Provided by Cloud)
 Networking (Provided by Cloud)
-```
 
 ***Microservices
 - Enterprises are heading towards microservices architectures
@@ -407,7 +401,6 @@ Networking (Provided by Cloud)
   - KMS
   - more..
 - Customer responsibility vary with model:
-```
 Responsibilities		IaaS	PaaS	SaaS
 -----------------------------------------------------
 Content				User	User	User
@@ -426,7 +419,6 @@ Storage + encryption		Cloud	Cloud	Cloud
 Hardened Kernel + IPC		Cloud	Cloud	Cloud
 Boot				Cloud	Cloud	Cloud
 Hardware			Cloud	Cloud	Cloud
-```
 - Google Cloud is always responsible for Hardware, Network, Audit Logging, etc.
 
 ***Managed Services for Compute
@@ -507,6 +499,12 @@ Hardware			Cloud	Cloud	Cloud
   - Only code and app engine configuration needs to be provided, and all other important features are provided by app engine
   - Supports scale down to zero instances.
     - To reduce the cost
+gcloud app deploy
+gcloud app services list
+gcloud app versions list
+gcloud app instances list
+gcloud app deploy --version=v2
+gcloud app browse --version v2
 - Flexible - Application instances run within Docker containers
   - Makes use of Compute Engine virtual machines
   - Anything for which you can create a Docker container image, you can provide that image as an input to flexible and flexible can run it for you.
@@ -514,3 +512,282 @@ Hardware			Cloud	Cloud	Cloud
     - If you provide the code for any of these applications, flexible can build the container image and then deploy it to App Engine Flexible
   - Cannot scale down to Zero instances.
     - If you have an App Engine Flexible application running, it would have at least one instance running all the time
+
+***Service Categories - Scenarios
+- To deploy custom application in virtual machines, IaaS is solution
+- Gmail is SaaS
+- Deploying app using App Engine comes under PaaS
+- Customer is not responsible for OS updates when using PaaS
+- Customer can configure auto scaling needs in PaaS
+- Customer is not responsible for Availability when using PaaS
+- Customer doesn't have access to VM instances in App Engine (PaaS)
+- Customer cannot install custom software in PaaS
+- PaaS services can also offer Database services too along with Compute services
+  - Running and managing databases manually is very tough using virtual machine
+    - (Solution) Managed database services (PaaS) helps in solving it
+
+***Google Kubernetes Engine (GKE)
+- Kubernetes is the most popular open source container orchestration solution
+- Provides cluster management (including upgrades)
+  - Each cluster can have different types of virtual machines
+- Provides all important container orchestration features
+  - Auto Scaling
+  - Service Discovery
+  - Load Balancer
+  - Self Healing
+  - Zero Downtime Deployments
+- Google Kubernetes Engine is the managed Kubernetes service
+- It minimizes operations with auto-repair (repair failed nodes) and auto-upgrade (use latest version of K8S always) features
+- Provides Pod and Cluster Autoscaling
+  - You might be running multiple microservices in a Kubernetes cluster, and these microservices might be running on different nodes of the cluster.
+  - Pod auto scaling deals with increasing the number of instances for a specific microservice
+    - If you run out of capacity of a cluster, that's where you need cluster autoscaling
+- Enables cloud logging and cloud monitoring with simple configuration
+- Uses Container-optimized OS, a hardened OS built by Google
+- Provides support for persistent disks and local ssd
+  - Can attach with the nodes that are part of the cluster
+
+***Kubernetes - A Microservice Journey - Getting Started, Deployment, Autoscaling, & More
+- Create a Kubernetes cluster with default node pool
+gcloud container clusters create 
+  - or use cloud console
+- Login to Cloud Shell
+- Connect to Kubernetes Cluster
+gcloud container clusters get-credentials my-cluster --zone us-central1-a --project solid-course-258105
+- Deploy Microservice to Kubernetes
+  - Create deployment & service using kubectl commands
+kubectl create deployment hello-world-rest-api --image=in28min/helllo-world-rest-api:0.0.1.RELEASE
+kubectl expose deployment hello-world-rest-api --type=LoadBalancer --port=8080
+- If you want to increase the number of nodes in a cluster or to add a node pool to a cluster or to add a cluster, gcloud container clusters command is used
+- If you want to deploy something to the cluster or to expose the microservice to an external world, kubectl command is used.
+- To look at the deployment solution, the below command is used
+kubectl get deployment
+- You can increase number of instances of microservice by
+kubectl scale deployment hello-world-rest-api --replicas=2
+- You can get pods by 
+kubectl get pods
+- To increase number of nodes in a Kubernetes cluster, below is the command
+gcloud container clusters resize my-cluster --node-pool my-node-pool --num-nodes 5
+- Manually increasing number of instances and nodes is mandatory
+  - We can auto-scale
+- Setup autoscaling for microservice by
+kubectl autoscale deployment hello-world-rest-api --max=4 --cpu-percent=70
+  - This method is also called horizontal pod autoscaling - HPA
+kubectl get hpa
+- Setup auto scaling for Kubernetes cluster by
+gcloud container clusters update cluster-name --enable-autoscaling --min-nodes=1 --max-nodes=10
+- Delete the microservice by
+  - for deleting service
+kubectl delete service
+  - for deleting deployment
+kubectl delete deployment
+- Delete the cluster by
+gcloud container clusters delete
+
+***Cloud Functions
+- (Question) Imagine you want to execute some code when an event happens?
+  - A file uploaded in Cloud Storage
+  - An error log is written to Cloud Loggin
+  - A message arrives to Cloud Pub/Sub
+- With Cloud functions
+  - Run code in response to events
+    - Write your business logic in Node.js, Python, Go, Java, .NET, Ruby
+    - Don't worry about servers or scaling or availability (only worry about your code)
+  - Pay only for what you use
+    - Number of invocations
+    - Compute Time of the invocations
+    - Amount of memory and CPU provisioned
+  - Time Bound (Default 1 min and MAX 9 minutes (540 seconds))
+  - Each execution runs in a separate instance
+    - No direct sharing between invocations
+
+***Cloud Run & Cloud Run for Anthos
+- It is for 'Container to Production in Seconds'
+- Once the service name and region while creating a Cloud Run service, they cannot be changed afterwards
+- Cloud run is built on top of an open standard 'Knative'
+  - Fully managed serverless platform for containerized applications
+    - ZERO infrastructure management
+    - Pay-per-use (For used CPU, Memory, Requests and Networking)
+- Fully integrated end-to-end developer experience
+  - No limitations in languages, binaries and dependencies
+  - Easily portable because of container based architecture
+  - Cloud Code, Cloud Build, Cloud Monitoring & Cloud Loggin Integrations
+- Anthos - Run kubernetes clusters anywhere
+  - Cloud, Multi Cloud and On-Premise
+- Cloud Run for Anthos
+  - Can deploy workloads to anthos clusters running on-premises or on Google Cloud
+
+***Scenarios - GCP Compute Services
+- How do you create Virtual Machines in Google Cloud?
+  - Compute Engine
+- How do you create a group of similar VMs?
+  - Managed Instance Groups
+- How do you distribute load among VMs?
+  - Cloud Load Balancing
+- How do you simplify setting up your web applications?
+  - App Engine
+- What is the easiest way to run one container?
+  - Google Cloud Run (or App Engine Flexible)
+- How do you orchestrate containers?
+  - Google Kubernates Engine (GKE)
+- How do you build serverless event driven functions?
+  - Cloud Functions
+- How can you centrally manage multi-cloud and on-premise kubernates clusters?
+  - Anthos
+
+***Storage Types - Block Storage and File Storage
+- What is the type of storage of your hard disk?
+  - Block Storage
+- You've created a file share to share a set of files with your colleagues in a enterprise. What type of storage are you using?
+  - File Storage
+- Block Storage
+  - Harddisks are attached to your computers
+  - Typically, one block storage device can be connected to one virtual server
+    - (Exceptions) You can attach read only block devices with multiplle virtual servers and certain cloud providers are exploring multi-writer disks as well!
+  - You can connect multiple different block storage devices to one virtual server
+  - Used as
+    - Direct-attached storage (DAS) - Similar to a hard disk
+    - Storage Area Network (SAN) - High-speed network connecting a pool of storage devices
+      - Used by Databases - Oracle and Microsoft SQL Server
+- File Storage
+  - Media workflows need huge shared storage for supporting processes like video editing
+  - Enterprise users need a quick way to share files in a secure and organized way
+  - These file shares are shared by several virtual servers
+- GCP - Block Storage and File Storage
+ - Block Storage
+   - Persistent Dists: Network Block Storage
+     - Zonal: Data replicated in one zone
+     - Regional: Data replicated in multiple zones
+   - Local SSDs: Local Block Storage
+ - File Storage
+   - Filestore: High performance file storage
+
+***Object Storage - Cloud Storage
+- Most popular, very flexible & inexpensive storage service
+  - Serverless: Autoscaling and infinite scale
+- Store large objects using a key-value approach
+  - Treats entire object as a unit (Partial updates not allowed)
+    - Recommended when you operate on entire object most of the time
+    - Access Control at Object level
+  - Also called Object Storage
+- Provides REST API to access and modify the objects
+  - Also provides CLI (gsutil) & Client Libraries (C++, C#, Java, Node.js, PHP, Python & Ruby)
+- Store all file types - text, binary, backup & archives
+  - Media files and archives, Application packages and logs
+  - Backups of your databases or storage devices
+  - Staging data during on-premise to cloud database migration
+- Storage Classes
+  - Different kinds of data can be stored in Cloud Storage
+    - Media files and archives
+    - Application packages and logs
+    - Backups of your databases or storage devics
+    - Long term archives
+  - Huge variations in access patterns
+  - (Question) Can I pay a cheaper price for objects I access less frequently?
+    - Storage classes help to optimize your costs based on your access needs
+  - Standard (STANDARD)
+    - No minimum storage duration
+    - TMA (Typical Monthly Availability) - > 99.99% in multi region and dual region, 99.99% in regions
+    - Frequently used data/Short period of time
+  - Nearline storage (NEARLINE)
+    - 30 days of minimum storage duration
+    - TMA - 99.95% in multi region and dual region, 99.9% in regions
+    - Read or modify once a month on an average
+  - Coldline storage (COLDLINE)
+    - 90 days of minimum storage duration
+    - TMA - 99.95% in multi region and dual region, 99.9% in regions
+    - Read or modify at most once a quarter
+  - Archive storage (ARCHIVE)
+    - 365 days of minimum storage duration
+    - TMA - 99.95% in multi region and dual region, 99.9% in regions
+    - Less than once a year
+- Features across Storage Classes
+  - High durability (99.999999999% annual durability)
+  - Low latency (first byte typically in tens of milliseconds)
+  - Unlimited storage
+  - Autoscaling (No configuration needed)
+  - NO minimum object size
+- Same APIs across storage classes
+- Committed SLA is 99.95% for mutli region or dual-region location and 99.9% for single region for Standard, Nearline and Coldline storage classes
+  - >= 99.0% of commited SLA is for Nearline, Coldline, or Archive  storage class in a regional location of Cloud Storage
+    - Durable Reduced Availability storage class in any locatio of Cloud Storage
+
+***Object Lifecycle Management
+- Files are frequently accessed when they are created
+  - Generally usage reduces with time
+  - (Question) How do you save costs by moving files automatically between storage classes?
+    - (Solution) Object Lifecycle Management
+- Identify objects using conditions based on:
+  - Age, CreatedBefore, isLive, MatchesStorageClass, NumberOfNewVersions, etc.
+  - Set multiple conditions: all conditions must be satisfied for action to happen
+- Two kinds of actions:
+  - SetStorageClass actions (change from one storage class to another)
+  - Deletion actions (delete objects)
+- Allowed Transitions:
+  - (Standard or Multi-Regional or Regional) to(Nearline or Coldline or Archive)
+  - Nearline to (Coldline or Archive)
+  - Coldline to Archive
+{
+  "lifecycle": {
+    "rule": [
+      {
+        "action": { "type": "Delete" },
+        "condition": { 
+          "age": 30,
+          "isLive": true,
+        }
+      },
+      {
+        "action": {
+          "type": "SetStorageClass",
+          "storageClass": "NEARLINE",
+        },
+        "condition": {
+          "age": 365,
+          "matchesStorageClass": ["STANDARD"]
+        }
+      }
+    ]
+  }
+}
+
+***Transferring data from on-premises to cloud
+- Most popular data destination is Google Cloud Storage
+- Options:
+  - Online Transfer: Use gsutil or API to transfer data to Google Cloud Storage
+  - Storage Transfer Service: Recommended for large-scale (petabytes) online data transfers from your private data centers, AWS, Azure, and Google Cloud
+    - You can set up a repeating schedule
+    - Supports incremental transfer (only transfer changed objects)
+    - Reliable and fault tolerant - continues from where it left off in case of errors
+  - Storage Transfer Service vs gsutil:
+    - gsutil is recommended only when you are transferring less than 1 TB from on-premises or another GCS bucket
+    - Storage Transfer Service is recommended if either of the conditions is met:
+      - Transferring more than 1 TB from anywhere
+      - Transferring from another cloud
+- Migrating Data with Transfer Appliance
+  - Transfer Appliance: Copy, ship and upload data to GCS
+    - Recommended if your data size is greater than 20TB
+      - OR online transfer takes > 1 week
+    - Process
+      - Request an appliance
+      - Upload your data
+      - Ship the appliance back
+      - Google uploads the data
+    - Fast copy (upto 40Gbps)
+    - AES 256 encryption - Customer-managed encryption keys
+    - Order multiple devices (TA40, TA300) if need
+
+***Storage in Google Cloud - Scenarios
+- My team requires a shared space for collaborating on media projects that involve large files
+  - Filestore (File Storage)
+- I am looking for a cost-effective solution to store and serve a large amount of unstructured data (Videos, Music, Files) globally
+  - Cloud Storage (Object Storage)
+- I want to ensure that my data is automatically managed and transitioned between storage classes to reduce costs without manual intervention
+  - Object Lifecycle Management in Cloud Storage
+- For a massive, one-time migration of data to cloud, where online transfer is not feasible due to size and time constraints
+  - Using Transfer Appliance for large-scale, physical data migration
+
+
+
+
+
