@@ -1,3 +1,6 @@
+https://www.in28minutes.com/gcp-bookshelf
+-----------------------------------------
+
 ***What is Cloud and Why do we need Cloud?
 - Online shopping applications typically have peak usage during holidays and weekends.
   - They would have a lot of load on the application and rest of the time, there are low loads.
@@ -787,7 +790,124 @@ gcloud container clusters delete
 - For a massive, one-time migration of data to cloud, where online transfer is not feasible due to size and time constraints
   - Using Transfer Appliance for large-scale, physical data migration
 
+***Database Categories
+- There are several categories of databases
+  - Relational (OLTP and OLAP), Document, Key Value, Graph, In Memory among others
+- Choosing type of database for your use case is not easy. A few factors:
+  - Do you want a fixed schema?
+    - Do you want flexibility in defining and changing your schema? (schemaless)
+  - What level of transaction properties do you need? (atomicity and consistency)
+  - What kind of latency do you want? (seconds, milliseconds or microseconds)
+  - How many transactions do you expect? (hundreds or thousands or millions of transactions per second)
+  - How much data will be stored? (MBs or GBs or TBs or PBs)
+  - and a lot more...
 
+***Relational Databases
+- This was the only option until a decade back!
+- Most popular (or unpopular) type of databases
+- Predefined schema with tables and relationships
+- Very strong transactional capabilities
+- Used for
+  - OLTP (Online Transaction Processing) use cases
+  - OLAP (Online Analytics Processing) use cases
+- OLTP
+  - Applications where large number of users make large number of small transactions
+  - Use cases:
+    - Most traditional applications, ERP, CRM, e-commerce, banking applications, etc.
+  - Popular databases
+    - MySQL, Oracle, SQL Server, etc.
+  - Recommended Google Managed Services:
+    - Cloud SQL: Supports PostgreSQL, MySQL, and SQL Server for regional relational databases (upto a few TBs)
+gcloud config set project project-id
+gcloud sql connect database-name --user=root --quiet
+    - Cloud Spanner: Unlimited scale (multiple PBs) and 99.999% availability for global applications with horizontal scaling
+- OLAP
+  - Applications allowing users to analyze petabytes of data
+    - Examples: Reporting applications, Data ware houses, Business intelligence applications, Analytics systems
+    - Sample application: To decide insurance premiums analyzing data from last hundred years
+    - Data is consolidated form multiple (transactional) databases
+  - Recommended GCP Managed Service
+    - BigQuery: Petabyte-scale distributed data ware house
+- OLAP vs OLTP
+  - OLAP and OLTP use similar data structures
+  - But very different approach in how data is stored
+  - OLTP databases use row storage
+    - Each table row is stored together
+    - Efficient for processing small transactions
+  - OLAP databases use columnar storage
+    - Each table column is stored together
+    - High compression - store petabytes of data efficiently
+    - Distribute data - one table in multiple cluster nodes
+    - Execute single query across multiple nodes - Complex queries can be executed efficiently
 
+***NoSQL Databases
+- New approach (actually NOT so new!) to building your databases
+  - NoSQL = not only SQL
+  - Flexible schema
+    - Structure the way your application needs it
+    - Let the schema evolve with time
+  - Horizontally scale to petabytes of data with millions of TPS
+  - Not a 100% accurate generalization but a great starting point
+    - Typical NoSQL databases trade-off "Strong consistency and SQL features" to achieve "scalability and high-performance"
+- Google Managed Services:
+  - Cloud Firestore (Datastore)
+  - Cloud BigTable
+- Cloud Firestore
+  - Managed serverless NoSQL document database
+    - Provides ACID transactions, SQL-like queries, indexes
+      - Designed for transactional mobile and web applications
+    - Firestore (next version of Datastore) adds:
+      - Strong consistency
+      - Mobile and Web-client libraries
+    - Recommended for small to medium databases (0 to a few Terabytes)
+- Cloud BigTable - Managed, scalable NoSQL wide column database
+  - NOT serverless (You need to create instances)
+  - Recommended for data size > 10 Terabytes to several Petabytes
+  - Recommended for large analytical and operational workloads:
+    - NOT recommended for transactional workloads (Does not support multi row transactions - supports only single-row transactions)
+
+***In-memory Databases
+- Retrieving data from memory is much faster than retrieving data from disk
+- In-memory databases like Redis deliver microsecond latency by storing persistent data in memory
+- Recommended GCP Managed Service
+  - Cloud Memorystore
+- Use cases: Caching, session management, gaming leader boards, geospatial applications
+
+***Databases - Scenarios
+- A start up with quickly evolving schema (table structure)
+  - Cloud Datastore/Firestore
+- Non relational db wiith less storage (10 GB)
+  - Cloud Datastore
+- Transactional global database with predefined schema needing to process millions of transactions per second
+  - Cloud Spanner
+- Transactional local database processing thousands of transactions per second
+  - Cloud SQL
+- Cache data (from database) for a web application
+  - Memorystore
+- Database for analytics processing of petabytes of data
+  - BigQuery
+- Database for storing huge volumes stream data from IOT devices
+  - BigTable
+- Database for storing huge streams of time series data
+  - BigTable
+
+***Security Threats
+- Ransomeware: Lock up your company's files and demand money to unlock them
+- Phishing Scams: Trick emails that look real but aim to steal your information
+- Insider Threats: Disgruntled employees might take or leak confidential info, hurting your business from the inside
+- Malware Attacks: Harmful software that sneaks into your systems to steal data or cause damage
+- DDoS Attacks: Attack your website with traffic until it crashes
+- Data Breaches: When someone unauthorized gets into your systems and steals sensitive information
+- Cloud Vulnerabilites: Weakness in cloud services configuration can expose your data
+
+***Security Today - Scenarios
+- An employee opens an invoice attached to an email that seems to come from a known vendor. This action installs software that encrypts all the data on their computer, and a message appears demanding payment to unlock the files
+  - Ransomeware
+- You receive an email that looks like it's from your bank, asking you to update your login details via a link. The link leads to a fake website that collects your username and password when you try to log in
+  - Phishing Scams
+- A former employee, still holding grudges, uses their still-active login credentials to access and download customer data, which they then leak online
+  - Insider Threats
+- While browsing the internet, an employee clicks on a seemingly harmless link, which downloads a program ontoo their computer without their knowledge. This program starts sending sensitive information to a cybercriminal
+  - DDoS Attacks
 
 
