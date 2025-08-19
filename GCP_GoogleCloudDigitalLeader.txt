@@ -981,3 +981,1461 @@ gcloud sql connect database-name --user=root --quiet
       - In general, we DO NOT need to worry about them
 gsutil mb gs://new-bucket-name
 
+***Data States
+- You have a hard disk, you might have multiple hard disks, and you have a compute engine, which is writing data to those hard disks
+- (Question) What are the different states data can be in?
+  - Data at rest: Stored on a device or a backup
+    - Examples: data on a hard disk, in a database, backups and archives
+  - Data in motion: Being trasferred across a network
+    - Also called Data in transit
+    - Examples:
+      - Data copied from on-premise to cloud storage
+      - An application talking to a database
+    - Two Types:
+      - In and out of cloud (from internet)
+      - Within cloud
+- Data in use: Active data processed in a non-persistent state
+  - Example: Data in your RAM
+
+***Encryption
+- If you store data as is, what would happen if an unauthorized entity gets access to it?
+  - Imagine losing an unencrypted hard disk
+- First law of security: Defense in Depth
+- Typically, enterprises encrypt all data
+  - Data on your hard disks
+  - Data in your databases
+  - Data on your file servers
+- Is it sufficient if you encryput data at rest?
+  - No. Encrypt data in transit - between application to database as well
+- Symmetric Key Encryption
+  - Symmetric encryption algorithms use the same key for encryption and decryption
+  - Key Factor 1: Choose the right encryption algorithm
+  - Key Factor 2: How do we secure the encryption key?
+  - Key Factor 3: How do we share the encryption key?
+- Asymmetric Key Encryption
+  - Two Keys: Public Key and Private Key
+  - Also called Public Key Cryptography
+  - Encrypt data with public key and decrypt with private key
+  - Share Public Key with everybody and keep the Private Key with you (YEAH, ITS PRIVATE!)
+  - No crazy questions:
+    - Will somebody not figure out private key using the public key?
+  - How do you create Asymmetric Keys?
+
+***Cloud KMS (Key Management Service)
+- It is the service in Google Cloud to create and managed cryptographic keys (symmetric and asymmetric)
+- Control their use in your applications and GCP Services
+  - If you would want to encrypt data, which is present on a disk, or you'd want to encrypt data, which is present in cloud storage or you'd want to encrypt data in a database, you can configure KMS to allow the use of the key
+- Provides an API to encrypt, decrypt, or sign data
+- Use existing cryptographic keys created on premises
+  - You can create cryptographic keys inside Google Cloud, or you can actually create cryptographic keys on premises, and you can use them as part of your KMS
+- Integrates with almost all GCP services that need data encryption:
+  - Google-managed key: No configuration required
+  - Customer-managed key: Use key from KMS
+  - Customer-supplied key: Provide your own key
+
+***Resource Hierarchy in GCP
+- Well defined hierarchy
+  - Organization > folder > Project > Resources
+- Resources are created in projects
+- A Folder can contain multiple projects
+- Organization can contain multiple Folders
+- Recommendations for Enterprises
+  - Create seperate projects for different environments
+    - Complete isolation between test and production environments
+  - Create separate folders for each department
+    - Isolate production applications of one department from another
+    - We can create a shared folder for shared resources
+  - One project per application per environment
+    - Let's consider two apps: "A1" and "A2"
+    - Let's assume we need two environments: "DEV" and "PROD"
+    - In the ideal world you will create four projects: A1-DEV, A1-PROD, A2-DEV, A2-PROD
+      - Isolates environments from each other
+      - DEV changes will not break PROD
+      - Grant all developers complete access (create, delete, deploy) to DEV Projects
+      - Provide production access to operations teams only!
+  
+***Billing Accounts
+- Billing Account is mandatory for creating resources in a project
+  - Billing Account contains the payment details
+  - Every Project with active resourcces should be associated with a Billing Account
+- Billing Account can be associated with one or more projects
+- You can have multiple billing accounts in an organization
+- (RECOMMENDATION) Creating Billing Accounts representing your organization structure:
+  - A startup can have just one Billing account
+  - A large enterprise can have a separate billing account for each department
+- Two Types:
+  - Self Serve: Billed directly to Credit Card or Bank Account
+  - Invoiced: Generated invoices (Used by large enterprises)
+    - Then, the enterprise needs to process the invoice
+
+***Managing Billing - Budget, Alerts and Exports
+- Setup a Cloud Billing Budget to avoid surprises:
+  - (RECOMMENDED) Configure Alerts
+  - Default alert thresholds set at 50%, 90%, & 100%
+    - Send alerts to Pub Sub (Optional)
+    - Billing admins and Billing Account users are alerted by e-mail
+- Billing data can be exported (on a schedule) to:
+  - Big Query (if you want to query information or visualize it)
+  - Cloud Storagge (for history/archiving)
+
+***IAM Best Practices
+- Principle of Least Privilage - Give least possible privilege needed for a role!
+  - Basic Roles are NOT recommended
+    - Prefer predefined roles when possible
+  - Use Service Accounts with minimum privileges
+    - Use different service accounts for different apps/purposes
+- Separation of Duties - Involve atleast 2 people in sensitive tasks:
+  - Example: Have separate deployer and traffic migrator roles
+    - AppEngine provides App Engine deployer and App Engine Service Admin roles
+      - App Engine Deployer can deploy new version but cannot shift traffic
+      - App Engine Service Admin can shift traffic but cannot deploy new version!
+- Constant Monitoring: Review Cloud Audit Logs to audit changes to IAM policies and access to Service Account keys
+  - Archive Cloud Audit Logs in Cloud Storage buckets for long term retention
+- Use Groups when possible
+
+***Cloud Computing: Public vs Private vs Hybrid Cloud - 1
+- Public Cloud: You host everything in the cloud
+  - You DO NOT need data center anymore
+  - NO Capital Expenditure needed
+  - UNLIMITED scale at your disposal
+  - Hardware resources are owned by Google Cloud
+    - Capacity management, hardware failures and security of the data center are Google Cloud's responsiblity
+  - Summary: Hardware owned by Google Cloud and shared between multiple customers
+- Private Cloud: You host everything in your own data center
+  - Needs Capital Expenditure
+  - Incur staffing and maintenance expenses for infrastructure
+  - Adding infrastructure need planning (time consuming and expensive)
+    - For example: You might NOT be able to quickly handle the sudden increase in user load
+- Hybrid Cloud: Combination of both (Public & Private)
+  - Use Public Cloud for some workloads and Private cloud for others
+  - Examples:
+    - Using Google Cloud Dataflow to process a data stream from your on-premise applications
+    - Connect an on-premise application to Google Cloud SQL database
+  - Advantage: Provides you with flexibility
+    - Go on-premises or cloud based on specific requirement
+  - Disadvantage: Increases complexity
+- Multi Cloud: Using Multiple Cloud Platforms with/without on-premise insfrastructure
+  - Even MORE flexibility
+  - BUT increased complexity
+
+***Cloud VPN
+- Connect on-premise network to the GCP network
+  - Implemented using IPSec VPN Tunnel
+  - Traffic through internet (public)
+  - Traffic encrypted using Internet Key Exchange protocol
+- Two types of Cloud VPN solutions
+  - HA VPN (SLA of 99.99% service availability with two external IP addresses)
+    - Only dynamic routing (BGP) supported
+  - Classic VPN (SLA of 99.9% service availability, a single external IP address)
+
+***Cloud Interconnect
+- High speed physical connection between on-premise and VPC networks:
+  - Highly available and high throughput
+  - Two types of connections possible:
+    - Dedicated Interconnect - 10 Gbps or 100 Gbps configurations
+    - Partner Interconnect - 50 Mbps to 10 Gbps configurations
+- Data exchange happens through a private network:
+  - Communicate using VPC network's internal IP addresses from on-premise network
+  - Reduces egress costs
+    - As public internet is NOT used
+- (Feature) Supported Google API's and services can be privately accessed from on-premise
+- Use only for high bandwidth needs:
+  - For low bandwidth, Cloud VPN is recommended
+
+***Direct Peeing
+- Connect cusomter network to google network using network peering
+  - Direct path from on-premises network to Google services
+- Not a GCP Service
+  - Lower level network connection outside of GCP
+- NOT RECOMMENDED
+  - Use Cloud Interconnect and Cloud VPN
+
+***User Identity Management in Google Cloud
+- Email used to create free trial account => "Super Admin"
+  - Access to everything in your GCP organization, folders and projects
+  - Manage access to other users using their Gmail accounts
+gcloud projects add-iam-policy-binding project-name --member=user:mail --role=roles/storage.objectAdmin
+- However, this is NOT recommended for enterprises
+- Option 1: Your Enterprise is using Google Workspace
+  - Use Google Workspace to manage users (groups, etc.)
+  - Link Google Cloud Organiztion with Google Workspace
+- Option 2: Your Enterprise uses an Identity Provider of its own
+  - Federate Google Cloud with your Identity Provider
+
+***Corporate Directory Federation
+- Federate Cloud Identity or Google Workspace with your external identity provider (IdP) such as Active Directory or Azure Active Directory
+  - If you would want to use external identity providers to authenticate our users who are using the resources in the Google Cloud, we call it Federation
+- Enable Single Sign On:
+  - Users are redirected to an external IdP to authenticate
+  - When users are authenticated, SAML assertion is sent to Google Sign-In
+- Examples:
+  - Federate Active Directory with Cloud Identity by using Google Cloud Directory Sync (GCDS) and Active Directory Federation Services (AD FS)
+  - Federating Azure AD with Cloud Identity
+
+***Organization Policy Service
+- How to enable centralized constraints on all resources created in an Organization?
+  - Configure Organization Policy
+  - Example: Disable creation of Service Accounts
+  - Example: Allow/Deny creation of resources in specific regions
+- Needs a Role - Organization Policy Administrator
+- (Note) IAM focuses on Who
+- (Note) Organization Policy focuses on What
+  - What can be done on specific resources?
+
+***Resource Hierarchy & IAM Policy
+- IAM Policy can be set at any level of the hierarchy
+- Resoruces inherit the policies of all parents
+- The effective policy for a resource is the union of the policy on that resource and its parents
+- Policy inheritance is transitive
+  - For example: Organization policies are applied at resource level
+- You can't restrict policy at lower level if permission is given at an higher level
+
+***Getting Started with Identity Platform
+- Identity Platform: Customer identity and access management
+- What's the difference: Cloud IAM vs Identity Platform
+  - Cloud IAM: Employees and Partners Authorization
+    - Control access to Google Cloud Resources
+    - Member, Roles, Policy, Service Accounts
+  - Identity Platform: Customer identity and access management (CIAM)
+    - Authentication and Authorization for your applications and services
+- Identity Platform: Key Features
+  - Authentication & authorization for web & mobile apps (IOS, Android, ..)
+  - Multiple authentication methods
+    - SAML, OIDC, email/password, phone, social-Google/Facebook/Twitter/..
+  - Features: User sign-up and sign-in, MFA, etc.
+  - An upgrade from Firebase Authentication Legacy
+  - Integrates well with Identity-Aware Proxy
+
+***Cloud IAM vs Identity Platform - Scenarios
+- An Applicationo on a GCE VM needs access to cloud storage
+  - Cloud IAM - Service Account
+- An enterprise user needs access to upload objects to a Cloud Storage bucket
+  - Cloud IAM
+- I want to manage end users for my applicaiton 
+  - Identity Platform
+- I want to enable "Login using facebook/twitter" for my application 
+  - Identity Platform
+- I want to create user sign-up and sign-in workflows for my application 
+  - Identity Platform
+
+***DevOps
+- DevOps is a software development approach that emphasizes communication, collaboration, integration, and automation between development and operations teams to achieve faster and more reliable software delivery
+- It is getting better at "Three Elements of Great Software Team"
+  - Communication - Get teams together
+  - Feedback - Earlier you find a problem, easier it is to fix
+  - Automation - Automate testing, infrastructure provisioning, deployment, and monitoring
+- CI/CD
+Code Commit -> Unit Tests -> Integration Tests -> Package -> Deploy -> 
+Automated Tests -> Testing Approval -> Deploy NEXT
+  - Continuous Integration
+    - Continuously run your tests and packaging
+  - Continuous Deployment
+    - Continuously deploy to test environments
+  - Continuous Delivery
+    - Continuously deploy to production
+- Recommended Things To Do
+  - Static Code Analysis
+    - Lint, Sonar
+    - Including Static Security Checks (Souce Code Security Analyzer software like Veracode or Static Code Analyzer)
+  - Runtime Checks
+    - Run Vulnerability Scanners (automated tools that scan web applications for security vulnerabilities)
+  - Tests
+    - Unit Tests (JUnit, pytest, Jasmine, etc)
+    - Integration Tests (Selenium, Robot Framework, Cucumber, etc.)
+    - System Tests (Selenium, Robot Framework, Cucumber, etc.)
+    - Sanity and Regression Tests
+
+***DevOps - CI, CD Tools
+- Cloud Source Repositories: Fully-featured, private Git repository
+  - Similar to Github
+- Container Registry: Store your Docker images
+- Jenkins: Continuous Integration
+- Cloud Build: Build deployable artifacts (jars or docker images) from your source code and configuration
+- Spinnaker: Multi-cloud continuous delivery platform
+  - Release software changes with high velocity and confidence
+  - Supports deployments to Google Compute, Google Kubernetes Engine, Google App Engine and other cloud platforms
+  - Supports Multiple Deployment Strategies
+
+***Exporing Container Registry and Artifact Registry
+- You've created docker images for your microservices
+  - Where do you store them?
+  - Two Options: Container Registry and Artifact Registry
+    - Container Registry: Uses GCS bucket to store images
+      - Supports Container images only
+      - (Alternative) Docker Hub
+      - Example: us.gcr.io/PROJECT-ID/...
+      - Permissions are managed by managing access to GCS buckets
+    - Artifcat Registry: Evolution of Container Registry
+      - Builds upon the capabilities of Container Registry
+      - Manage BOTH container images and non-container artifacts
+- Artifact Registry
+  - Support multiple artifact formats:
+    - Container images, language packages, and OS packages are supported
+  - You need to create separate repository
+    - Does NOT use GCS buckets
+    - Repository can be reional or multi-regional
+  - Example: us-central1-docker.pkg.dev/PROJECT-ID/...
+  - (RECOMMENDED) Control access by using Artifact Registry Roles
+     - Artifact Registry Reader
+     - Artifact Registry Writer
+     - Artifact Registry Administrator, etc.
+  - You can also configure repository specific permissions
+
+***DevOps Example: Cloud Run with Cloud Build
+- You're building an application and you'd want to be able to deploy that application to Cloud Run as a Docker Image, and you'd want to make use of Cloud Build to automate the entire process
+- STEP 1: Checkout Source Code from Cloud Source Repositories
+  - You would create a repository in Cloud Source repository where your source code is stored, and in your cloud build, you'll be listening to changes of that specific repository.
+  - Whenever a developer commits code to the Cloud Source repository, what the build does is that would check out source code from the Cloud Source repository
+- STEP 2: Build a Docker Image
+  - Once you have the source code, you would want to build a Docker Image for it
+  - You would use something like Docker file or any of the other processes to build a Docker Image
+- STEP 3: Store Docker Image in the Container Registry
+- STEP 4: Deploy Docker Image to Cloud Run
+
+***DevOps - Infrastructure as Code
+- Treat infrastructure the same way as application code
+  - Whenever you want to deploy an application, we need to provision infrastructure
+  - if we would need to create a network, we need to provision compute
+  - if we want to provision a database, instead of manually provisioning infrastructure, you can write a script which can provision the infrastructure for you
+- Track your infrastructure changes over time (version control)
+  - You can version control the code you use to create your infrastructure
+  - This helps you to track your infrastructure changes
+- Bring repeatability into your infrastructure
+  - Say if there are 10 steps in provisioning infrastructure, I've created the dev environment
+  - if you would want to bring repeatability into provisioning your infrastructure, once you're able to use the script, run it to provision infrastructure in a specific environment, you can then use the same script to provision infrastructure in other environments as well
+- Two Key Parts
+  - Infrastructure Provisioning
+    - Provisioning compute, database, storage and networking
+    - Open source cloud neutral - Terraform
+      - You can use Terraform to provision infrastructure in AWS, Azure, Google Cloud as well
+    - GCP Service - Google Cloud Deployment Manager
+  - Configuration Management
+    - Install right software and tools on the provisioned resources
+    - Open Source Tools - Chef, Puppet, Ansible and SaltStack
+    - If you have thousands of virtual machine instances, you don't want to do that manually, automation of installation of right software and tools is needed. Therefore, Configuration Management comes into picture
+- Infrastructure as Code is all about automating the provisioning and configuring of infrastructure
+- It is all about treating your infrastructure the same way
+
+***Operations
+- Building applications is important, and maintaining them in production is very, very important. That's were operations come into picture.
+Operation				GCP
+Monitoring - Metrics and Alerts		Cloud Monitoring
+Centralized Logging			Cloud Logging
+Audit logging				Cloud Audit Logs
+Real-time exception monitoring		Error Reporting
+Live Debugging				Cloud Debugger
+Distributed tracing 			Cloud Trace
+Statistical, low-overhead profiler	Cloud Profiler
+
+***Cloud Operations Scenarios - Microservices
+- I want to get metrics related to specific microservice
+  - Cloud Monitoring
+- I want to look at logs for a specific microservice
+  - Cloud Logging
+- I want to track exceptions happening in a specific microservice
+  - Error Reporting
+- I want to trace request across microservices
+  - Cloud Trace
+- I want to solve a performance issue in a specific microservice
+  - Cloud Profiler
+
+***Site Reliability Engineering (SRE)
+- Its called DevOps++ at Google
+- SRE teams focus on every aspect of an application
+  - availability, latency, performance, efficiency, change, management, monitoring, emergency response, and capacity planning, etc.
+- Key Principles:
+  - Manage by Service Level Objectives (SLOs)
+    - SRE team converts the business requirements and the technical requirements into measurable objectives (into metrics, which you can measure)
+  - Minimize Toil
+    - To minimize the amount of manual work that you do, and to automate as many things as possible
+  - Move fast by reducing cost of failure
+    - Making small changes, test them, and move them to production (instead of big changes)
+  - Share ownership with developers (to ensure minimal bugs)
+
+***Site Reliability Engineering (SRE) - Key Metrics
+- Service Level Indicator (SLI): Quantitative measure of an aspect of a service
+  - Categories: availability, latency, throughput, durability, correctness (error rate)
+  - Typically aggregated - "Over 1 minute"
+- Service Level Objective (SLO) - SLI + target
+  - 99.99% Availability, 99.999999999% Durability
+  - Response time: 99th percentile - 1 second
+  - Choosing an appropriate SLO is complex
+- Service Level Agreement (SLA): SLO + consequences (contract)
+  - What is the consequence of NOT meeting an SLO? (Defined in a contract)
+    - A service level agreement is what is the consequence of not meeting a SLO, which is defined in a contract
+  - Recommended to have stricter internal SLOs than external SLAs
+- Error budgets: (100% - SLO)
+  - How well is a team meeting their reliability objectives?
+  - Used to manage development velocity
+  - Error budgets help you plan your development velocity according to how well the team is meeting their reliability objectives
+
+***Site Reliability Engineering (SRE) - Best Practices
+- Handling Excess Loads
+  - Load Shedding
+    - API Limits
+      - Different SLAs for different customers
+    - Streaming Data
+      - If you are aggregating time series stream data, in some scenarios, you can drop a part of data
+  - Reduced Quality of Service
+    - Instead of talking to a recommendations API, return a hardcoded set of products!
+    - Not always possible
+      - Example: if you are making a payment
+- Avoiding Cascading Failures
+  - Plan to avoid thrashing
+    - Circuit Breaker
+  - Penetration Testing (Ethical Hacking)
+    - Simulate an attack with the objective of finding security vulnerabilities
+    - Should be authorized by project owners
+    - No need to inform Google
+      - Ensure you are only testing your projects and are in compliance with terms of service!
+    - Can be white box (Hacker is provided with information about infrastructure and/or applications) or black box (No information is provided)
+- Load Testing (JMeter, LoadRunner, Locust, Gatling, etc.)
+  - Simulate real world traffic as closely as possible
+  - Test for spiky traffic - suddenly increases in traffic
+- Resilience Testing - "How does an application behaves under stress?"
+- Resilience - "Ability of system to provide acceptable behavior even when one or more parts of the system fail"
+- Approaches:
+  - Chaos Testing (Simian Army) - cause one or more layers to fail
+    - "unleashing a wild monkey with a weapon in your data center to randomly shoot down instances and chew through cables"
+  - Add huge stress on one of the layers
+  - Include network in your testing (VPN, Cloud Interconnect, etc.)
+    - Do we fall back to VPN if direct interconnect fails?
+    - What happens when internet is down?
+  - Best Practice: DiRT - disaster recovery testing at Google
+    - Plan and execute outages for a defined period of time
+    - Example: Disconnecting complete data center
+
+***Synchronous Communication
+- Applications on your web server make synchronous calls to the logging service
+- Logging service picks them up for processing when ready
+- Advantages:
+  - Decoupling: Publisher (Apps) don't care about who is listening 
+  - Availability: Publisher (Apps) up even if a subscriber (Logging Service) is down
+  - Scalability: Scale consumer instances (Logging Service) under high load
+  - Durability: Message is not lost even if subscriber (Logging Service) is down
+
+***Pub/Sub
+- Reliable, scalable, fully-managed asynchronous messaging service
+- Backbone for Highly Available and Highly Scalable Solutions
+  - Auto scale to process billions of messages per day
+  - Low cost (Pay for use)
+- Usecases: Event ingestion and delivery for streaming analytics pipelines
+- Supports push and pull message deliveries
+- Publisher - Sender of a message
+  - Publishers send messages by making HTTPS requests to pubsub.googleapis.com
+- Subscriber - Receiver of the message
+  - Pull - Subscriber pulls messages when ready
+    - Subscriber makes HTTPS requests to pubsub.googleapis.com
+  - Push - Messages are sent to subscribers
+- Very Flexible Publisher(s) and Subscriber(s) Relationships: One to Many, Many to One, Many to Many
+- Steps in the process
+  - Step 1: Topic is created
+  - Step 2: Subscription(s) are created
+    - Subscribers register to the topic
+    - Each Subscription represents discrete pull of messages from a topic:
+      - Multiple clients pull same subscription
+        - messages split between clients
+      - Multiple clients create a subscription each
+        - each client will get every message
+- Publisher sends a message to Topic
+- Message individually delivered to each and every subscription
+  - Subscribers can receive message either by:
+    - Push: Pub/Sub sends the message to Subscriber
+    - Pull: Subscribers poll for messages
+- Message(s) are removed from subscriptions message queue
+  - Pub/Sub ensures the message is retained per subscription until it is acknowledged
+
+***Cloud Dataflow
+- Provides unified streaming and batch data processing that's serverless, fast and cost-effective
+- Some of the example piplelines to build:
+  - Pub/Sub > Dataflow > BigQuery (Streaming)
+  - Pub/Sub > Dataflow > Cloud Storage (Streaming - files)
+  - Cloud Storage > Dataflow > Bigtable/CloudSpanner/Datastore/BigQuery (Batch - Load data into databases)
+  - Bulk compress files in Cloud Storage (Batch)
+  - Convert file formats between Avro, Parquet & csv (Batch)
+- Streaming and Batch Usecases
+  - Realtime Fraud Detection, Sensor Data Processing, Log Data Processing, Batch Processing (Load data, convert formats, etc.)
+- Use pre-built templates
+- Based on Apache Beam (supports Java, Python, Go...)
+- Serverless (and Autoscaling)
+
+***Architecture - Loose Coupling with Pub/Sub
+- Whenever you want to decouple a publisher from a subscriber, consider Pub/Sub
+- Pub/Sub is used in:
+  - Microservices Architectures
+  - IOT Architectures
+   - Streaming Architectures
+
+***Data Formats
+- Structured: Tables, Rows and Columns (Relational)
+  - Examples: Order Information, Product-Inventory, etc.
+    - Google Cloud Services:
+      - Cloud SQL (Regional Transactional)
+      - Cloud Spanner (Global Unlimited Transactional)
+      - BigQuery (Data warehousing and ML using SQL)
+- Semi Structured: Flexible Schema
+   - Key-Value, Document (JSON) - Social Media Profile Information
+     - Google Cloud Services: Cloud Firestore/Datastore
+- Unstructured: Video, Audio, Image, Text, Binary files
+  - Example: Product images, Product videos
+    - Google Cloud Services: Cloud Storage
+- (NEW) BigQuery can also store Semi Structured data
+  - BigQuery ML can be used to do ML using Unstructured data (image, videos) stored in Cloud Storage
+
+***Cloud Dataproc
+- Managed Spark and Hadoop service:
+  - (Question) When do you go for Spark and Hadoop?
+    - Typical workloads are where you'd want to get some intelligence from your data, ML or AI
+  - Variety of jobs are supported:
+    - Spark, PySpark, SparkR, Hive, SparkSQL, Pig, Hadoop
+    - All these jobs can be run using Dataproc
+  - Used to perform complex batch processing
+- Multiple Cluster Modes
+  - Single Node/Standard/High Availability (3 masters)
+  - Use regular/preemptibe VMs
+- Use case: Can move your Hadoop and Spark clusters to the Google Cloud
+  - Perform your machine learning and AI development using open source frameworks
+- (ALTERNATIVE) BigQuery - When you run SQL queries on Petabytes
+  - If you're able to do processing just using SQL queries, this is the choice
+  - Go for Cloud Dataproc when you need more than queries (Example: Complex batch processing Machien Learning and AI workloads)
+- (ALTERNATIVE) Dataflow - Simple pipelines without managing clusters
+
+***Architecture 1 - Big Data Flow - Batch Ingest
+- Use extract, transform, and load (ETL) to load data into BigQuery from Cloud Storage
+  - Dataprep: Clean and prepare data
+    - Intelligent data service for VISUALLY exploring, cleaning, and preparing data for analysis, reporting, and ML
+  - Dataflow: Create data pipelines (and ETL)
+  - Dataproc: Complex processing using Spark and Hadoop
+- Data Studio: Visualize data in BigQuery
+  - Unlock the power of your data with interactive dashboard and beautiful reports
+- Looker: Enterprise Business Intelligence
+
+***Architecture 2 - Stremaing Data
+- Pub/Sub: Receive messages
+- Dataflow: Analyze, aggregate and filter data
+  - If you have simple logic to implement, you might also consider using a Cloud Function to listen onto Cloud Pub/Sub and handle the messages, elsewhere, consider Dataflow
+- For pre-defined time series analytics, sotring data in Bigtable gives you the ability to perform rapid analysis
+- For ad hoc complex analysis, prefer BigQuery
+
+***Architecture 3 - IOT
+- IoT Core: Manage IoT (registration, authentication, and authorization) devices
+  - Helps in send/receive messages, real-time telemetry from/to IoT devices
+- Pub/Sub: Durable message ingestion service (allows buffering)
+- Dataflow: Processing data (ETL & more...)
+  - Alternative: Use Cloud Functions to trigger alerts
+- Data Storage and Analytics
+  - Make IOT data available to mobile or web apps => Datastore
+  - Execute pre-defined time series queries => Bigtable
+  - More complex or ad hoc analytics/analysis => BigQuery
+
+***Data Lake - Simplified Big Data Solutions
+- Usual big data solutions are complex
+- (Question) How can make collecting, analyzing (reporting, analytics, machine learning) and visualizing huge data sets easy?
+- (Question) How to design solutions that scale?
+- (Question) How to build flexibility while saving?
+- (Solution) Data Lake
+  - Single platform with combination of solutions for data storage, data management and data analytics
+
+***GCP Data Lakes - Storage and Ingestion
+- Storage: Cloud Storage (low cost + durability + performance + flexibile processing)
+- Data Ingestion:
+  - Streaming data - Cloud Pub/Sub + Cloud Dataflow
+  - Batch - Transfer Service + Transfer Appliance + gsutil
+- Processing and analytics:
+  - Run in-place querying using SQL queries using BigQuery or (Hive on Dataproc)
+- Data Mining and Exploration:
+  - Clean and transform raw data with Dataprep
+  - Use Cloud Datalab (data science libraries such as TensorFlow and NumPy) for exploring
+ 
+***Data Governance
+- Bad data: Bad data leads to poor business decisions
+- Data leaks: Data leaks can lead to a reputation loss
+- (Question) How to avoid this?
+  - Data Governance
+- Key Decisions: Here are the important things to think about:
+  - Data Management: What's our method for keeping our data organized and easy to find?
+  - Life Cyce Management: How do we handle our data from when we first get until we don't need it anymore?
+  - Ownership and Accountability: Who looks after our data to make sure it's correct,s afe, and private?
+
+***Dataplex - Data Mesh in Google Cloud
+- Data in the cloud might be distributed across different databases
+  - It might be in a relational database or NoSQL database or data warehouse or data lake, etc.
+  - You would want unified visibility into all this data
+  - You would want to be able to manage security for this data from a centralized location
+  - That's where the concept of data mesh comes into picture.
+  - Data mesh in Google Cloud is called Dataplex
+- Dataplex is a Data Mesh: Unified dashboard with visibility into all data assets (data lakes, data warehouses, ..)
+  - Single pane of glass: Data management across silos
+  - Centralized security and governance: Comprehensive security & governance policies (IAM, Access Controls, ..) that are uniformly enforced across all data assets
+  - Unified search and data discovery: Integrates seamlessly with Google Cloud's Data Catalog, offering a rich, searchable repository of metadata 
+
+***Making Best Use of Data - Scenarios
+- Sales representatives are struggling to identify buying patterns and personalize customer interactions due to the inability to access and analyze sales data scattered across various sources
+  - Combine BigQuery's data integration with Looker's intuitive dashboards
+- A fast-growing online gaming platform needs to analyze player data in real-time to improve user experience and retention rates
+  - Implement a streaming pipeline - captures live gaming event data with Pub/Sub. Use Cloud Dataflow for real-time data processing. Load the processed data into Google BigQuery. Visualize using Looker (if needed)
+- A multinational corporation collects vast amounts of diverse data - sales figures, customer feedback, and sensor data from manufactoring plants. CHALLENGE: Store this data cost-effectively while keeping it accessible for future analytics and machien learning applications
+  - Implement a data lake using Google Cloud Storage
+
+***REST API Challenges
+- Most applications today are built around REST API:
+  - Resources (/todos, /todos/{id}, etc.)
+  - Actions - HTTP Methods - GET, PUT, POST, DELETE, etc.
+- Management of REST API is not easy:
+  - You've to take care of authentication and authorization
+  - You've to be be able to set limits (rate limiting, quotas) for your API consumers
+  - You've to take care of implementing multipile versions of you API
+  - You would want to implement monitoring, caching and a lot of other features
+
+***Exploring API management in Google Cloud
+- Apigee API Management: Comprehensive API management platform
+  - Deployment options: Cloud, on-premises or hybrid
+  - Manage Complete API life cycle
+    - Design, Secure, Publish, Analyze, Monitor and Monetize APIs
+  - Powerful features
+    - On-boarding partners and developers
+    - Supports complex integrations (REST, gRPC, non-gRPC-REST, integrate with GCP, on-premises or hybrid apps)
+- Cloud Endpoints: Basic API Management for Google Cloud backends
+  - Little complicated to setup: You need to build a container and deploy to Cloud Run
+  - Supports REST API and gRPC
+- API gateway: Newer, Simpler API Management for Google Cloud backends
+  - Simpler to setup
+  - Supports REST API and gRPC
+
+***Cloud vs On-Premises Security
+- Responsibility
+  - On-Premises Security
+    - The business is solely responsible for its security
+  - Cloud Security
+    - Security is a shared responsibility between the cloud provider and the business
+- Costs
+  - On-Premises Security
+    - Requires significant upfront investment in hardware and software
+  - Cloud Security
+    - Typically involves lower upfront costs but ongoing operational expenses
+- Maintenance
+  - On-Premises Security
+    - Businesses need to manage their own updates and maintenance
+  - Cloud Security
+    - Depending on the service, the provider helps with security updates and system maintenance
+- Expertise
+  - On-Premises Security
+    - Requires in-house security expertise or external consultants
+  - Cloud Security
+    - Option to get access to top-tier security expertise through the provider
+- Data Control
+  - On-Premises Security
+    - Full control over data storage and security protocols
+  - Cloud Security
+    - Less direct control over where and how data is stored
+- Compliance
+  - On-Premises Security
+    - Businesses must individually ensure and maintain compliance
+  - Cloud Security
+    - Cloud providers often have certifications making compliance easier (Shared responsibility)
+
+***Key Characteristics for Cloud Security
+- Control: Decide who gets access
+  - Example: Only few employees can view sensitive company data
+- Compliance: Follows legal rules
+  - Example: Protect customer data as the law requires
+- Confidentiality: Keeps information secret
+  - Example: Encrypt messages so that only sender and recipient can read them
+- Integrit: Ensures data stays accurate
+  - Example: A bank system checks that no one changes your balance without permission
+- Availability: Ensure apps & data are available always
+  - Example: A banking website remains accessible even during high traffic or an attack
+
+***Key Characteristics for Cloud Security - Scenarios
+- Only the HR department has the ability to access employee records, while all the other departments are restricted from viewing this sensitive information
+  - Control
+- A healthcare provider implements robust data protection measures to ensure patient records are handled in accordance with HIPAA regulations, safeguarding personal health information
+  - Compliance
+- A company uses end-to-end encryption for all internal communications, ensuring that only the sender and the intended recipient can read the contents of a message
+  - Confidentiality
+- An online banking application regularly verifies transactions and account updates to ensure that no unauthorized changes have been made to user accounts
+  - Integrity
+- Despite experiencing a significant spike in web traffic during a promotional event, an ecommerce platform remains fully operational, thanks to scalable cloud resources and DDoS protection measures
+  - Availability
+
+***Trusted Infrastructure from Google
+- World's most popular websites: Google runs and manages high traffic websites like Google Search and Youtube
+- Own Infrastructure: Google has build a world clas infrastructure for its use
+- Used by Google Cloud: The same infrastructure is made available to us by Google Cloud
+- Advantages
+  - Tailored Security: Google custom-makes its security, making it super tough for hackers
+  - Advanced Protection: Google's own security tech is always a step ahead of hackers
+  - Innovative Security Features: Google keeps adding new security tricks to keep data safe
+  - Reduced Vulnerabilities: Google's unique systems have fewer weak spots for attacks
+  - Rapid Response: Google fixes security problems super fast because it controls everything
+
+***Enhanced Security Using 2 Step Verification (2SV)
+- 2 Step Verification (2SV): Add a 2nd step to verify user
+  - MFA: Also called Multifactor authentication
+  - Online Banking Example: Use a password and a code from your phone to access your bank account safely
+  - Google Cloud Example: 2SV ensures that even if someone obtains your administrator's password, they wouldn't be able to access the account without the additional verification code
+- Make 2SV Mandatory: For Google Cloud accounts
+  - Security Keys: A physical key inserted into a USB port
+  - Google Authenticator app: Generates single-use 2SV codes
+  - Backup codes: Generate backup verification codes and print them ahead of time
+  - Text message or phone call: Receive 2SV codes via a text message or voice call
+
+***Exploring SecOps
+- DevOps: Combines development and operations to speed up project delivery while enhancing teamwork and process efficiency
+  - Communication
+  - Automation
+  - Quick Feedback
+- SecOps: Layers security into this fast-pased setup
+  - Be Secure: Ensures the project remains safe from threats without slowing down progress
+- Aspects
+  - Focus
+    - DevOps
+      - Speed up delivery
+      - Example: Automating code deployment for faster release
+    - SecOps
+      - Ensures security
+      - Regularly checking for security vulnerabilities
+  - Teamwork
+    - DevOps
+      - Collaboration between developers and operations
+      - Teams meet daily to solve problems together
+    - SecOps
+      - Includes security in the team
+      - Security experts join planning meetings to integrate security from the start
+  - Tools
+    - DevOps
+      - Uses tools for efficiency in development and deployment
+      - Continuous integration tools to test and merge code quickly
+    - SecOps
+      - Employs tools for security monitoring and threat detection
+      - Intrusion detection systems to alert on real-time threats
+  - Routine
+    - DevOps
+      - Continuous integration and delivery for regular updates
+      - Automatically updating software nightly
+    - SecOps
+      - Constant security assessments to prevent threats
+      - Regular security scans to identify and fix vulnerabilities
+  - Culture
+    - DevOps
+      - Promotes quick innovation and learning from failures
+      - Encouraging rapid prototyping of new features
+    - SecOps
+      - Prioritizes security awareness and practices
+      - Conducting regular security training sessions for all team members
+
+***Exploring Google Cloud's Trust Principles
+- Trust is key: Would we share any confidential information to some one if we don't turst them?
+- Why would customers trust Google to protect their data?
+- A cloud provider should learntrust by:
+  - Clear Principles: Clearly stating what their principles are
+  - Sharing information: About how they protect
+  - Sharing more information: How do they handle requests from Governments for data?
+
+***7 Google Cloud's Trust Principles
+- You own your data, not Google
+- Google does not sell customer data to third parties
+- Google Cloud does not use customer data for advertising
+- All customer data is encrypted by default
+- We gaurd against insider access to your data
+- We never give any government entity "backdoor" access
+- Our privacy practices are audited against internation standards
+
+***Exporing Google Transparency Report
+- Have you ever wondered how Google handles:
+  - Government request for data
+  - Request to remove content from Google sites
+  - Complaints against copyright violations
+- Google publishes all these information in the transparency reports
+  - End users know how it affects their privacy, security and access to information
+- Transparency
+
+***Third-party Audits for Google Cloud
+- Why do we do Certifications?
+  - Prove our skills reliably: We can prove to outside world, that our skills are verified by reputable 3rd party
+- Cloud Providers are the same
+  - Auditing: Go through the audit process to prove that everything is managed properly and securely
+- Audit examples:
+  - SOC 2: Checks if cloud provider safely handles and protects customer data according to five key principles
+  - ISO 27001: Verifies cloud provider's system for securing & managing info. meets standards
+  - PCI DSS: Ensures cloud providers securely process and store credit care information to protect against fraud
+  - HIPAA: Confirm cloud services protect patient health information, keeping it confidential and secure
+- Compliance Resource:
+  - Compliance Reports Manager: Audit reports, ..
+  - Compliance resource center: Guidance for understanding and navigating the compliance landscape (best practices, white papers)
+
+***Data Privacy and Data Residency Management
+- Strict Data Laws: Different countries have strict laws related to handling of customer data
+  - GDPR for Europe
+  - California Consumer Privacy Act for US
+- Example GDPR: Strict requirements like:
+  - Data of the Europe's customer should stay with in European union
+  - Customer's data should be secured
+  - Customer can correct data
+- How can businesses adhere to these local laws while doing business internationally?
+  - Google cloud can help you get started!
+- Google Cloud makes it easy to get started:
+  - Default Data Encryption: Keeps data secure, both stored and during transfer
+  - Data Residency: Choose data storage locations
+  - IAM Access Controls: Limit data access based on roles
+  - Cloud Audit Logs: Provides detailed records of data access
+  - Expertise and Resources: Offers guidance on GDPR compliance through resources and expert advice:
+    - https://cloud.google.com/privacy/gdpr
+  - Compliance Resources
+    - Compliance Reports Manage: Audit Reports, ...
+    - Compliance resource center: Guidance for understanding and navigating the compliance landscape (best practices, white papers)
+
+***Exploring Google Cloud Security Offerings
+- KMS
+  - Create and manage cryptographic keys(symmetric and asymmetric)
+  - Control the keys use in your applications and GCP Services
+- Secret Manager
+  - Manage your database passwords, your API keys securely
+- Cloud Data Loss Prevention
+  - Discover, classify, & mask sensitive data (like Credit Card numbers, SSNs, clear text passwords & Google Cloud credentials) 
+  - Integrates with Cloud Storage, BigQuery, and Datastore
+  - Provides APIs that can be invoked from your applications
+- Cloud Armor
+  - Protect your production apps (at run time) from denial of service and common web attacks (OWASP Top 10) like XSS (cross-site scripting) and SQL injection
+- Web Security Scanner
+  - Identify vulnerabilities by running security tests
+  - Examples: Cross-site scripting (XSS) MIXED_CONTENT, OUTDATED_LIBRARY, XSS
+- Binary Authorization
+  - Ensure that only trusted container images are deployed to Google Cloud
+- Container Threat Detection
+  - Detects container runtime attacks
+  - Examples: Added binary executed
+- Security Command Center
+  - Get a consolidated picture of security in Google Cloud (Security posture management)
+  - Discover misconfiguration and vulnerabilities (Built-in threat detection)
+  - Compliance monitoring (Review and export compliance reports. Check compliance of your resources with PCI-DSS 3.2.1, OWASP Top Ten, ..etc)
+
+***Understanding Zero Trust Security Model
+- Traditional IT security model: Security implemented at the network perimeter
+  - Assumes everything inside can be trusted
+- Zero Trust - "No person or device should be trusted by default, even if they are already inside an organization's network"
+  - Strict identity authentication and authorization throughout the network
+    - Resources might be secure even if attackers gain access to a network
+  - Simple Concept: Every user, device, and component is considered untrusted at all times, regardless of whether they are inside or outside of an organization's network
+- Three Key Principles
+  - Assume all network traffic is a threat, at all times
+  - Enforce least-privileged access
+  - Always monitor
+
+***Artificial Intelligence - All around you
+- Self-driving cards
+- Spam Filters
+- Email Classification
+- Fraud Detection
+- (Question) What is AI? 
+  - The theory and development o f computer systems able to perform tasks normally requiring human intelligence, such as visual perception, speech recognition, decision-making, and translation between languages
+- Types of AI
+  - Strong artificial intelligence (or general AI) :
+    - A machine that can solve problems, learn and plan for the future
+    - An expert at everything (including learning to play all sports and games!)
+    - Learns like a child, building on it's own experiences
+    - We are far away from achieving this! (Estimates: few decades to never)
+  - Narrow AI (or weak AI): Focuses on specific task
+    - Examples: Self-driving cars and virtual asistants
+    - Machine learning: Learn from data (examples)
+
+***Machine Learning
+- Traditional Programming: Based on Rules
+  - If this DO that
+  - Example: Predit price of a home
+    - Design an algorithm taking all factors into consideration:
+      - Location, Home size, Age, Condition, Market, Economy, etc.
+- Machine Learning: Learning from Examples (NOT Rules)
+  - Give millions of examples
+  - Create a model
+  - Use the model to make predictions!
+- Challenges:
+  - No of examples needed
+  - Availability of skilled personnel
+  - Complexity in implementing MLOps
+
+***ML in Google Cloud - Pre-Trained Models
+- Use Pre-Build Models - Provided as APIs
+- Speech-To-Text API: convert speech into text
+- Text-to-Speech API: convert text into speech
+- Translation API: Translate texts into more than one hundred languages
+- Natural Language API: Derive insights from unstructured text
+- Cloud Vision API: Recommended for generic usecases
+  - Example: Identify if there is a cloud in the picture
+  - Classify images into predefiend categories
+  - Detect objects and faces
+  - Read printed words
+
+***ML in Google Cloud - Custom Models
+- Simplify Building of Custom Models
+  - AutoML: Build custom models wtih minimum ML expertise and effort
+    - AutoML Vision: Build custom models based on Images
+      - Example: Identify the specific type of cloud
+        - Provide examples - Example images and categorization
+        - AutoML creates the model for you
+    - AutoML Video Intelligence: Add labels to Video
+      - Streaming video analysis, Object detection and tracking
+    - AutoML Tables: Automatically build models on structured data
+- Have Data Scientists build complex models
+  - Frameworks: TensorFlow, PyTorch, and scikit-learn
+- BigQuery ML: Build ML models using Queries
+  - Use data directly from BigQuery datasets (NO exports needed)
+- Vertex AI: Build & deploy ML models faster
+  - Custom tooling within a unified AI platform
+  - Makes MLOps easy
+
+***Faster ML in Google Cloud - TPUs
+- Do you have models that train for weeks or months?
+  - Go for Tensor Processing Units (TPUs)
+- 20-30X faster than traditional approaches
+- Helps you quickly iterate on your ML solutions
+- Supported in Google Compute Engine, Google Kubernetes Engine and AI platform
+- Custom AI Platform Deep Learning VM Image is available 
+
+***Challenges in Building AI Solutions
+- Importance of Datasets
+  - What if the data has a bias? (Bias can affect results)
+    - (Solutions may not work for everyone)
+  - Obtaining data
+- Evolving field
+  - What if an AI system causes errors?
+    - Accident made by a self driving car
+      - Errors may cause harm
+  - Scarcity of skills (Data Scientists, ...)
+- ML lifecycle (MLOps)
+- Security (What if the data used to build the model is exposed?)
+- Explainability of model (Users must trust a complex system)
+- Who will face the consequences?
+  - Who's liable for AI-driven decisions?
+
+***Responsible AI Principles
+- AI without unintended negative consequences
+  - 1:Fairness - Fair to all groups of people
+    - "System's decisions don't discriminate or run a gender, race, sexual orientation, or religion bias toward a group or individual"
+      - Data should reflect diversity, Model should evolve with time
+  - 2:Reliability and safety - Continues working under high loads, unexpected situations, etc.
+  - 3:Privacy and security - Of people and data! (information and controls)
+    - Important consideration from data ZERO!
+  - 4: Inclusiveness - Nobody left out
+    - Violation: Leaving out a certain group of people (ex: people with disabilities)
+  - 5: Transparency - Explainability, debuggability
+    - Clear explanation to users
+  - 6: Accountability - Meets ethical and legal standards
+    - AI is NOT the final decision maker. An enterprise, a team or a person is
+
+***Machine Learning - Data is the Key
+- Machine Learning: Learning from Examples (NOT Rules)
+- (IMHO) Most important factor in a successful ML implementation is examples (or data, as it is often called)
+  - You need millions of examples (or data points)
+  - The data has to accurate
+    - Should NOT have bias
+    - Should NOT have errors
+- A number of enterprises face challenges in getting clean data
+
+***Machine Learning Scenarios
+- Translate from one spoken language to another
+  - Prebuilt Model - Translation API
+- Convert speech to text
+  - Prebuilt Model - Speech-to-Text API
+- Generic identification of objects in an image
+  - Prebuilt Model - Cloud Vision API
+- Identify the type of cloud or a machinee part based on an image
+  - AutoML Vision
+- Simplify implementation of MLOps
+  - Vertex AI
+
+***Cloud Native
+- Cloud Native Architectrures help you get the best value from the Cloud
+  - Designed from the ground up to take advantage of the elasticity and distributed nature of the cloud
+- Goal: Increase software delivery velocity and increase service reliability while increasing collaboration among stakeholders
+- Four Cloud Native Pillars
+  - Microservices
+    - Fix issues and deliver new features quickly
+  - Containers
+    - Portable - build once, run anywhere
+      - Simplified consistent deployments
+    - Lightweight (Faster deployments than VMs)
+  - Container Orchestration
+    - Kubernetes (GKE) - Auto Scaling, Load Balancing, Self Healing, Zero Downtime Deployment, etc.
+  - DevOps (Dev + Ops, CI/CD, IaC)
+    - Increased automation of processes
+- Examples of NOT Cloud Native
+  - Using VMs, Manual deployments, etc
+
+***Modern Architectures - 3 Container Compute Examples
+- Cloud Run
+  - Develop and deploy highly scalable containerized application
+  - Does NOT need a cluster!
+  - CaaS (Serverless)
+- Google Kubernetes Engine
+  - Orchestrate containerized microservices on Kubernetes
+  - Needs advanced cluster configuration and monitoring
+  - CaaS
+- Anthos
+  - Manage Kubernetes Cluster in Multi-cloud and On-premises
+  - Hybrid Cloud
+
+***Modern Architectures - Serverless Examples
+- Cloud Functions
+  - Serverless compute for event-driver apps
+  - Execute functions (or code) in response to events
+- Cloud Run
+  - Run isolated containers, without orchestration (Serverless)
+  - You DO NOT need to provision and manage VMs
+  - Start container in seconds
+- Cloud Firestore (Datastore)
+  - Apps needing quickly evolving structure (schema-less)
+  - Serverless transactional document DB supporting mobile & web apps
+  - Small to medium DBs (0 - few TBs)
+- Cloud Dataflow
+  - Serverless Stream and Batch processing using Apache Beam (open-source)
+- Cloud Pub/Sub
+  - Realtime Messaging in the cloud. Pay for number of messages
+- BigQuery
+  - Relational OLAP, Data warehousing & BigData workloads. Pay for data stored and queries executed.
+
+***Choosing Region(s) and Zone(s)
+- 1:Compliance - Adhere to regulations & standards
+  - Store data in right region(s) based on the regulations
+    - Some countries don't allow their citizens data to be stored in other countries
+    - Evaluate compliance for each region where you are storing data
+- 2: Latency and Performance - Be near to users or on-premises (based on your use case)
+  - Use Premium Tier for optimum network performance
+    - To keep costs low, use Standard Tier (traffic over internet)
+  - Example: HPC workloads need low latency between VMs
+    - Greater distance between VMs => Greater network latency
+- 3: Fault Tolerance: Distribute apps across Region(s)
+  - Even if a zone or region is not available, apps are not impacted
+- 4: Pricing: Pricing varies from region to region as well
+- And a lot of other factors
+
+***What has changed in last decade or so?
+- How consumers make purchase decisions? (Social)
+- How we do things? (Mobile)
+- How much data we have? (Big Data)
+  - How much intelligence we can get (AI/ML)
+- How much access startups have to technology at scale? (Cloud)
+- Enterprises can ADAPT by:
+  - Providing awesome(omni-channel-socal, mobile) customer experiences
+  - Getting intelligence from data (Big Data, AI/ML)
+    - Example: Personalize consumer offerings
+  - Enabling themselves to make changes faster
+    - Cultural change from "traditional Datacenter, SDLC, manual IT Ops" to "Cloud Containers, DevOps/SRE, Automation"
+- Digital Transformation: Using modern technologies to create (or modify) business processes & customer experiences by innovating with technology and team culture
+  - Focus on WHY (NOT HOW)
+    - Increase pace of change
+    - Revenue Growth
+    - Cost Savings
+    - Higher customer engagement/retention
+
+***Cloud - Enabler for Digital Transformation
+- Cloud can ENABLE Digital Transformations
+  - Lower cost
+  - Reduced reponsibilities
+  - Higher capabilities
+  - Increased speed to market
+- BUT needs a change in skills, mindset and culture
+  - Modern Architectures (Microservices, Serverless, Containers, Kubernetes)
+  - More Agile Processes (DevOps, SRE)
+  - Right Talent
+  - Right Culture (of data driven experimentation and innovation)
+
+***Cloud Mindset
+Factor		Data Center 		Cloud
+Infrastructure	Buy			Rent
+Planning	Ahead of time		Provision when you need it
+Deployment 	VMs			PaaS or Containers or Serverless
+Team		Specialized		T-shaped skills
+Releases	Manual			CI/CD with flexible release options (Canary)
+
+***Google Cloud Adoption Framework
+- Streamlined framework for adopting the cloud
+  - Four themes
+    - Learn: How do you build the right skills?
+    - Lead: How do you structure teams so that they are cross-functional, collaborative, and self-motivated?
+    - Scale: How do you reduce operational overhead and automate manual processes? (provisioning and scaling infrastructure, application releases, monitoring)
+    - Secure: How to protect from unauthorized and inappropriate access? (controls, strategies and technology)
+  - Three phases
+    - Tactial: Move to cloud with minimum changes (to people, process and technology)
+      - Use laaS - Mainly for cost savings
+    - Strategic: make some degree of change (to people, process and technology) in isolated part of an enterprise (early success stories)
+      - Harness additional value of cloud
+    - Transformational: Fully invested in Cloud
+      - Cloud-first, fully-automated, cross-functional feature-teams
+        - Driven by data and intelligence, Adopting DevOps and SRE
+
+***Infrastructure Modernization
+- Life and shift - Move AS-IS to Google Cloud Infrastructure
+  - Examples: 
+    - Virtual desktop solutions: Make use of virtual desktop solutions on Google Cloud
+    - Backup and disaster recovery (Simple starting step to cloud)
+    - VMware as a service:
+      - Google Cloud VMware Engine: Lift and Shift VMware infrastructure to Google Cloud
+    - Bare Metal Solution: Move specialized workloads (SAP HANA, Oracle, databases, ..) that need really high performance
+    - Migrate for Compute Engine: Migrate VMs and VM storage to GCE
+- Benefits:
+  - Lower costs
+  - Reduced focus on infrastructure
+- But you are not yet making use of all the benefits of being in the cloud!
+
+***Application Modernization
+- Migrate to PaaS or Serverless offerings:
+  - Containerization
+  - Container Orchestration (GKE, Anthos)
+    - Migrate for Anthos and GKE: Modernize apps by moving VMs to containers
+  - Make use of cloud databases and data warehouses
+- Use DevOps and SRE practices (Cloud Build, Cloud Monitoring, ..)
+  - Move Fast by Reducing Cost of Failure
+- Benefits
+  - Managed services simplify application maintenance and lifecycle
+    - Managed Services have good integration with Cloud Build, Cloud Monitoring and Cloud Logging
+    - App Engine, GKE, Cloud Run support multiple release approaches
+  - Additional innovation provided by managed services
+    - BigQuery ML: Create and execute ML models directly in BigQuery usin standard SQL queries
+
+***Business Platform Modernization
+- what if you DONT want to move legacy system to Cloud?
+- What if you want to enable external developers and partners to build apps for you?
+- Build APIs around legacy code to simplify integration
+- Managed Service: Apigee API Management, Cloud Endpoints
+  - Design, Secure, Publish, Analyze, Monitor and Monitize APIs
+- Advantages
+  - Integrate with legacy applications
+  - Open new business channels
+    - Create an ecosystem of developers and partners
+
+***Cloud Migration Scenarios
+- Our company has an old application that nobody uses anymore. It's costing us money to keep it running, so we want to shut it down
+  - Retire
+- We have legacy system that's critical for our day-to-day operations, but it's not yet suitable for cloud due to compliance issues. We'll keep it on-premises for now
+  - Retain
+- We want to move our existing web application to the cloud as quickly and with as little changes as possible to benefit from the cloud's scalability and cost savings
+  - Rehost
+- Our application is a good candidate for the cloud, but we want to update its underlying database to a managed cloud service to reduce administrative overhead
+  - Replatform
+- We see the potential for significant improvements in our application by adopting cloud-native features, so we're going to redesign it to fully leverage the cloud environment
+  - Refactor
+- Our current customer relationship management (CRM) system is outdated. We've decided to switch to cloud-based CRM solution rather than moving our existing system to the cloud
+  - Replace
+
+***Exploring Google Cloud Customer Care
+- (Question) How can you get help from Gogle about your Google Cloud implementations?
+  - Google Cloud Customer Care
+- Things you can get help with
+  - Google Cloud Skills Boost: Training credts for your team
+  - Event Management Service: Support planned peak events, such as product launch or major sales event
+  - Technical Account Manager (TAM): Advisors that focus on your operational rigor, platform health, & architectural stability
+  - Customer Aware Support: Support experts who understand your implementations so that you can get quick support
+  - Operational Health Reviews: Reviews to measure your progress and address blockers
+- Standard Support
+  - Recommended for Development workloads/envirnments
+  - Low pricing
+  - 8/5 availability- high impact issues
+  - Technical account management, Event management service, Customer aware support are not available
+  - Google cloud skills boost is not available
+- Enhanced Support
+  - Recommended for Production workloads
+  - Medium pricing
+  - 24/7- high and critical impact issues
+  - Technical account management, Event management service, Customer aware support are not available
+  - Google cloud skills boost is not available
+- Premium Support
+  - Recommneded for Enterpises with critical workloads
+  - High pricing
+  - 24/7 - high and critical impact issues
+  - Technical account management, Event management service, Customer aware support are available
+  - Google cloud skills boost is available
+
+***Exploring Value Added Services 
+- Value-Add Services: Additional purchase for Enhanced and Premium Support customers
+  - Technical Account Advisor Service: Enhanced oversight of your cloud experience, combining proactive guidance with regular service reviews
+  - Planned Event Support: Complete cycle for planned events: Architecture Essentials Review > Accelerated response time (15 mins) for P1 issues > Performance summary report (review for improvement opportunities)
+  - Assured Support: Reach your compliance objectives including FedRAMP High, ..
+  - Mission Critical Services: Fastest possible impact mitigation response
+
+***Customer Care Support Case Lifecycle
+- New - The case is not assigned yet.
+- Assigned - The case is assigned to a specialist
+- In progress Cloud Customer Care - Customer Care specialist are working on the case
+- In progress Google engineering - Google product engineers are investigating the case
+- In progress Google other - Another Google team is investigating the case
+- Waiting on customer response - We need more information from you
+- Waiting on customer action - We need you to do somethign
+- Solution offered - Solution is offered. The customer can reopen the case if the offered solution is insufficient
+- Closed - The case is resolved. Reopen within 15 days if needed
+
+***Working with Customer Care - Best practices
+- Single Point Tracking - Create one support case per issue
+- Right Priority: Set clear priority
+  - P1 - Critical Impact - Service Unusable in Production
+  - P2 - High Impact - Service Use Severely Impaired
+  - P3 - Medium Impact - Service Use Partially Impaired
+  - P4 - Low Impact - Service Fully Usable
+- Clear Description: Include as many details as possible
+  - Time, Product, Location, Identifiers, Description
+  - Route cases to the required time zone: Include something like "Please route this to Pacific time zone (GPT-8)" in description
+- Escalate when needed: When business impact increases or breakdown of the resolution process
+  - Example: You haven't received an update in the agreed upon time period
+- Data centers have significant environemtn implications
+  - Massive Energy consumption
+  - Lot of hardware wastes
+  - CO2 emission, etc
+- Sustainability: "Meeting the needs of the present without compromising the ability of future generations to meet their own needs" (United Nations Definition)
+- Cloud sustainability: Sustainable operation and delivery of cloud services
+  - Enabling sustainable consumption and use of cloud services by organizations
+- How is Google Cloud doing?
+  - Google's Mission: Google is on a mission to help customers to reduce their carbon foot print
+  - More Efficient: Google owned and operated data centers are more than 1.5 times energy efficient compared to enterprise data centers (Estimates)
+  - And Improvising: Google delivers 3x more compute power for same amount of electrical power compared to 5 years ago
+  - Certified: ISO certification for energy management
+  - Transparent: https://sustainability.google/reports/
+- Google Cloud Sustainability Tools
+  - Google Cloud Carbon Footprint: Measure and understand your cloud emissions
+    - Granular breakdown of each customer's cloud emissions by usage (project, service, GCP region)
+    - Can be exported to BigQuery and build custom dashboards to better visualize and track emissions
+  - Choose LOW CO2 cloud region: Publishes carbon data for each cloud region
+    - Low CO2 indicators in location selectors
+  - Google Cloud Region Picker: Pick a Google Cloud region considering approximated carbon footprint, price and latency
+
+
+***Total Cost Of Ownership (TCO)
+- (Question) How do you estimate the cost savings of moving to cloud?
+  - Take Total Cost of Ownership into account
+- Total Cost of Ownership
+  - Infrastructure Costs
+    - Procuring Servers, Databases, Storage, Networking
+    - Infrastructure maintenance costs
+  - IT personnel costs
+  - Software costs
+  - Electricity costs
+  - ...
+
+***Consumption-based vs Fixed-price Pricing Models
+- Consumption-based - You are billed for only what you use
+  - Example: Cloud Functions - You pay for no of invocations!
+- Fixed-price - You are billed for instances irrespective of whether they are used or not
+  - Example: You provision a VM instance
+    - You pay for its lifetime irrespective of whether you use it or NOT
+  - Example: You provision a GKE cluster
+    - You are billed irrespective of whether you use it or not
+
+***Expenditure Models: CapEx vs OpEx
+- Capital Expenditure (CapEx): Money spent to buy infrastructure
+  - Additional cost to maintain infrastructure with time
+  - You might need a team to manage the infrastructure 
+  - Example: Deploying your own data center with physical servers
+  - Example: Purchasing Committed use discounts
+  - Example: Leasing Software
+- Operation Expenditure (OpEx): Money spent to use a service or product
+  - Zero upfront costs
+  - You Pay for services as you use them (Pay-as-you-go model)
+  - Example: Provisioning VMs as you need them
+  - Example: Using Cloud Functions and paying for invocations
+
+***How is Cost Decided?
+- Resource type and configuration
+  - How much memory? 
+  - How much CPU? 
+  - Which access tier?
+- Usage meters
+  - How long was your VM running for? 
+  - How much ingress and How much egress?
+  - How many invocations of a Cloud function?
+- Which Region?
+  - Price varies from Region to Region
+- Data transfer
+  - Ingress and Egress
+  - Inbound data from on-premises to GCP is free
+  - Outbound data from GCP to On-Premises is NOT free
+  - Egress to the same Google Cloud zone when using the internal IP addresses of the resources is free
+- Reserved or Not
+  - Some services offer reservations ahead of time
+
+***Pricing Calculator
+- Estimating the cost of a Google Cloud solution is NOT easy
+- You would need to take a number of factors into account
+- How do you estimate the cost of your GCP solution?
+  - Use Google Cloud Pricing Calculator
+- Estimates for 40+ Services:
+  - Compute Engine
+  - Google Kubernetes Engine
+  - Cloud Run
+  - App Engine
+  - Cloud Storage
+- (NOTE) These are Estimates! (NOT binding on GCP)
+
+***GCP Cost Management
+- Cost Management: Tools for monitoring, controlling, and optimizing your costs
+  - Cost Billing Reports: 10,000 feet overview of usage costs
+    - Analyze Trends by Project, Service, Location, Labels, etc.
+  - Cost Table report: Detailed view
+    - Dynamically filter, sort and group various line items
+  - Cost breakdown: Base usage cost, credits, adjustments and taxes
+  - Budgets and alerts: Set budgets and get alerted by email or Pub/Sub
+  - Commitments: Manage and analyze committed use discounts
+    - Enable committed use discount sharing to share discounts across projects
+  - BigQuery Export: Sends billing data to a BigQuery data set
+    - Do you own analysis with custom dashboards - Export to BigQuery and analyze using Data Studio
+  - Account management: Manage projects linked to this billing account
+
+***Managing Costs - Best Practices
+- Group resources based on cost ownership
+- Folders, Projects, Labels, etc.
+- Regular cost reviews (at least weekly)
+  - CapEx (Ahead of time planning) -> OpEx (regular reviews)
+- Estimate costs before you deploy (Pricing Calculator)
+- Use Cost Management features
+  - Cost Table reports, Budgets and Cost alerts, etc.
+- Others:
+  - Stop Resources when you don't need them
+  - Use Managed Services (PaaS >>> laaS)
+  - Reserve VMs for 1 or 3 years (Committed use discounts)
+  - Use Preemptible VMs for fault tolerant non-critical workloads
+  - Involve all teams - executive, management, business, technology & finance, etc.
+
+***Understanding Google Cloud Quotas
+- How to prevent unforeseen spikes in usage and overloaded services?
+- How to avoid unexpected bills from using expensive resources?
+- Cloud Quotas: Restrict how much of a particular shared Google Cloud resource that you can use
+  - Most limits are applied per project
+- Rate quotas: Limit the number of requests to an API or service per time interval
+  - Example: Maximum number of requests to Compute Engine API per minute (Ex: 1500)
+- Allocation quotas: Restrict the use of resources that don't have a rate of usage
+  - Example: No of VMs used by your project at a given time
+- Concurrent quotas: Restrict the total number of concurrent operations in flight at any given time
+  - Example: Concurrent global operations per project - Limits the total number of concurrent global operations for a projects
+
+***Cost Management - Scenarios
+- I want to understand how much I could save by moving our on-premises infrastructure to the cloud
+  - Compare Total Cost of Ownership (TCO)
+- I need to budget for a new project and want to estimate cloud costs accurately
+  - Use Pricing Calculator
+- I want to monitor and control our cloud spending to avoid unexpected charges
+  - Cost Management Tools
+    - Use GCP's Cost Management tools - Cost Billing Reports, Cost Table report, Budget and alerts..
+- Our team is working on several projects, and I need to allocate cloud costs accurately to each
+  - Organize resources using projects
+  - Use labels for easy tracking
+  - Give ownership at project level
+  - Review Regularly
+
+***Basic Compute Services - Google Cloud
+- GCE or Compute Engine
+  - Windows or Linux VMs (laaS)
+  - Use VMs when you need control over OS or you want to run custom software
+- Preemptible VMs
+  - Short lived VMs for non time-critical workloads
+- Sole-tenant Nodes
+  - Dedicated physical servers
+- VMware Engine
+  - Run VMware workloads in Google Cloud
+- Managed Instance Groups
+  - Create multiple Compute Engine VMs
+- Cloud Load Balancing
+  - Balance load to multiple instances of an application or a service
+  - Usually considered as networking solution
+
+***Managed Compute Services
+- App Engine
+  - PaaS
+  - Deploy web apps and RESTful APIs quickly
+- Cloud Run
+  - Run isolated containers, without orchestration (Serverless)
+  - You DO NOT need to provision and manage VMs. Start containers in seconds
+  - Knative compatible
+- GKE or Kubernates
+  - Managed Kubernates Service
+  - Provides container orchestration
+- Cloud Functions
+  - Serverless compute for event-driver apps
+- Anthos
+  - Manage Kubernates Clusters in Multi-cloud and On-premises
+- Firebase
+  - Google's mobile platform
+  - Build Apps for IOS, Android, the web, C++, and Unity
+
+***Storage
+- Persistant Disk
+  - Block Storage for your VMs
+- Local SSD
+  - Local ephemeral block storage for your VMs
+- Cloud Firestore
+  - File shares in the cloud
+- Cloud Storage
+  - Object storage in the cloud
+
+***Databases - Managed Services
+- Cloud SQL
+  - Regional Relational OLTP database (MySQL, PostgreSQL, SQL server)
+- Cloud Spanner 
+  - Global Relational OLTP database
+  - 99.999% availability for global applications with horizontal scaling
+- Cloud Firestore (Datastore)
+  - Apps needing quickly evolving structure (schema-less)
+  - Serverless transactional document DB supporting mobile & web apps
+  - Small to medium DBs (0 - few TBs)
+- Cloud BigTable
+  - Large database (10TB - PBs)
+  - Streaming (IOT), analytical & operational workloads. NOT serverless
+- Cloud Memorystore
+  - In memory databases/cache
+  - Applications needing microsecond responses
+
+***Streams, Analytics, Big Data & .. - Managed Services
+- Cloud Pub/Sub
+  - Realtime Messaging in the cloud
+- BigQuery
+  - Relational OLAP databases
+  - Datawarehousing & BigData workloads
+- BigQuery ML
+  - Simplified Machine Learning using data in BigQuery
+- Cloud Dataflow
+  - Serverless Stream and Batch processing using Apache Beam (open-source)
+- Cloud Dataproc
+  - Managed Service for Spark and Hadoop
+  - Not serverless (needs cluster management)
+- Cloud Data Fusion
+  - Visually manage your data pipelines
+- Data Studio
+  - Visualize data
+- Looker
+  - Enterprise Business Intelligence
+
+***Migration - Managed Service
+- Database Migration Service
+  - Migrate to Cloud SQL
+- Storage Transfer Service
+  - Online Transfer to Cloud Storage
+- Transfer Appliance
+  - Physical transfer using an appliance
+- Migrate for Compute Engine
+  - Migrate VMs and VM storage to GCE from VMware, Microsoft Azure, Amazon EC2, etc.
+- Migrate for Anthos
+  - Migrate VMs to GKE containers
+- BigQuery Data Transfer Service
+  - Migrate your analytics data
+
+***Cloud Digital Leader - Certification Resources
+- Home Page 
+  - https://cloud.google.com/certification/cloud-digital-leader
+- Exam Guide
+  - https://cloud.google.com/certification/guides/cloud-digital-leader
+- Sample Questions
+  - https://cloud.google.com/certification/sample-questions/cloud-digital-leader
+- Registering For Exam
+  - https://support.google.com/cloud-certification/#topic=9433215
+
+***Certification Exam
+- 50 questions and 90 minutes
+- No penalty for wrong answers
+- Questions:
+  - Type 1: Multiple Choice - 4 options and 1 right answer
+  - Type 2: Multiple Select - 5 options and 2 right answers
+  - Result immediately shown after exam completion
+    - Email (a couple of days later)
+- Recommendations
+  - Read the entire question
+    - Identify and write down the key parts of the question
+  - More than sufficient time
+  - Flag questions for future consideration (Review before final submission)
+  - TIP: Answer by Elimination
