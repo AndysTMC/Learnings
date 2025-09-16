@@ -41,6 +41,9 @@ class BIT:
                 idx = nxt; target -= self.bit[nxt]
             bit_mask >>= 1
         return idx
+
+    def to_list(self):
+        return [self.get(i) for i in range(self.n)]
     
     def __len__(self):
         return self.n
